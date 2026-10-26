@@ -1,110 +1,106 @@
 # Polices
 
-Les polices d'écriture que je dessine, réunies dans un seul dépôt : sources, outils de compilation,
-versions, changelog et un site de présentation.
+Les polices d'écriture que je dessine : sources, versions, changelog et spécimens.
 
 **Site : <https://dalbrechtmartin.github.io/fonts/>** (essai en ligne, glyphes, CSS à copier, téléchargement, historique).
 
-## Polices
+| Police | Style | Licence |
+| --- | --- | --- |
+| [Griffonne](fonts/griffonne/) | Pinceau irrégulier où chaque lettre cache un chat ; GF Latin Core, `calt` `ss01` `case` `zero` | OFL 1.1, nom réservé « Griffonne » |
+| [Sorcelle](fonts/sorcelle/) | Pixel « lombarde arrondie », 3 graisses, pour les titres | OFL 1.1 |
 
-| Police | Version | Style | Licence |
-| --- | --- | --- | --- |
-| [Griffonne](fonts/griffonne/) | voir [`CHANGELOG`](fonts/griffonne/CHANGELOG.md) | Pinceau irrégulier où chaque lettre cache un chat, GF Latin Core, `calt` `ss01` `case` `zero` | OFL 1.1, nom réservé « Griffonne » |
-| [Sorcelle](fonts/sorcelle/) | voir [`CHANGELOG`](fonts/sorcelle/CHANGELOG.md) | Pixel « lombarde arrondie », 3 graisses, pour les titres | OFL 1.1 |
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="fonts/griffonne/images/apercu-sombre.png">
+  <img src="fonts/griffonne/images/apercu-clair.png" alt="Le mot Griffonne écrit au pinceau, lettres coiffées d'oreilles de chat avec des yeux dans les panses, suivi de la phrase « L'été, la petite chatte grimpe au balcon ! ».">
+</picture>
 
-Chaque version publiée a son zip (TTF + WOFF2 + licence + changelog) dans les
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="fonts/sorcelle/images/apercu-sombre.png">
+  <img src="fonts/sorcelle/images/apercu-clair.png" alt="Le mot Sorcelle en lettres pixel de style lombarde, suivi de la ligne « Danaé Albrecht--Martin ✦ Projets · Créations · Réseaux ».">
+</picture>
+
+Chaque version publiée a son zip (OTF ou TTF, WOFF2, licence, changelog) dans les
 [releases](https://github.com/dalbrechtmartin/fonts/releases).
 
-## Stack
+## Lancer en local
 
-- Compilation : [fontTools](https://github.com/fonttools/fonttools) + [Pillow](https://python-pillow.org/) (Python), WOFF2 via [brotli](https://github.com/google/brotli).
-- Site : HTML, CSS et JavaScript sans dépendance, habillé avec mon design system **Grimoire** (copie dans [`site/grimoire/`](site/grimoire/)).
-- CI/CD : [GitHub Actions](.github/workflows/) compile et vérifie toutes les polices à chaque push/PR,
-  [release-please](.github/workflows/release-please.yml) gère les versions et les `CHANGELOG.md` police par police,
-  [Pages](.github/workflows/pages.yml) publie le site, [Dependabot](.github/dependabot.yml) garde les dépendances à jour.
+```bash
+python -m venv .venv
+source .venv/Scripts/activate            # PowerShell : .venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python tools/polices.py construire       # compile chaque police dans fonts/<id>/dist/
+python tools/polices.py site             # génère _site/ (polices.json, polices, zips)
+python -m http.server 8000 --directory _site
+```
+
+Puis ouvrir <http://localhost:8000>.
+
+## Vérifier
+
+```bash
+python tools/polices.py verifier         # toutes les polices, ou : verifier sorcelle
+```
+
+Contrôle les clés de `police.json`, la licence, le changelog, la famille et la graisse de chaque fichier, les glyphes du
+spécimen, la révision écrite dans la police et l'accord avec `.release-please-manifest.json`. Code de sortie 1 en cas d'erreur.
+
+## Déploiement
+
+Tout passe par GitHub Actions, sans variable ni secret :
+
+- [`ci.yml`](.github/workflows/ci.yml) : `construire`, `verifier` et `site` à chaque push et PR vers `main` et `develop`.
+- [`pages.yml`](.github/workflows/pages.yml) : publie le site sur GitHub Pages à chaque push sur `main`.
+- [`release-please.yml`](.github/workflows/release-please.yml) : ouvre la PR de version, crée la release et y joint le zip.
+
+Réglages du dépôt en place : Pages en source « GitHub Actions » ; Actions avec les droits en écriture et l'autorisation
+de créer des PR (nécessaire à release-please).
+
+## Maintenance
+
+### Publier une nouvelle version
+
+Chaque police a sa propre version (semver), son `CHANGELOG.md` et ses tags (`griffonne-v1.0.0`), gérés par
+[release-please](https://github.com/googleapis/release-please) à partir des [Conventional Commits](https://www.conventionalcommits.org/fr/).
+
+1. Travailler sur `develop`. C'est le dossier touché qui désigne la police ; le type fixe la version :
+   - `feat(sorcelle): …` → mineure (0.6.0 → 0.7.0) ;
+   - `fix(sorcelle): …` → correctif (0.6.0 → 0.6.1) ;
+   - `feat(sorcelle)!: …` → majeure (mineure tant qu'on est en 0.x) ;
+   - `refactor`, `docs`, `chore`, `ci` → pas de version.
+2. Fusionner `develop` dans `main`.
+3. release-please ouvre une PR par police modifiée (version dans `police.json`, manifeste, `CHANGELOG.md`).
+4. La fusionner : tag, release et zip, puis le site se met à jour.
+
+La version écrite dans les fichiers de police vient de `police.json` (Sorcelle) ou se reconstruit à la main (Griffonne,
+voir son README).
+
+### Ajouter une police
+
+```bash
+python tools/polices.py nouvelle <id> "<Nom>"
+```
+
+Crée `fonts/<id>/` (police.json, CHANGELOG, README, OFL.txt) et la déclare à release-please en `0.0.0` : non publiée,
+absente du site. La commande affiche ensuite les étapes : compléter `police.json`, ajouter les fichiers compilés
+dans `compilees/` (ou une commande `construction`), vérifier, puis committer `feat(<id>): première version`.
+
+Les images du README d'une police se régénèrent avec `python tools/polices.py apercus <id>`.
+
+### Dépendances
+
+Dependabot propose chaque semaine, sur `develop`, les mises à jour pip et GitHub Actions.
 
 ## Structure
 
 ```
-fonts/
-  <id>/                  une police par dossier
-    font.json            nom, version, graisses, commande de build, textes du spécimen
-    CHANGELOG.md         historique (tenu par release-please)
-    OFL.txt              licence de la police
-    README.md            notes de conception
-    ...                  sources (planche, scripts, UFO, etc.)
-    dist/                fichiers compilés (non versionnés)
-tools/fonts.py           build, contrôles, zip, site, nouvelle police
-site/                    page de présentation (lit fonts.json généré)
-release-please-config.json, .release-please-manifest.json
+fonts/<id>/        une police : police.json, CHANGELOG.md, OFL.txt, README.md, sources et scripts
+tools/polices.py   construire, vérifier, empaqueter, site, aperçus, nouvelle police
+site/              page de présentation (lit polices.json), habillée avec le design system Grimoire
 ```
-
-## Installer
-
-```bash
-python -m venv .venv
-# PowerShell : .venv\Scripts\Activate.ps1   |   Git Bash : source .venv/Scripts/activate
-pip install -r requirements.txt
-```
-
-## Commandes
-
-```bash
-python tools/fonts.py list                 # polices et versions
-python tools/fonts.py build [id ...]       # compile dans fonts/<id>/dist/
-python tools/fonts.py check [id ...]       # noms, graisses, couverture du spécimen, version
-python tools/fonts.py package <id>         # release/<id>-<version>.zip
-python tools/fonts.py site                 # génère _site/ (fonts.json + polices + zips)
-python -m http.server 8000 --directory _site   # puis http://localhost:8000
-```
-
-`check` vérifie entre autres que la version de `font.json` est la même que dans `.release-please-manifest.json`.
-
-## Versions et changelog
-
-Même principe que [λLens](https://github.com/dalbrechtmartin/Yonsei-Lab-Internship) : commits
-[Conventional Commits](https://www.conventionalcommits.org/fr/) et [release-please](https://github.com/googleapis/release-please),
-ici en **monorepo** : chaque police a sa propre version (semver), son `CHANGELOG.md` et ses tags (`sorcelle-v0.6.0`).
-
-1. Travailler sur `develop` (ou une branche), avec des commits du type :
-   - `feat(sorcelle): ajoute les lettres grecques` → version mineure (0.6.0 → 0.7.0)
-   - `fix(sorcelle): referme la panse du g` → correctif (0.6.0 → 0.6.1)
-   - `feat(sorcelle)!: ...` ou `BREAKING CHANGE:` → majeure (mineure tant qu'on est en 0.x)
-   - `chore:`, `docs:`, `ci:` → pas de nouvelle version
-
-   C'est le **dossier** touché par le commit qui décide de la police concernée ; le scope `(sorcelle)` sert à la lecture.
-2. Fusionner dans `main` (PR `develop` → `main`).
-3. release-please ouvre une PR « chore(main): release sorcelle 0.7.0 » qui met à jour `font.json`,
-   le manifest et `CHANGELOG.md`. Une PR par police modifiée.
-4. Fusionner cette PR : release-please crée le tag et la release GitHub, la CI y attache le zip compilé
-   à la nouvelle version, et le site se met à jour.
-
-La version écrite dans les fichiers de police vient de `font.json` : ne pas la changer à la main.
-
-## Ajouter une police
-
-```bash
-python tools/fonts.py new <id> "<Nom>"
-```
-
-Crée `fonts/<id>/` (font.json, CHANGELOG, README, OFL.txt) et la déclare à release-please, en version `0.0.0`
-(non publiée, absente du site). Ensuite :
-
-1. Remplir `font.json` (résumé, graisses, spécimen) et la ligne Copyright de `OFL.txt`.
-2. Soit mettre les `.ttf`, `.woff2` (et `.otf`) déjà compilés dans `fonts/<id>/prebuilt/`, sous-dossiers acceptés
-   (nommés `<Nom sans espaces>-<Graisse>.ttf`, voir Griffonne), soit ajouter une commande `"build"` à `font.json`
-   (`{dist}` = dossier de sortie, voir Sorcelle).
-3. `python tools/fonts.py build <id> && python tools/fonts.py check <id>`
-4. Committer avec `feat(<id>): première version` : la release PR proposera la 0.1.0.
-
-Pour une police qui a déjà un historique, mettre directement sa version dans `font.json` et dans
-`.release-please-manifest.json`, écrire son `CHANGELOG.md`, puis créer le tag `<id>-v<version>`
-pour que release-please reparte de là.
 
 ## Licences
 
 - **Polices** : [SIL Open Font License 1.1](https://openfontlicense.org), voir le `OFL.txt` de chaque police.
-  Utilisation libre, y compris commerciale ; une police ne se vend pas seule et garde ses crédits.
 - **Code** (outils, site) : [BSD 3-Clause](LICENSE).
-- **Grimoire** (`site/grimoire/`) : design system de mon portfolio ; polices Alegreya et Atkinson Hyperlegible
-  (OFL) chargées depuis Google Fonts, icônes [Phosphor](https://phosphoricons.com/) (MIT).
+- **Grimoire** (`site/grimoire/`, `site/icones.svg`) : design system de mon portfolio ; polices Alegreya et Atkinson
+  Hyperlegible (OFL) chargées depuis Google Fonts, icônes [Phosphor](https://phosphoricons.com/) (MIT).

@@ -58,7 +58,7 @@ la CI du dépôt les vérifie, les publie sur le site et les joint aux releases,
 fontmake, ttfautohint et Font Bakery). Pour une nouvelle version : mettre la version voulue dans
 `sources/Griffonne-Regular.ufo/fontinfo.plist` (`versionMajor`, `versionMinor`, ex. 1.1.0 → 1 et 100), relancer
 la chaîne ci-dessous depuis ce dossier, puis committer les nouveaux fichiers de `fonts/` avec la release PR.
-`python tools/fonts.py check griffonne` signale un écart entre la version de `font.json` et celle des fichiers.
+`python tools/polices.py verifier griffonne` signale un écart entre la version de `police.json` et celle des fichiers.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate   # PowerShell : .venv\Scripts\Activate.ps1
