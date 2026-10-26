@@ -1,0 +1,17 @@
+# --- Python ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# --- Generated ---
+fonts/*/dist/
+_site/
+release/
+
+# --- Editors / OS ---
+/.vscode/
+.idea
+.DS_Store
+Thumbs.db
+*.sw?

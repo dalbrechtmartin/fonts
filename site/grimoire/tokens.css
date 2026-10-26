@@ -1,0 +1,100 @@
+/* Copie de Portfolio/grimoire/tokens.css (design system Grimoire), sans les @font-face : le site déclare Sorcelle dans site.css. */
+/* Grimoire — generated from tokens.json */
+:root, [data-theme="light"] {
+  --bg: #f1e9d8;
+  --surface: #fbf6ea;
+  --surface-sunken: #e6dcc6;
+  --ink: #1d1822;
+  --muted: #5a4f5f;
+  --outline: #7a6b80;
+  --primary: #6b3fb5;
+  --primary-soft: #e5dbf3;
+  --on-primary: #fbf6ea;
+  --gold: #8a5a00;
+  --teal: #0c6b64;
+  --danger: #a8174f;
+  --focus: var(--gold);
+  --shadow-ink: #1d1822;
+  --glow: rgba(138, 90, 0, 0);
+  --flame: #c2410c;
+  --bat: var(--ink);
+  --leather: #3d2a5c;
+  --gilding: #d4a03a;
+  --page: #fbf6ea;
+  --on-page: #1d1822;
+  --shadow-raised: 6px 6px 0 0 #1d1822;
+}
+[data-theme="dark"] {
+  --bg: #17141c;
+  --surface: #221d29;
+  --surface-sunken: #100e14;
+  --ink: #ece4d8;
+  --muted: #b3a9b8;
+  --outline: #7d6f8c;
+  --primary: #b99af5;
+  --primary-soft: #2f2640;
+  --on-primary: #17141c;
+  --gold: #e3b04b;
+  --teal: #5fd0c4;
+  --danger: #ff7fa0;
+  --focus: var(--gold);
+  --shadow-ink: #050407;
+  --glow: rgba(227, 176, 75, 0.20);
+  --flame: #ffb347;
+  --bat: var(--outline);
+  --leather: #4b3570;
+  --gilding: #e3b04b;
+  --page: #e8dcc0;
+  --on-page: #1d1822;
+  --shadow-raised: 6px 6px 0 0 #050407;
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-none: 0;
+  --step: 4px;
+  --focus-width: 3px;
+  --duration-fast: 120ms;
+  --duration-base: 240ms;
+  --duration-slow: 400ms;
+  --duration-exit: 160ms;
+  --stagger: 40ms;
+  --duration-bats: 2400ms;
+  --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-move: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-step: steps(2, end);
+  --font-display: "Sorcelle", "Alegreya", Georgia, serif;
+  --font-ui: "Alegreya Sans SC", "Alegreya Sans", system-ui, sans-serif;
+  --font-body: "Alegreya", Georgia, "Times New Roman", serif;
+  --font-mono: "Atkinson Hyperlegible Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
+  --font-readable: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --text-display-xl: 400 5.375rem/5.375rem var(--font-display);
+  --text-display-l: 400 2.6875rem/3rem var(--font-display);
+  --text-display-l-bold: 700 2.6875rem/3rem var(--font-display);
+  --text-ui-l: 700 1.5rem/2rem var(--font-ui);
+  --text-ui-m: 500 1.25rem/1.5rem var(--font-ui);
+  --text-ui-label: 500 1.125rem/1.25rem var(--font-ui);
+  --text-body-l: 400 1.375rem/2.125rem var(--font-body);
+  --text-body: 400 1.25rem/2rem var(--font-body);
+  --text-body-s: 400 1.125rem/1.75rem var(--font-body);
+  --text-body-strong: 700 1.25rem/2rem var(--font-body);
+  --text-mono: 400 1rem/1.5rem var(--font-mono);
+}
+.display-xl { font-family: var(--font-display); font-size: 5.375rem; line-height: 5.375rem; font-weight: 400; }
+.display-l { font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 400; }
+.display-l-bold { font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 700; }
+.ui-l { font-family: var(--font-ui); font-size: 1.5rem; line-height: 2rem; font-weight: 700; }
+.ui-m { font-family: var(--font-ui); font-size: 1.25rem; line-height: 1.5rem; font-weight: 500; letter-spacing: 0.02em; }
+.ui-label { font-family: var(--font-ui); font-size: 1.125rem; line-height: 1.25rem; font-weight: 500; letter-spacing: 0.04em; }
+.body-l { font-family: var(--font-body); font-size: 1.375rem; line-height: 2.125rem; font-weight: 400; }
+.body { font-family: var(--font-body); font-size: 1.25rem; line-height: 2rem; font-weight: 400; }
+.body-s { font-family: var(--font-body); font-size: 1.125rem; line-height: 1.75rem; font-weight: 400; }
+.body-strong { font-family: var(--font-body); font-size: 1.25rem; line-height: 2rem; font-weight: 700; }
+.mono { font-family: var(--font-mono); font-size: 1rem; line-height: 1.5rem; font-weight: 400; }

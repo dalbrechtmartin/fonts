@@ -1,0 +1,91 @@
+/* Site de présentation des polices : surcharges et éléments propres, sur la base de Grimoire. */
+
+@font-face { font-family: "Sorcelle"; src: url("fonts/sorcelle/Sorcelle-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Sorcelle"; src: url("fonts/sorcelle/Sorcelle-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Sorcelle"; src: url("fonts/sorcelle/Sorcelle-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+
+body { min-height: 100vh; }
+.gr-main { grid-template-columns: minmax(0, 1fr); width: 100%; box-sizing: border-box; }
+a { color: var(--primary); text-underline-offset: 4px; }
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: var(--focus-width) solid var(--focus); outline-offset: 6px; }
+code { font-family: var(--font-mono); font-size: 0.9em; }
+h1, h2, h3 { text-wrap: balance; }
+
+.brand-star { margin-left: var(--space-2); color: var(--gold); }
+.gr-header .gr-nav { flex: 1 1 auto; }
+.gr-toggle { display: flex; align-items: center; gap: var(--space-3); }
+
+/* ---------- Accueil ---------- */
+.intro { display: grid; gap: var(--space-4); }
+.intro__lead { margin: 0; max-width: 40rem; font-size: 1.375rem; line-height: 2.125rem; }
+.intro .gr-meta { margin: 0; }
+.howto { align-self: start; }
+.howto__steps { margin: 0; padding-left: 1.5em; display: grid; gap: var(--space-2); font-size: 1.125rem; line-height: 1.75rem; }
+.howto__steps li::marker { font-family: var(--font-display); color: var(--gold); }
+
+.font-index { grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: var(--space-6); }
+.font-index .gr-tile__art { aspect-ratio: 16 / 9; font-size: 86px; line-height: 1; }
+
+/* ---------- Une police ---------- */
+.fonts { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-16); }
+.font { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-12); scroll-margin-top: var(--space-6); padding-top: var(--space-12); border-top: 6px double var(--gilding); }
+.font__head { display: grid; gap: var(--space-4); }
+.font__name { margin: 0; font-size: 43px; line-height: 1.1; font-weight: 400; overflow-wrap: anywhere; }
+.font__summary { margin: 0; max-width: 65ch; font-size: 1.375rem; line-height: 2.125rem; }
+.font__desc { margin: 0; max-width: 65ch; }
+.font__section-title { margin: 0 0 var(--space-4); font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 400; }
+.font__facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--space-1) var(--space-4); margin: 0; font-size: 1.125rem; line-height: 1.75rem; }
+.font__facts dt { font-family: var(--font-ui); font-weight: 700; color: var(--muted); }
+.font__facts dd { margin: 0; }
+.font__actions .gr-btn { text-decoration: none; }
+
+/* Banc d'essai : sur toute la largeur, le texte peut passer à la ligne */
+.tester { max-width: none; }
+.tester .font__section-title { margin-bottom: 0; }
+.tester__out { margin: 0; min-height: 1.2em; line-height: 1.15; overflow-wrap: anywhere; }
+
+/* Graisses */
+.weights { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-6); }
+.weights li { display: grid; gap: var(--space-1); }
+.weights__sample { font-size: 43px; line-height: 1.15; overflow-wrap: anywhere; }
+
+/* Glyphes : grille + loupe */
+.glyphs { display: grid; gap: var(--space-6); align-items: start; }
+.glyphs__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); border-top: 1px solid var(--outline); border-left: 1px solid var(--outline); }
+.glyph {
+  display: grid; place-items: center; aspect-ratio: 1; min-height: 44px; padding: 0;
+  font-family: inherit; font-size: 43px; line-height: 1; color: var(--ink); cursor: pointer;
+  background: var(--surface); border: 0; border-right: 1px solid var(--outline); border-bottom: 1px solid var(--outline);
+}
+.glyph:hover { background: var(--primary-soft); }
+.glyph[aria-selected="true"] { background: var(--primary-soft); box-shadow: inset 0 0 0 2px var(--primary); }
+.glyph:focus-visible { outline-offset: -3px; position: relative; z-index: 2; }
+.glyphs__zoom { position: sticky; top: var(--space-4); display: grid; justify-items: center; gap: var(--space-2); margin: 0; }
+.glyphs__big { font-size: 129px; line-height: 1.2; min-height: 1.2em; }
+.glyphs__zoom figcaption { font-family: var(--font-mono); font-size: 1rem; }
+
+/* Code CSS */
+.font__css .gr-code { max-width: 60rem; }
+
+/* Historique */
+.font__history .gr-accordion { max-width: 60rem; }
+.changes { display: grid; gap: var(--space-3); }
+.changes h5 { margin: 0; font-family: var(--font-ui); font-size: 1.25rem; line-height: 1.5rem; font-weight: 700; }
+.changes ul { margin: 0; padding-left: 1.25em; display: grid; gap: var(--space-1); font-size: 1.125rem; line-height: 1.75rem; }
+.changes ul li::marker { content: "✦  "; font-family: var(--font-display); color: var(--gold); }
+.changes p { margin: 0; }
+
+.ornament { margin: 0 0 var(--space-2); font-family: var(--font-display); font-size: 43px; line-height: 1; color: var(--gold); }
+.gr-footer p { margin: 0 0 var(--space-2); }
+
+@media (min-width: 48rem) {
+  .font__name { font-size: 86px; }
+}
+@media (max-width: 59.99rem) {
+  /* Écran étroit : la loupe passe au-dessus de la grille et reste visible pendant le défilement */
+  .glyphs__zoom { order: -1; top: 0; z-index: 3; grid-template-columns: auto auto; justify-content: center; align-items: center; gap: var(--space-6); padding-block: var(--space-2); }
+  .glyphs__big { font-size: 86px; }
+}
+@media (min-width: 60rem) {
+  .glyphs { grid-template-columns: minmax(0, 1fr) 14rem; }
+}
