@@ -9,7 +9,7 @@ Une police au pinceau où chaque lettre cache un chat : des oreilles sur les ham
 
 - **Version** 1.000 · **Licence** [SIL Open Font License 1.1](OFL.txt) · **Autrice** Danaé ALBRECHT--MARTIN
 - **8 langues** (couverture GF Latin Core, 319 caractères) : français, anglais, allemand, espagnol, polonais, tchèque, roumain, turc
-- **Spécimen** : `specimen/index.html` (thèmes clair et sombre, fonctions à essayer)
+- **Spécimen** : [en ligne](https://dalbrechtmartin.github.io/fonts/#griffonne), ou `specimen/index.html` (thèmes clair et sombre, fonctions à essayer)
 
 ## Ce qu’elle sait faire
 
@@ -26,8 +26,8 @@ Chiffres tabulaires par défaut (les colonnes de nombres s’alignent), capitale
 
 Télécharger l’archive `griffonne-<version>.zip` depuis les [versions du dépôt](https://github.com/dalbrechtmartin/fonts/releases?q=griffonne), puis :
 
-- **Ordinateur** : `fonts/otf/Griffonne-Regular.otf`, double-clic puis *Installer*.
-- **Windows, petites tailles à l’écran** : préférer `fonts/ttf/Griffonne-Regular.ttf` (hinté).
+- **Ordinateur** : `otf/Griffonne-Regular.otf`, double-clic puis *Installer*.
+- **Windows, petites tailles à l’écran** : préférer `ttf/Griffonne-Regular.ttf` (hinté).
 - **Web** :
 
 ```css
@@ -61,7 +61,7 @@ la chaîne ci-dessous depuis ce dossier, puis committer les nouveaux fichiers de
 `python tools/polices.py verifier griffonne` signale un écart entre la version de `police.json` et celle des fichiers.
 
 ```bash
-python -m venv .venv && source .venv/bin/activate   # PowerShell : .venv\Scripts\Activate.ps1
+python -m venv .venv && source .venv/Scripts/activate   # PowerShell : .venv\Scripts\Activate.ps1 ; macOS, Linux : .venv/bin/activate
 pip install -r requirements.txt
 # Dans cet ordre (le crénage dépend de l’espacement, les composés des deux) :
 python sources/generateur/generer.py sources/Griffonne-Regular.ufo
