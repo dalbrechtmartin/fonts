@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="sacute.alt2" format="2">
+  <advance width="513"/>
+  <outline>
+    <component base="s.alt2"/>
+    <component base="acutecomb" xOffset="256" yOffset="14"/>
+  </outline>
+</glyph>

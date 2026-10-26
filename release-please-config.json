@@ -15,6 +15,17 @@
           "jsonpath": "$.version"
         }
       ]
+    },
+    "fonts/griffonne": {
+      "component": "griffonne",
+      "package-name": "griffonne",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "font.json",
+          "jsonpath": "$.version"
+        }
+      ]
     }
   }
 }

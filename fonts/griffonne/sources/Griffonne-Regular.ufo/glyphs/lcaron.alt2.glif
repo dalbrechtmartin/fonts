@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="lcaron.alt2" format="2">
+  <advance width="325"/>
+  <outline>
+    <component base="l.alt2"/>
+    <component base="uni030C.alt" xOffset="237" yOffset="760"/>
+  </outline>
+</glyph>

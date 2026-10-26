@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="wcircumflex.alt1" format="2">
+  <advance width="864"/>
+  <outline>
+    <component base="w.alt1"/>
+    <component base="uni0302" xOffset="437"/>
+  </outline>
+</glyph>

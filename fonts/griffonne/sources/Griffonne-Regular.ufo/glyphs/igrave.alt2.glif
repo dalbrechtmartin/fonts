@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="igrave.alt2" format="2">
+  <advance width="248"/>
+  <outline>
+    <component base="dotlessi.alt2"/>
+    <component base="gravecomb.case" xOffset="123" yOffset="-171"/>
+  </outline>
+</glyph>

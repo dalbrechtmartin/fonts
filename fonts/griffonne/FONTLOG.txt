@@ -1,0 +1,36 @@
+FONTLOG pour Griffonne
+=====================
+
+Ce fichier décrit la police et l'historique de ses versions, comme le recommande l'OFL.
+
+## Description
+Police au pinceau irrégulier généré en code, où chaque lettre cache un chat (oreilles,
+yeux, queues), lisible dès 16 px ; chats complets avec moustaches via le jeu stylistique ss01.
+Voir documentation/specification.md.
+
+## Historique
+2026-10-26 (Danaé ALBRECHT--MARTIN) Griffonne 1.000
+- Première version publique : GF Latin Core (8 langues), calt, ss01 « Chats complets », case, zero
+- Contrôle : Font Bakery 0 échec ; spécimen 0 violation axe-core (documentation/qualite.md)
+
+2026-10-25 (Danaé ALBRECHT--MARTIN) Griffonne 0.1
+- Création du projet
+- Moteur de pinceau (texture B) ; n h m u r i j l ı ȷ o H O
+- Minuscules complètes : a b c d e g p q, s f t k v w x y z ; queue du l raccourcie
+- Niveau félin « marqué » par défaut : un élément de chat sur chaque lettre (oreilles agrandies, visages, queues)
+- a : oreilles sur le crochet, yeux dans le ventre ; e : oreilles seules (E2)
+- Capitales A–Z avec élément de chat sur chaque lettre (module capitales.py)
+- Chiffres tabulaires 0–9 et ponctuation de base, espace fine insécable : premier jalon atteint
+- Chiffres homogènes : mêmes oreilles pour tous
+- Diacritiques, œ æ Œ Æ et 145 accentuées composées : typographie française complète
+- Lettres spéciales ß ẞ ø Ø ł Ł đ Đ ð Ð þ Þ ħ Ħ ª º : toutes les lettres de GF_Latin_Core
+- Symboles : GF_Latin_Core couvert à 100 %
+- Espacement optique et crénage mesuré (400 paires de classes)
+- Métriques verticales 985 / −265 : rien ne dépasse, capitales centrées dans les boutons
+- Fonctions OpenType : calt (pinceau), ss01 « Chats complets », case, zero
+- Contrôle qualité final : contours sans segments nuls, spécimen à 0 violation axe-core et sans débordement à 320 px (documentation/qualite.md)
+
+## Contributions
+N: Danaé ALBRECHT--MARTIN
+W: contact@danaedev.fr
+D: Dessin original
