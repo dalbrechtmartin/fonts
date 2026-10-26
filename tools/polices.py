@@ -42,6 +42,8 @@ EXTENSIONS = ("otf", "ttf", "woff2")
 DOCUMENTS = ("OFL.txt", "OFL-FAQ.txt", "FONTLOG.txt", "AUTHORS.txt", "README.md", "CHANGELOG.md")
 # Couleurs des thèmes Parchemin et Crypte de Grimoire (fond, encre, texte secondaire)
 THEMES_APERCU = {"clair": ("#f1e9d8", "#1d1822", "#5a4f5f"), "sombre": ("#17141c", "#ece4d8", "#b3a9b8")}
+DORURE = "#d4a03a"  # gilding de Grimoire : filets décoratifs
+POLICE_DES_TITRES = "sorcelle"  # titres du site (Grimoire)
 
 
 # --- Lecture -------------------------------------------------------------------------------------
@@ -267,6 +269,8 @@ def site(sortie):
         })
         catalogue.append(fiche)
     prerendre_accueil(sortie / "index.html", catalogue)
+    image_partage(sortie / "partage.png", catalogue)
+    plan_du_site(sortie / "sitemap.xml", catalogue)
     (sortie / "polices.json").write_text(json.dumps({"depot": URL_DEPOT, "polices": catalogue},
                                                     ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"-> {sortie} ({len(catalogue)} police(s))")
@@ -293,6 +297,48 @@ def prerendre_accueil(page, catalogue):
             sys.exit(f"{page.name} : emplacement introuvable pour le pré-rendu : {vide}")
         texte = texte.replace(vide, plein)
     page.write_text(texte, encoding="utf-8")
+
+
+def image_partage(chemin, catalogue):
+    """Aperçu des liens partagés (Open Graph, 1200 × 630) : titre du site, puis le nom de chaque police dans sa police."""
+    fond, encre, discret = THEMES_APERCU["clair"]
+    image = Image.new("RGB", (1200, 630), fond)
+    dessin = ImageDraw.Draw(image)
+    # Double filet doré des cadres de Grimoire
+    for retrait, epaisseur in ((24, 4), (36, 2)):
+        dessin.rectangle((retrait, retrait, 1199 - retrait, 629 - retrait), outline=DORURE, width=epaisseur)
+    def fichier_regular(fiche):
+        police = charger(fiche["id"])
+        return str(fichier_graisse(police, police["graisses"][0], "ttf"))
+
+    titres = next((fiche for fiche in catalogue if fiche["id"] == POLICE_DES_TITRES), catalogue[0])
+    fichier_titres = fichier_regular(titres)
+    dessin.text((600, 230), "Mes polices", font=ImageFont.truetype(fichier_titres, 129), fill=encre, anchor="mm")
+    # Au plus trois noms, chacun dans sa police, séparés par une étoile
+    noms = [(fiche["nom"], ImageFont.truetype(fichier_regular(fiche), 64)) for fiche in catalogue[:3]]
+    separateur = ("  ✦  ", ImageFont.truetype(fichier_titres, 43))
+    morceaux = [morceau for nom in noms for morceau in (nom, separateur)][:-1]
+    largeurs = [dessin.textlength(texte, font=fonte) for texte, fonte in morceaux]
+    x = 600 - sum(largeurs) / 2
+    for (texte, fonte), largeur in zip(morceaux, largeurs, strict=True):
+        dessin.text((x, 400), texte, font=fonte, fill=DORURE if fonte is separateur[1] else encre, anchor="lm")
+        x += largeur
+    total = f"{len(catalogue)} police{'s' if len(catalogue) > 1 else ''} libre{'s' if len(catalogue) > 1 else ''} · licence OFL"
+    dessin.text((600, 520), total, font=ImageFont.truetype(fichier_titres, 43), fill=discret, anchor="mm")
+    image.save(chemin, optimize=True)
+
+
+def plan_du_site(chemin, catalogue):
+    """sitemap.xml : la page du site, datée de la dernière version publiée."""
+    dates = [version["date"] for police in catalogue for version in police["historique"] if version["date"]]
+    derniere = f"\n    <lastmod>{max(dates)}</lastmod>" if dates else ""
+    chemin.write_text(f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{URL_SITE}</loc>{derniere}
+  </url>
+</urlset>
+""", encoding="utf-8")
 
 
 # --- npm -----------------------------------------------------------------------------------------

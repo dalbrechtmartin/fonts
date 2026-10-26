@@ -5,19 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Polices de Danaé</title>
   <meta name="description" content="Les polices d'écriture que je dessine, libres sous licence OFL : essai en ligne, glyphes, téléchargement et historique des versions.">
-  <script>
-    // Réglages appliqués avant le premier rendu (thème, taille du texte, animations, police lisible)
-    (function () {
-      var reglages = {};
-      try { reglages = JSON.parse(localStorage.getItem('reglages')) || {}; } catch (erreur) {}
-      var racine = document.documentElement;
-      var sombre = reglages.theme ? reglages.theme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-      racine.setAttribute('data-theme', sombre ? 'dark' : 'light');
-      if (reglages.text && reglages.text !== 'm') racine.setAttribute('data-text', reglages.text);
-      if (reglages.motion) racine.setAttribute('data-motion', reglages.motion);
-      if (reglages.font) racine.setAttribute('data-font', 'lisible');
-    })();
-  </script>
+  <link rel="canonical" href="https://dalbrechtmartin.github.io/fonts/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dalbrechtmartin.github.io/fonts/">
+  <meta property="og:title" content="Polices de Danaé">
+  <meta property="og:description" content="Les polices d'écriture que je dessine, libres sous licence OFL : essai en ligne, glyphes, téléchargement et historique des versions.">
+  <meta property="og:image" content="https://dalbrechtmartin.github.io/fonts/partage.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="« Mes polices » en lettres pixel sur parchemin, dans un double cadre doré, suivi du nom de chaque police écrit dans sa propre police.">
+  <meta property="og:locale" content="fr_FR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f1e9d8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#17141c" media="(prefers-color-scheme: dark)">
+  <script src="reglages.js"></script>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -50,7 +50,7 @@ python -m venv .venv
 source .venv/Scripts/activate            # PowerShell : .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python tools/polices.py construire       # compile chaque police dans fonts/<id>/dist/
-python tools/polices.py site             # génère _site/ (polices.json, polices, feuilles CSS, zips)
+python tools/polices.py site             # génère _site/ (page pré-remplie, polices.json, polices, CSS, zips, image de partage, sitemap)
 python tools/polices.py npm sorcelle     # prépare le paquet npm dans npm/sorcelle/
 python -m http.server 8000 --directory _site
 ```
