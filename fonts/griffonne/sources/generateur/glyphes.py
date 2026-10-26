@@ -156,7 +156,7 @@ def moustaches(cx: float, cy: float, ecart: float) -> list[Trait]:
     return traits
 
 
-def visage(cx: float, rx: float = 205, hauteur_yeux: float = None) -> list[Trait]:
+def visage(cx: float, rx: float = 205, hauteur_yeux: float | None = None) -> list[Trait]:
     """Une panse devient une tête de chat : oreilles sur le haut, yeux dans la contreforme."""
     cy = METRIQUES["hauteur_x"] / 2
     hauteur_yeux = cy + 30 if hauteur_yeux is None else hauteur_yeux
@@ -500,7 +500,7 @@ def dessiner_k():
     return traits, chasse, ancres_sur(x + 140, m["ascendante"])
 
 
-def chevron(gauche: float, ecart: float, bas: float = None) -> list[Trait]:
+def chevron(gauche: float, ecart: float, bas: float | None = None) -> list[Trait]:
     """Deux coups de pinceau qui se rejoignent en bas (v, w)."""
     bas = bas_x() if bas is None else bas
     return [Trait([ligne((gauche, haut_x()), (gauche + ecart, bas))]),

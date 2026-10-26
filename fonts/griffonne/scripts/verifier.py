@@ -120,7 +120,7 @@ def lancer_fontbakery(fichiers: list[str], rapport: Rapport) -> None:
     sortie = Path("build") / "fontbakery.md"
     sortie.parent.mkdir(exist_ok=True)
     resultat = subprocess.run([sys.executable, "-m", "fontbakery", "check-universal", "--ghmarkdown", str(sortie), *fichiers],
-                              capture_output=True, text=True)
+                              capture_output=True, text=True, check=False)
     niveau = OK if resultat.returncode == 0 else ATTENTION
     rapport.ajouter(niveau, f"Font Bakery (check-universal) : rapport complet dans {sortie}")
 

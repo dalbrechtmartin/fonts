@@ -14,11 +14,11 @@ import extract
 import legibility
 
 VARIANTS = [
-    ("v0", "v0.1 actuelle", dict(stem=4, hair=2, filet=True, top="cut", foot="spur", bowl="octagon", chamfer=1.0)),
-    ("A", "A · Brisée lourde", dict(stem=5, hair=2, filet=False, top="flag", foot="diamond", bowl="octagon", chamfer=1.1)),
-    ("B", "B · Lombarde arrondie", dict(stem=5, hair=2, filet=False, top="curl", foot="slab", bowl="round", chamfer=1.0)),
-    ("C", "C · Lombarde à filet", dict(stem=5, hair=2, filet=True, top="curl", foot="slab", bowl="round", chamfer=1.0)),
-    ("D", "D · Pixel nette", dict(stem=4, hair=3, filet=False, top="flat", foot="slab", bowl="octagon", chamfer=0.6)),
+    ("v0", "v0.1 actuelle", {"stem": 4, "hair": 2, "filet": True, "top": "cut", "foot": "spur", "bowl": "octagon", "chamfer": 1.0}),
+    ("A", "A · Brisée lourde", {"stem": 5, "hair": 2, "filet": False, "top": "flag", "foot": "diamond", "bowl": "octagon", "chamfer": 1.1}),
+    ("B", "B · Lombarde arrondie", {"stem": 5, "hair": 2, "filet": False, "top": "curl", "foot": "slab", "bowl": "round", "chamfer": 1.0}),
+    ("C", "C · Lombarde à filet", {"stem": 5, "hair": 2, "filet": True, "top": "curl", "foot": "slab", "bowl": "round", "chamfer": 1.0}),
+    ("D", "D · Pixel nette", {"stem": 4, "hair": 3, "filet": False, "top": "flat", "foot": "slab", "bowl": "octagon", "chamfer": 0.6}),
 ]
 LINES = ["Danaé Albrecht--Martin", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Projets · Réseaux · Œuvres"]
 INK, MUTED, BG = (29, 24, 34), (90, 79, 95), (241, 233, 216)

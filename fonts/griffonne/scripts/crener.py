@@ -179,9 +179,9 @@ def main() -> None:
     classes = classes_de(police)
     police.groups.clear()
     police.kerning.clear()
-    for nom in set(g for g, _ in crenage):
+    for nom in {g for g, _ in crenage}:
         police.groups[f"public.kern1.{nom}"] = classes.get(nom, [nom])
-    for nom in set(d for _, d in crenage):
+    for nom in {d for _, d in crenage}:
         police.groups[f"public.kern2.{nom}"] = classes.get(nom, [nom])
     for (gauche, droite), valeur in crenage.items():
         police.kerning[(f"public.kern1.{gauche}", f"public.kern2.{droite}")] = valeur

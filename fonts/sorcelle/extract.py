@@ -15,8 +15,22 @@ from fontTools.pens.recordingPen import DecomposingRecordingPen
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageDraw, ImageFont
 
-from grid import (ASC_PX, CELL_H, CELL_W, CHARSET, COLS, GUIDE_BASE, GUIDE_CAP, GUIDE_LABEL,
-                  GUIDE_XH, LABEL_H, ORIGIN_X, PX, cell_origin)
+from grid import (
+    ASC_PX,
+    CELL_H,
+    CELL_W,
+    CHARSET,
+    COLS,
+    GUIDE_BASE,
+    GUIDE_CAP,
+    GUIDE_LABEL,
+    GUIDE_XH,
+    LABEL_H,
+    ORIGIN_X,
+    PX,
+    cell_origin,
+)
+
 
 def load_label_font(size=10):
     """Police des étiquettes : Arial sous Windows, DejaVu sous Linux, sinon celle de Pillow."""

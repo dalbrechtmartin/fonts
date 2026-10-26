@@ -105,7 +105,8 @@ def est_lettre(point_code: int | None) -> bool:
     return bool(point_code) and unicodedata.category(chr(point_code))[0] == "L"
 
 
-def ecrire(chemin_ufo: str, reglages: Reglages = Reglages()) -> None:
+def ecrire(chemin_ufo: str, reglages: Reglages | None = None) -> None:
+    reglages = reglages or Reglages()
     charger_glyphes()
     police = ufoLib2.Font.open(chemin_ufo)
     appliquer_metriques(police)

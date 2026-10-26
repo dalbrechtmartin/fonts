@@ -129,7 +129,7 @@ def analyser(fichier: Path) -> str:
         f"- Licence : {noms.getDebugName(13) or 'non renseignée'} {noms.getDebugName(14) or ''}",
         f"- Version : {noms.getDebugName(5)}",
         "",
-        "### Proportions (unités sur un cadratin de " f"{upm})",
+        f"### Proportions (unités sur un cadratin de {upm})",
         f"- Hauteur d'x : {hauteur_x} ; hauteur de capitale : {hauteur_capitale}",
         f"- Rapport hauteur d'x / capitale : {hauteur_x / hauteur_capitale:.2f}" if hauteur_capitale else "- Rapport non calculable",
         f"- Ascendante / descendante (typo) : {os2.sTypoAscender} / {os2.sTypoDescender}, interligne {os2.sTypoLineGap}",
@@ -147,7 +147,7 @@ def analyser(fichier: Path) -> str:
         f"- Fonctions : {', '.join(fonctions) or 'aucune'}",
         f"- Axes : {', '.join(axes) or 'police statique'}",
         "",
-        "### Risques de confusion (recouvrement des silhouettes, seuil " f"{SEUIL_CONFUSION:.0%})",
+        f"### Risques de confusion (recouvrement des silhouettes, seuil {SEUIL_CONFUSION:.0%})",
     ]
     for a, b in PAIRES_CONFUSABLES:
         if all(ord(c) in police.getBestCmap() for c in a + b):

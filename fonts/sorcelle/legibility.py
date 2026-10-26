@@ -40,7 +40,7 @@ def ocr(font_path, text):
         image_path = os.path.join(tmp_dir, "ocr.png")
         img.save(image_path)
         out = subprocess.run(["tesseract", image_path, "-", "--psm", "7", "-l", "eng"],
-                             capture_output=True, text=True).stdout.strip()
+                             capture_output=True, text=True, check=False).stdout.strip()
     return out
 
 

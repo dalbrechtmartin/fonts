@@ -39,7 +39,7 @@ def main() -> None:
     if manquants:
         raise SystemExit(f"Archive non préparée : fichiers manquants {', '.join(manquants)}")
     controle = subprocess.run([sys.executable, "scripts/verifier.py", *map(str, sorted(args.polices.glob("ttf/*.ttf")))],
-                              capture_output=True, text=True)
+                              capture_output=True, text=True, check=False)
     if controle.returncode != 0:
         raise SystemExit("Archive non préparée : verifier.py signale des erreurs.\n" + controle.stdout[-1500:])
 

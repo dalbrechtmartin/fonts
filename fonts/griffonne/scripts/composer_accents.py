@@ -72,9 +72,9 @@ def composer(police: ufoLib2.Font, point_code: int) -> str:
     hauteur_capitale = police.info.capHeight or 700
     ancre_haute = ancres(police[nom_base]).get("top", (0, 0))[1] >= hauteur_capitale
     est_capitale = unicodedata.category(chr(base_point_code)) == "Lu" or ancre_haute
-    if nom_base in BASES_SANS_POINT and BASES_SANS_POINT[nom_base] in police:
-        if any(ancre_de_diacritique(police, d, est_capitale) == "top" for d in diacritiques):
-            nom_base = BASES_SANS_POINT[nom_base]
+    if (nom_base in BASES_SANS_POINT and BASES_SANS_POINT[nom_base] in police
+            and any(ancre_de_diacritique(police, d, est_capitale) == "top" for d in diacritiques)):
+        nom_base = BASES_SANS_POINT[nom_base]
 
     composants = [Component(baseGlyph=nom_base)]
     ancres_courantes = dict(ancres(police[nom_base]))
