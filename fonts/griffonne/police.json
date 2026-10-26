@@ -7,7 +7,6 @@
   "description": "Griffonne est une police au pinceau générée en code : des oreilles sur les hampes, des yeux dans les panses, des queues aux terminaisons. Trois tracés alternent pour que deux lettres voisines ne soient jamais identiques. Lisible dès 16 px, féline dès le premier regard, elle couvre GF Latin Core (8 langues).",
   "dessin": "Danaé Albrecht--Martin",
   "licence": "OFL-1.1",
-  "nomReserve": "Griffonne",
   "etiquettes": ["pinceau", "chat", "affiches"],
   "graisses": [
     { "nom": "Regular", "poids": 400 }

@@ -43,7 +43,7 @@ Pour le texte courant, garder un interlignage d’au moins 1,5 et une taille d�
 
 ## Licence et mention
 
-Griffonne est libre : utilisation, modification et redistribution autorisées, y compris commercialement, sous [SIL Open Font License 1.1](OFL.txt). Le nom « Griffonne » est réservé : une version modifiée doit porter un autre nom.
+Griffonne est libre : utilisation, modification et redistribution autorisées, y compris commercialement, sous [SIL Open Font License 1.1](OFL.txt). Une version modifiée reste sous OFL et garde le copyright d’origine.
 
 La mention n’est pas obligatoire, mais elle fait toujours plaisir :
 

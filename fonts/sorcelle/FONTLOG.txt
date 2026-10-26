@@ -1,0 +1,34 @@
+FONTLOG pour Sorcelle
+=====================
+
+Ce fichier décrit la police et l'historique de ses versions, comme le recommande l'OFL.
+
+## Description
+Police pixel « lombarde arrondie » pour les titres, en trois graisses (Regular, SemiBold, Bold), nette à 43, 86 et
+129 px. Dérivée de Jacquard 24 (The Soft Type Project Authors, SIL OFL 1.1, sans nom réservé), entièrement
+redessinée. Couvre GF Latin Core. Voir README.md et documentation/.
+
+## Historique
+2026-10-26 (Danaé Albrecht--Martin) Sorcelle 1.000
+- GF Latin Core entier dans le style Sorcelle : 143 lettres accentuées, accents seuls et combinants, 28 symboles, Λ
+- Plus aucun dessin de Jacquard 24, sauf le § gardé volontairement
+- Fonction mark regénérée, crénage de Jacquard 24 retiré, espace fine insécable ajoutée
+- Contrôle : Font Bakery 0 échec, OCR 99,6 % / 99,1 % / 99,1 % (documentation/controle.md)
+
+2026-10-25 (Danaé Albrecht--Martin) Sorcelle 0.6
+- λ ; pont en losange sur les jointures diagonales
+
+2026-10-25 (Danaé Albrecht--Martin) Sorcelle 0.5
+- Un seul contour par forme
+
+2026-10-24 (Danaé Albrecht--Martin) Sorcelle 0.1 à 0.4
+- Capitales « lombarde arrondie », minuscules rondes, chiffres et ponctuation, ✦, trois graisses
+
+## Contributions
+N: Danaé Albrecht--Martin
+W: https://danaedev.fr
+D: Dessin de Sorcelle
+
+N: The Soft Type Project Authors
+W: https://github.com/scfried/soft-type-jacquard
+D: Jacquard 24, police d'origine
