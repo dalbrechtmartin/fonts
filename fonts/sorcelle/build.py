@@ -28,7 +28,8 @@ VERSION = META["version"]       # semver, ex. « 0.6.0 »
 
 
 def revision(version):
-    """« 0.6.1 » -> « 0.601 » : forme attendue par head.fontRevision et le nom « Version 0.601 »."""
+    """« 0.6.1 » -> « 0.601 » : forme attendue par head.fontRevision et le nom « Version 0.601 »
+    (même règle que font_revision dans tools/fonts.py)."""
     major, minor, patch = (int(p) for p in version.split("."))
     return f"{major}.{minor}{patch:02d}"
 

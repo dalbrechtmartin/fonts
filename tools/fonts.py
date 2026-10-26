@@ -63,6 +63,12 @@ def tag_name(meta):
     return f"{meta['id']}-v{meta['version']}"
 
 
+def font_revision(version):
+    """Semver -> révision OpenType (head.fontRevision, « Version 1.000 ») : 0.6.1 -> 0.601, 1.0.0 -> 1.000."""
+    major, minor, patch = (int(p) for p in version.split("."))
+    return f"{major}.{minor}{patch:02d}"
+
+
 # --- build ---------------------------------------------------------------------------------------
 
 def build(meta):
@@ -76,7 +82,7 @@ def build(meta):
         subprocess.run(cmd, cwd=meta["_dir"], check=True)
     else:
         prebuilt = meta["_dir"] / meta.get("prebuilt", "prebuilt")
-        for f in prebuilt.iterdir():
+        for f in prebuilt.rglob("*"):         # ex. fonts/otf, fonts/ttf, fonts/webfonts
             if f.suffix in (".ttf", ".otf", ".woff2"):
                 shutil.copy2(f, out / f.name)
         print(f"[{meta['id']}] fichiers copiés depuis {prebuilt.relative_to(ROOT)}")
@@ -126,9 +132,13 @@ def check(meta):
             missing = sorted({c for c in sample if not c.isspace() and ord(c) not in cmap})
             if missing:
                 errors.append(f"{f.name} : glyphes absents du spécimen : {' '.join(missing)}")
-            unique_id = font["name"].getDebugName(3) or ""
-            if meta["version"] not in unique_id:
-                warnings.append(f"{f.name} : version {meta['version']} absente du nom unique « {unique_id} »")
+            # Version écrite dans la police. Une police compilée par "build" la lit dans font.json : un écart
+            # est une erreur. Une police fournie compilée garde la sienne jusqu'à sa reconstruction.
+            expected = font_revision(meta["version"])
+            if f"{font['head'].fontRevision:.3f}" != f"{float(expected):.3f}":
+                (errors if "build" in meta else warnings).append(
+                    f"{f.name} : révision {font['head'].fontRevision:.3f} ≠ {expected} (version {meta['version']}),"
+                    f" à reconstruire")
     for w in warnings:
         print(f"[{fid}] attention : {w}")
     for e in errors:
@@ -146,11 +156,14 @@ def package(meta, out):
     archive = out / f"{stem}.zip"
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as z:
         for style in meta["styles"]:
-            for ext in ("ttf", "woff2"):
+            for ext in ("otf", "ttf", "woff2"):
                 f = style_file(meta, style, ext)
+                if ext == "otf" and not f.exists():
+                    continue
                 z.write(f, f"{stem}/{ext}/{f.name}")
-        for name in ("OFL.txt", "README.md", "CHANGELOG.md"):
-            z.write(meta["_dir"] / name, f"{stem}/{name}")
+        for name in ("OFL.txt", "OFL-FAQ.txt", "FONTLOG.txt", "AUTHORS.txt", "README.md", "CHANGELOG.md"):
+            if (meta["_dir"] / name).exists():
+                z.write(meta["_dir"] / name, f"{stem}/{name}")
     print(f"-> {archive.relative_to(ROOT) if archive.is_relative_to(ROOT) else archive}")
     return archive
 

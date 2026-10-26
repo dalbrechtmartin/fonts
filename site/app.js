@@ -108,6 +108,7 @@
     fact('Graisses', font.styles.map(function (s) { return s.name + ' (' + s.weight + ')'; }).join(', '));
     fact('Glyphes', String(Array.from(font.glyphs).length));
     fact('Licence', LICENSES[font.license] || font.license);
+    if (font.reservedName) fact('Nom réservé', '« ' + font.reservedName + ' » : une version modifiée doit changer de nom');
     if (font.changelog.length) fact('Mise à jour', dateFr(font.changelog[0].date));
     if (font.usage) fact('Usage', font.usage);
 
@@ -136,7 +137,27 @@
     // Sur un écran étroit, on part de la plus petite taille nette (ou de la moitié) pour garder des mots entiers
     if (window.matchMedia('(max-width: 40rem)').matches) size.value = crisp[0] || Math.max(size.min, Math.round(size.value / 2));
     out.style.fontFamily = family(font);
+
+    // Fonctions OpenType : une case par fonction déclarée dans font.json, cochée si active par défaut
+    var featureBoxes = (font.features || []).map(function (f) {
+      var label = el('label', { 'class': 'gr-check' });
+      var box = el('input', { 'class': 'gr-check__input', type: 'checkbox', value: f.tag });
+      box.checked = !!f['default'];
+      label.appendChild(box);
+      label.insertAdjacentHTML('beforeend', '<span class="gr-check__box" aria-hidden="true"><svg class="gr-check__icon" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span class="gr-check__spark">✦</span></span>');
+      label.appendChild(el('span', { 'class': 'gr-check__label' }, f.label + ' (' + f.tag + ')'));
+      q(tester, '[data-features]').appendChild(label);
+      box.addEventListener('change', renderTester);
+      return box;
+    });
+    if (featureBoxes.length) q(tester, '[data-features]').hidden = false;
+    function featureSettings() {
+      // Chaque fonction est écrite explicitement : décocher calt doit bien le couper
+      return featureBoxes.map(function (b) { return '"' + b.value + '" ' + (b.checked ? 1 : 0); }).join(', ') || 'normal';
+    }
+
     function renderTester() {
+      out.style.fontFeatureSettings = featureSettings();
       var isCrisp = crisp.indexOf(size.value) !== -1;
       out.textContent = text.value.trim() || 'Tape un texte';
       out.style.fontWeight = weight.value;
