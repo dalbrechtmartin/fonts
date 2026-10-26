@@ -32,7 +32,7 @@ SIZE = 43 * 3
 
 def ocr(font_path, text):
     font = ImageFont.truetype(font_path, SIZE)
-    left, top, right, bottom = font.getbbox(text)
+    _, _, right, bottom = font.getbbox(text)
     img = Image.new("L", (right + 80, bottom + 80), 255)
     ImageDraw.Draw(img).text((40, 40), text, font=font, fill=0)
     # Dossier temporaire plutôt que NamedTemporaryFile : sous Windows, un fichier encore ouvert ne peut pas être réécrit

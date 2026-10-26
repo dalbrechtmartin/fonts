@@ -3,7 +3,6 @@
 Usage : python variants.py sources/Jacquard24-Regular.ttf variantes/
 """
 import os
-import shutil
 import sys
 
 from PIL import Image, ImageDraw, ImageFont
