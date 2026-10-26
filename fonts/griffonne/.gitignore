@@ -1,0 +1,5 @@
+# Fichiers de travail de la chaîne de build Griffonne (fontmake, preparer_publication.py)
+master_ufo/
+instance_ufo/
+build/
+.cache/

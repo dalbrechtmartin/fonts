@@ -1,0 +1,31 @@
+{
+  "id": "griffonne",
+  "name": "Griffonne",
+  "version": "1.0.0",
+  "status": "stable",
+  "summary": "Pinceau irrégulier où chaque lettre cache un chat.",
+  "description": "Griffonne est une police au pinceau générée en code : des oreilles sur les hampes, des yeux dans les panses, des queues aux terminaisons. Trois tracés alternent pour que deux lettres voisines ne soient jamais identiques. Lisible dès 16 px, féline dès le premier regard, elle couvre GF Latin Core (8 langues).",
+  "designer": "Danaé Albrecht--Martin",
+  "license": "OFL-1.1",
+  "reservedName": "Griffonne",
+  "tags": ["pinceau", "chat", "affiches"],
+  "styles": [
+    { "name": "Regular", "weight": 400 }
+  ],
+  "prebuilt": "fonts",
+  "features": [
+    { "tag": "calt", "label": "Pinceau (3 tracés qui alternent)", "default": true },
+    { "tag": "ss01", "label": "Chats complets (moustaches)" },
+    { "tag": "case", "label": "Signes centrés sur les capitales" },
+    { "tag": "zero", "label": "Zéro barré" }
+  ],
+  "specimen": {
+    "headline": "Griffonne",
+    "sample": "L’été, la petite chatte grimpe au balcon !",
+    "minSize": 16,
+    "maxSize": 160,
+    "defaultSize": 72,
+    "crispSizes": []
+  },
+  "usage": "Texte dès 16 px avec un interlignage d’au moins 1,5 ; chats complets (ss01) pour les titres dès 32 px."
+}
