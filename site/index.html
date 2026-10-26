@@ -55,7 +55,7 @@
               <ol class="aide__etapes">
                 <li><strong>Télécharger</strong> le zip de la police, par exemple <code>griffonne-1.0.0.zip</code>.</li>
                 <li><strong>Sur un ordinateur</strong> : installer le fichier <code>.otf</code> ou <code>.ttf</code> (double-clic, puis Installer).</li>
-                <li><strong>Sur un site</strong> : servir le fichier <code>.woff2</code> avec le code CSS donné sous chaque police.</li>
+                <li><strong>Sur un site</strong> : coller le CSS donné sous chaque police, sans rien héberger, ou installer son paquet npm. Pour héberger soi-même, le dossier <code>woff2</code> du zip contient aussi les feuilles CSS.</li>
                 <li><strong>Licence OFL</strong> : utilisation libre, même commerciale ; la police ne se vend pas seule et garde ses crédits.</li>
               </ol>
             </div>
@@ -178,6 +178,7 @@
 
       <section>
         <h3 class="police__titre-section">Sur un site</h3>
+        <p class="police__npm">Avec npm : <code data-npm></code>, puis importer le paquet comme une feuille CSS.</p>
         <figure class="gr-code police__css">
           <figcaption class="gr-code__head">
             <span class="gr-code__title"><svg class="gr-icon" aria-hidden="true"><use href="icones.svg#fichier-code"/></svg><span class="gr-code__name">polices.css</span></span>

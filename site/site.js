@@ -308,11 +308,12 @@
   }
 
   function remplirCss(article, police) {
-    var nomFichier = police.nom.replace(/\s+/g, '');
-    var css = police.graisses.map(function (graisse) {
-      return '@font-face {\n  font-family: "' + police.nom + '";\n  src: url("fonts/' + nomFichier + '-' + graisse.nom +
-        '.woff2") format("woff2");\n  font-weight: ' + graisse.poids + ';\n  font-style: normal;\n  font-display: swap;\n}';
-    }).join('\n') + '\n\nh1, h2, h3 {\n  font-family: "' + police.nom + '", Georgia, serif;\n}';
+    var feuille = new URL(police.css, location.href).href;
+    var feuilles = police.graisses.map(function (graisse) { return graisse.poids + '.css'; });
+    var css = (feuilles.length > 1 ? '/* Une seule graisse : remplacer index.css par ' +
+      feuilles.slice(0, -1).join(', ') + ' ou ' + feuilles[feuilles.length - 1] + ' */\n' : '') +
+      '@import url("' + feuille + '");\n\nh1, h2, h3 {\n  font-family: "' + police.nom + '", Georgia, serif;\n}';
+    trouver(article, '[data-npm]').textContent = 'npm i ' + police.npm;
     trouver(article, '[data-css]').textContent = css;
     var copier = trouver(article, '[data-copier]');
     var libelle = trouver(copier, '.gr-code__action-text');

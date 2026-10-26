@@ -21,11 +21,15 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-  # Un job par police publiée : la compiler à sa nouvelle version et joindre son zip à la release
+  # Un job par police publiée : la compiler à sa nouvelle version, joindre son zip à la release et la publier sur npm
   assets:
     needs: release-please
     if: needs.release-please.outputs.releases_created == 'true' && needs.release-please.outputs.paths_released != '[]'
     runs-on: ubuntu-latest
+    # id-token : jeton OIDC du trusted publishing npm (provenance générée par npm), sans secret
+    permissions:
+      contents: write
+      id-token: write
     strategy:
       matrix:
         path: ${{ fromJSON(needs.release-please.outputs.paths_released) }}
@@ -50,3 +54,16 @@ jobs:
           python tools/polices.py verifier "$id_police"
           python tools/polices.py empaqueter "$id_police" --sortie release
           gh release upload "$(python tools/polices.py tag "$id_police")" release/*.zip --clobber
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Publier le paquet npm de la police
+        env:
+          CHEMIN_POLICE: ${{ matrix.path }}
+        run: |
+          id_police="$(basename "$CHEMIN_POLICE")"
+          python tools/polices.py npm "$id_police"
+          npm publish "./npm/$id_police" --access public

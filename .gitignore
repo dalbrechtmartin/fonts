@@ -8,6 +8,7 @@ __pycache__/
 fonts/*/dist/
 _site/
 release/
+npm/
 
 # --- Editors / OS ---
 /.vscode/
