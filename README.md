@@ -6,7 +6,7 @@ Les polices d'écriture que je dessine : sources, versions, changelog et spécim
 
 | Police | Style | Licence |
 | --- | --- | --- |
-| [Griffonne](fonts/griffonne/) | Pinceau irrégulier où chaque lettre cache un chat ; GF Latin Core, `calt` `ss01` `case` `zero` | OFL 1.1, nom réservé « Griffonne » |
+| [Griffonne](fonts/griffonne/) | Pinceau irrégulier où chaque lettre cache un chat ; GF Latin Core, `calt` `ss01` `case` `zero` | OFL 1.1 |
 | [Sorcelle](fonts/sorcelle/) | Pixel « lombarde arrondie », 3 graisses, GF Latin Core, pour les titres | OFL 1.1 |
 
 <picture>

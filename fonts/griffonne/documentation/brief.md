@@ -25,7 +25,7 @@ Regular pour le premier jalon ; version sans texture possible comme style « Tex
 Trait pinceau généré en code (graine fixe, alternances `calt`).
 
 ## Diffusion et licence
-OFL 1.1, nom réservé « Griffonne ». Copyright : Danaé ALBRECHT--MARTIN (contact@danaedev.fr).
+OFL 1.1, sans nom réservé. Copyright : Danaé ALBRECHT--MARTIN (contact@danaedev.fr).
 
 ## Premier jalon
 A–Z, a–z, 0–9, ponctuation de base, version lisible. Ensuite : diacritiques et accents, `ss01`, `calt`.
