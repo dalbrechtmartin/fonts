@@ -9,6 +9,7 @@ versions, changelog et un site de présentation.
 
 | Police | Version | Style | Licence |
 | --- | --- | --- | --- |
+| [Griffonne](fonts/griffonne/) | voir [`CHANGELOG`](fonts/griffonne/CHANGELOG.md) | Pinceau irrégulier où chaque lettre cache un chat, GF Latin Core, `calt` `ss01` `case` `zero` | OFL 1.1, nom réservé « Griffonne » |
 | [Sorcelle](fonts/sorcelle/) | voir [`CHANGELOG`](fonts/sorcelle/CHANGELOG.md) | Pixel « lombarde arrondie », 3 graisses, pour les titres | OFL 1.1 |
 
 Chaque version publiée a son zip (TTF + WOFF2 + licence + changelog) dans les
@@ -90,8 +91,8 @@ Crée `fonts/<id>/` (font.json, CHANGELOG, README, OFL.txt) et la déclare à re
 (non publiée, absente du site). Ensuite :
 
 1. Remplir `font.json` (résumé, graisses, spécimen) et la ligne Copyright de `OFL.txt`.
-2. Soit mettre les `.ttf` et `.woff2` déjà compilés dans `fonts/<id>/prebuilt/`
-   (nommés `<Nom sans espaces>-<Graisse>.ttf`), soit ajouter une commande `"build"` à `font.json`
+2. Soit mettre les `.ttf`, `.woff2` (et `.otf`) déjà compilés dans `fonts/<id>/prebuilt/`, sous-dossiers acceptés
+   (nommés `<Nom sans espaces>-<Graisse>.ttf`, voir Griffonne), soit ajouter une commande `"build"` à `font.json`
    (`{dist}` = dossier de sortie, voir Sorcelle).
 3. `python tools/fonts.py build <id> && python tools/fonts.py check <id>`
 4. Committer avec `feat(<id>): première version` : la release PR proposera la 0.1.0.
