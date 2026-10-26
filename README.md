@@ -22,6 +22,27 @@ Les polices d'écriture que je dessine : sources, versions, changelog et spécim
 Chaque version publiée a son zip (TTF, WOFF2, OTF quand la police en a un, licence, changelog) dans les
 [releases](https://github.com/dalbrechtmartin/fonts/releases).
 
+## Utiliser une police sur un site
+
+Chaque police a un `index.css` (toutes les graisses) et une feuille par graisse (`400.css`, `700.css`…).
+
+- Sans rien installer, depuis GitHub Pages :
+
+  ```css
+  @import url("https://dalbrechtmartin.github.io/fonts/fonts/sorcelle/index.css");
+  ```
+
+- Avec npm (paquets `@danaedev/<id>`) :
+
+  ```bash
+  npm i @danaedev/sorcelle
+  ```
+
+  ```js
+  import "@danaedev/sorcelle";          // toutes les graisses
+  import "@danaedev/sorcelle/700.css";  // seulement Bold
+  ```
+
 ## Lancer en local
 
 ```bash
@@ -29,7 +50,8 @@ python -m venv .venv
 source .venv/Scripts/activate            # PowerShell : .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python tools/polices.py construire       # compile chaque police dans fonts/<id>/dist/
-python tools/polices.py site             # génère _site/ (polices.json, polices, zips)
+python tools/polices.py site             # génère _site/ (polices.json, polices, feuilles CSS, zips)
+python tools/polices.py npm sorcelle     # prépare le paquet npm dans npm/sorcelle/
 python -m http.server 8000 --directory _site
 ```
 
@@ -88,6 +110,21 @@ Crée `fonts/<id>/` (police.json, CHANGELOG, README, OFL.txt) et la déclare à 
 absente du site. La commande affiche ensuite les étapes : compléter `police.json`, ajouter les fichiers compilés
 dans `compilees/` (ou une commande `construction`), vérifier, puis committer `feat(<id>): première version`.
 
+### Publier une police sur npm pour la première fois
+
+npm ne permet de déclarer la publication depuis GitHub Actions (trusted publishing) que pour un paquet qui existe déjà :
+
+1. avoir le scope `@danaedev` sur npmjs.com (compte ou organisation `danaedev`) ;
+2. publier la première version à la main :
+
+   ```bash
+   python tools/polices.py npm <id>
+   npm publish ./npm/<id> --access public
+   ```
+
+3. sur npmjs.com, dans *Settings* du paquet, ajouter le *Trusted Publisher* GitHub Actions : dépôt
+   `dalbrechtmartin/fonts`, workflow `release-please.yml`. Les versions suivantes partent ensuite avec la release.
+
 Les images du README d'une police se régénèrent avec `python tools/polices.py apercus <id>`.
 
 ### Dépendances
@@ -98,7 +135,7 @@ Dependabot propose chaque semaine, sur `develop`, les mises à jour pip et GitHu
 
 ```
 fonts/<id>/        une police : police.json, CHANGELOG.md, OFL.txt, README.md, sources et scripts
-tools/polices.py   construire, vérifier, empaqueter, site, aperçus, nouvelle police
+tools/polices.py   construire, vérifier, empaqueter, site, paquet npm, aperçus, nouvelle police
 site/              page de présentation (lit polices.json), habillée avec le design system Grimoire
 ```
 

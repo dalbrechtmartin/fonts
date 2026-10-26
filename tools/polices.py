@@ -6,6 +6,7 @@ Usage (depuis la racine du dépôt) :
   python tools/polices.py verifier [id ...]
   python tools/polices.py empaqueter <id> [--sortie dossier]
   python tools/polices.py site [--sortie _site]
+  python tools/polices.py npm <id> [--sortie npm]
   python tools/polices.py apercus [id ...]
   python tools/polices.py tag <id>
   python tools/polices.py nouvelle <id> "<Nom>"
@@ -30,6 +31,9 @@ SITE = RACINE / "site"
 CONFIG_RELEASE = RACINE / "release-please-config.json"
 MANIFESTE_RELEASE = RACINE / ".release-please-manifest.json"
 URL_DEPOT = "https://github.com/dalbrechtmartin/fonts"
+URL_SITE = "https://dalbrechtmartin.github.io/fonts/"
+PORTEE_NPM = "@danaedev"
+AUTRICE = "Danaé Albrecht--Martin (https://danaedev.fr)"
 NON_PUBLIEE = "0.0.0"
 CLES_OBLIGATOIRES = ("id", "nom", "version", "resume", "dessin", "licence", "graisses", "specimen")
 EXTENSIONS = ("otf", "ttf", "woff2")
@@ -69,6 +73,29 @@ def revision_opentype(version):
     """Semver -> révision OpenType (head.fontRevision, « Version 1.000 ») : 0.6.1 -> 0.601, 1.0.0 -> 1.000."""
     majeure, mineure, correctif = (int(partie) for partie in version.split("."))
     return f"{majeure}.{mineure}{correctif:02d}"
+
+
+def nom_npm(police):
+    return f"{PORTEE_NPM}/{police['id']}"
+
+
+def feuilles_css(police):
+    """{fichier: CSS} : une feuille par graisse (400.css, 700.css…) et index.css avec toutes, .woff2 à côté."""
+    blocs = {}
+    for graisse in police["graisses"]:
+        blocs[f"{graisse['poids']}.css"] = (
+            f'@font-face {{\n  font-family: "{police["nom"]}";\n'
+            f'  src: url("{fichier_graisse(police, graisse, "woff2").name}") format("woff2");\n'
+            f'  font-weight: {graisse["poids"]};\n  font-style: normal;\n  font-display: swap;\n}}\n')
+    return {"index.css": "\n".join(blocs.values()), **blocs}
+
+
+def ecrire_webfonts(police, dossier):
+    """Copie les .woff2 et écrit leurs feuilles CSS dans dossier (site et paquet npm)."""
+    for graisse in police["graisses"]:
+        shutil.copy2(fichier_graisse(police, graisse, "woff2"), dossier)
+    for nom, css in feuilles_css(police).items():
+        (dossier / nom).write_text(css, encoding="utf-8")
 
 
 # --- construire ----------------------------------------------------------------------------------
@@ -161,6 +188,9 @@ def empaqueter(police, sortie):
                 fichier = fichier_graisse(police, graisse, extension)
                 if fichier.exists():
                     zip_police.write(fichier, f"{racine_archive}/{extension}/{fichier.name}")
+        # Feuilles prêtes à servir avec les .woff2
+        for nom, css in feuilles_css(police).items():
+            zip_police.writestr(f"{racine_archive}/woff2/{nom}", css)
         for document in DOCUMENTS:
             if (police["_dossier"] / document).exists():
                 zip_police.write(police["_dossier"] / document, f"{racine_archive}/{document}")
@@ -209,11 +239,9 @@ def site(sortie):
             continue
         dossier_web = sortie / "fonts" / id_police
         dossier_web.mkdir(parents=True)
-        graisses = []
-        for graisse in police["graisses"]:
-            woff2 = fichier_graisse(police, graisse, "woff2")
-            shutil.copy2(woff2, dossier_web / woff2.name)
-            graisses.append({**graisse, "woff2": f"fonts/{id_police}/{woff2.name}"})
+        ecrire_webfonts(police, dossier_web)
+        graisses = [{**graisse, "woff2": f"fonts/{id_police}/{fichier_graisse(police, graisse, 'woff2').name}"}
+                    for graisse in police["graisses"]]
         archive = empaqueter(police, sortie / "downloads")
         fiche = {cle: valeur for cle, valeur in police.items()
                  if not cle.startswith("_") and cle not in ("construction", "compilees")}
@@ -222,12 +250,82 @@ def site(sortie):
             "glyphes": glyphes(police),
             "historique": historique(police),
             "telechargement": f"downloads/{archive.name}",
+            "css": f"fonts/{id_police}/index.css",
+            "npm": nom_npm(police),
             "sources": f"{URL_DEPOT}/tree/main/fonts/{id_police}",
         })
         catalogue.append(fiche)
     (sortie / "polices.json").write_text(json.dumps({"depot": URL_DEPOT, "polices": catalogue},
                                                     ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"-> {sortie} ({len(catalogue)} police(s))")
+
+
+# --- npm -----------------------------------------------------------------------------------------
+
+def paquet_npm(police, sortie):
+    """Dossier prêt pour `npm publish` : feuilles CSS, .woff2, licence, changelog, README et package.json."""
+    dossier = sortie / police["id"]
+    if dossier.exists():
+        shutil.rmtree(dossier)
+    dossier.mkdir(parents=True)
+    ecrire_webfonts(police, dossier)
+    for document in ("OFL.txt", "CHANGELOG.md"):
+        shutil.copy2(police["_dossier"] / document, dossier)
+    nom = nom_npm(police)
+    paquet = {
+        "name": nom,
+        "version": police["version"],
+        "description": police["resume"],
+        "keywords": ["font", "webfont", "font-face", "woff2", *police.get("etiquettes", [])],
+        "homepage": URL_SITE,
+        "bugs": f"{URL_DEPOT}/issues",
+        "repository": {"type": "git", "url": f"git+{URL_DEPOT}.git", "directory": f"fonts/{police['id']}"},
+        "license": police["licence"],
+        "author": AUTRICE,
+        "style": "index.css",
+        "exports": {".": "./index.css", "./*.css": "./*.css", "./*.woff2": "./*.woff2",
+                    "./package.json": "./package.json"},
+        "sideEffects": ["*.css"],
+        "files": ["*.css", "*.woff2", "OFL.txt", "CHANGELOG.md"],
+    }
+    (dossier / "package.json").write_text(json.dumps(paquet, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    graisses = "\n".join(f"| {graisse['nom']} | {graisse['poids']} | `{nom}/{graisse['poids']}.css` |"
+                         for graisse in police["graisses"])
+    (dossier / "README.md").write_text(f"""# {police["nom"]}
+
+{police["resume"]} Licence OFL 1.1, par {AUTRICE.split(" (")[0]}.
+
+[Essai, glyphes et spécimen]({URL_SITE}) · [Sources]({URL_DEPOT}/tree/main/fonts/{police["id"]})
+
+## Installer
+
+```bash
+npm i {nom}
+```
+
+## Utiliser
+
+```js
+import "{nom}";            // toutes les graisses
+import "{nom}/{police["graisses"][-1]["poids"]}.css";  // une seule
+```
+
+```css
+h1 {{
+  font-family: "{police["nom"]}", Georgia, serif;
+}}
+```
+
+Sans bundler : `@import url("https://cdn.jsdelivr.net/npm/{nom}@{police["version"]}/index.css");`
+
+| Graisse | Poids | Feuille |
+| --- | --- | --- |
+{graisses}
+
+{police.get("usage", "")}
+""", encoding="utf-8")
+    print(f"-> {dossier.relative_to(RACINE) if dossier.is_relative_to(RACINE) else dossier}")
+    return dossier
 
 
 # --- apercus -------------------------------------------------------------------------------------
@@ -314,6 +412,9 @@ def main():
     commande_empaqueter.add_argument("id")
     commande_empaqueter.add_argument("--sortie", type=Path, default=RACINE / "release")
     commandes.add_parser("site").add_argument("--sortie", type=Path, default=RACINE / "_site")
+    commande_npm = commandes.add_parser("npm")
+    commande_npm.add_argument("id")
+    commande_npm.add_argument("--sortie", type=Path, default=RACINE / "npm")
     commandes.add_parser("tag").add_argument("id")
     commande_nouvelle = commandes.add_parser("nouvelle")
     commande_nouvelle.add_argument("id")
@@ -334,6 +435,8 @@ def main():
         empaqueter(charger(arguments.id), arguments.sortie.resolve())
     elif arguments.commande == "site":
         site(arguments.sortie.resolve())
+    elif arguments.commande == "npm":
+        paquet_npm(charger(arguments.id), arguments.sortie.resolve())
     elif arguments.commande == "apercus":
         for id_police in arguments.ids or tous_les_id():
             apercus(charger(id_police))
