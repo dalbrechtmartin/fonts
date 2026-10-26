@@ -7,7 +7,7 @@ Usage : python build.py sources/Jacquard24-Regular.ttf planche.png dist/
 - Sortie : trois graisses (Regular 400, SemiBold 600, Bold 700) en TTF et WOFF2, sous licence OFL 1.1.
 - Les graisses s'obtiennent en épaississant chaque pixel vers la droite (1 px pour SemiBold, 2 px pour Bold),
   la chasse grandit d'autant : les approches et les contreformes restent lisibles.
-- La version vient de font.json (mise à jour par release-please à chaque version publiée).
+- La version vient de police.json (mise à jour par release-please à chaque version publiée).
 """
 import json
 import os
@@ -21,15 +21,15 @@ from PIL import Image
 from grid import CELL_W, CHARSET, ORIGIN_X, PX, cell_origin, ASC_PX, DESC_PX
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(HERE, "font.json"), encoding="utf-8") as fh:
+with open(os.path.join(HERE, "police.json"), encoding="utf-8") as fh:
     META = json.load(fh)
-FAMILY = META["name"]
+FAMILY = META["nom"]
 VERSION = META["version"]       # semver, ex. « 0.6.0 »
 
 
 def revision(version):
     """« 0.6.1 » -> « 0.601 » : forme attendue par head.fontRevision et le nom « Version 0.601 »
-    (même règle que font_revision dans tools/fonts.py)."""
+    (même règle que revision_opentype dans tools/polices.py)."""
     major, minor, patch = (int(p) for p in version.split("."))
     return f"{major}.{minor}{patch:02d}"
 

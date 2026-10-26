@@ -11,7 +11,7 @@
       "extra-files": [
         {
           "type": "json",
-          "path": "font.json",
+          "path": "police.json",
           "jsonpath": "$.version"
         }
       ]
@@ -22,7 +22,7 @@
       "extra-files": [
         {
           "type": "json",
-          "path": "font.json",
+          "path": "police.json",
           "jsonpath": "$.version"
         }
       ]

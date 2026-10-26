@@ -21,8 +21,7 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-  # One job per released font: build it at its new version and attach the zip
-  # (TTF + WOFF2 + licence + changelog) to its GitHub release.
+  # Un job par police publiée : la compiler à sa nouvelle version et joindre son zip à la release
   assets:
     needs: release-please
     if: needs.release-please.outputs.releases_created == 'true' && needs.release-please.outputs.paths_released != '[]'
@@ -41,13 +40,13 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Build, check and attach the font zip
+      - name: Compiler, vérifier et joindre le zip de la police
         env:
           GH_TOKEN: ${{ github.token }}
-          FONT_PATH: ${{ matrix.path }}
+          CHEMIN_POLICE: ${{ matrix.path }}
         run: |
-          id="$(basename "$FONT_PATH")"
-          python tools/fonts.py build "$id"
-          python tools/fonts.py check "$id"
-          python tools/fonts.py package "$id" --out release
-          gh release upload "$(python tools/fonts.py tag "$id")" release/*.zip --clobber
+          id_police="$(basename "$CHEMIN_POLICE")"
+          python tools/polices.py construire "$id_police"
+          python tools/polices.py verifier "$id_police"
+          python tools/polices.py empaqueter "$id_police" --sortie release
+          gh release upload "$(python tools/polices.py tag "$id_police")" release/*.zip --clobber

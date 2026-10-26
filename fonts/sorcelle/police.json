@@ -1,0 +1,30 @@
+{
+  "id": "sorcelle",
+  "nom": "Sorcelle",
+  "version": "0.6.0",
+  "statut": "bêta",
+  "resume": "Pixel « lombarde arrondie » pour les titres de mon portfolio.",
+  "description": "Sorcelle redessine Jacquard 24 dans un style lombarde arrondie : capitales romaines à fûts de 5 px, minuscules rondes, chiffres et ponctuation au même poids, et une étoile ✦ en ornement. Elle est faite pour les titres, nette à 43 et 86 px.",
+  "dessin": "Danaé Albrecht--Martin",
+  "licence": "OFL-1.1",
+  "origine": {
+    "nom": "Jacquard 24",
+    "url": "https://github.com/scfried/soft-type-jacquard"
+  },
+  "etiquettes": ["pixel", "titres", "lombarde"],
+  "graisses": [
+    { "nom": "Regular", "poids": 400 },
+    { "nom": "SemiBold", "poids": 600 },
+    { "nom": "Bold", "poids": 700 }
+  ],
+  "construction": ["python", "build.py", "sources/Jacquard24-Regular.ttf", "planche.png", "{sortie}"],
+  "specimen": {
+    "titre": "Lune rousse sur le grimoire",
+    "texte": "Danaé Albrecht--Martin ✦ Projets · Créations · Réseaux",
+    "tailleMin": 32,
+    "tailleMax": 129,
+    "tailleParDefaut": 86,
+    "taillesNettes": [43, 86, 129]
+  },
+  "usage": "Titres uniquement, à partir de 32 px. Pour des pixels nets : 43 px ou 86 px."
+}

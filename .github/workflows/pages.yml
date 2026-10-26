@@ -28,11 +28,11 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - run: python tools/fonts.py build
+      - run: python tools/polices.py construire
 
-      - run: python tools/fonts.py check
+      - run: python tools/polices.py verifier
 
-      - run: python tools/fonts.py site --out _site
+      - run: python tools/polices.py site --sortie _site
 
       - uses: actions/upload-pages-artifact@v4
         with:
