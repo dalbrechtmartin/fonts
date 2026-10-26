@@ -20,10 +20,9 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      # Compile every font from its sources, then check names, weights,
-      # specimen coverage and that font.json matches the release-please manifest.
-      - run: python tools/fonts.py build
+      # Mêmes commandes qu'en local : compiler, vérifier (noms, graisses, spécimen, version), générer le site
+      - run: python tools/polices.py construire
 
-      - run: python tools/fonts.py check
+      - run: python tools/polices.py verifier
 
-      - run: python tools/fonts.py site
+      - run: python tools/polices.py site

@@ -1,95 +1,101 @@
-/* Site de présentation des polices : surcharges et éléments propres, sur la base de Grimoire. */
+/* Site de présentation des polices : éléments propres au site, sur la base de Grimoire (tokens.css, bundle.css). */
 
 @font-face { font-family: "Sorcelle"; src: url("fonts/sorcelle/Sorcelle-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Sorcelle"; src: url("fonts/sorcelle/Sorcelle-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
 @font-face { font-family: "Sorcelle"; src: url("fonts/sorcelle/Sorcelle-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 
+/* ---------- Base ---------- */
 body { min-height: 100vh; }
-.gr-main { grid-template-columns: minmax(0, 1fr); width: 100%; box-sizing: border-box; }
 a { color: var(--primary); text-underline-offset: 4px; }
-a:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: var(--focus-width) solid var(--focus); outline-offset: 6px; }
+a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: var(--focus-width) solid var(--focus); outline-offset: 6px; }
 code { font-family: var(--font-mono); font-size: 0.9em; }
 h1, h2, h3 { text-wrap: balance; }
+/* Tout ce qui est cliquable prend la main */
+a, button, label[for], .gr-check, summary { cursor: pointer; }
+.gr-main { grid-template-columns: minmax(0, 1fr); width: 100%; box-sizing: border-box; }
 
-.brand-star { margin-left: var(--space-2); color: var(--gold); }
+/* ---------- En-tête ---------- */
+.marque-etoile { margin-inline-start: var(--space-2); color: var(--gold); }
 .gr-header .gr-nav { flex: 1 1 auto; }
-.gr-toggle { display: flex; align-items: center; gap: var(--space-3); }
+.interrupteur { gap: var(--space-2); }
 
 /* ---------- Accueil ---------- */
-.intro { display: grid; gap: var(--space-4); }
-.intro__lead { margin: 0; max-width: 40rem; font-size: 1.375rem; line-height: 2.125rem; }
+.intro { display: grid; gap: var(--space-4); max-width: 48rem; }
+.intro h1 { margin: 0; font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 400; }
+.intro__accroche { margin: 0; font-size: 1.375rem; line-height: 2.125rem; }
 .intro .gr-meta { margin: 0; }
-.howto { align-self: start; }
-.howto__steps { margin: 0; padding-left: 1.5em; display: grid; gap: var(--space-2); font-size: 1.125rem; line-height: 1.75rem; }
-.howto__steps li::marker { font-family: var(--font-display); color: var(--gold); }
+.aide__etapes { margin: 0; padding-inline-start: 1.5em; display: grid; gap: var(--space-2); font-size: 1.125rem; line-height: 1.75rem; }
+.aide__etapes li::marker { font-family: var(--font-display); color: var(--gold); }
 
-.font-index { grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: var(--space-6); }
-.font-index .gr-tile__art { aspect-ratio: 16 / 9; font-size: 86px; line-height: 1; }
+.sommaire-polices { grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: var(--space-6); }
+.sommaire-polices .gr-tile__art { aspect-ratio: 16 / 9; font-size: 5.375rem; line-height: 1; }
 
 /* ---------- Une police ---------- */
-.fonts { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-16); }
-.font { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-12); scroll-margin-top: var(--space-6); padding-top: var(--space-12); border-top: 6px double var(--gilding); }
-.font__head { display: grid; gap: var(--space-4); }
-.font__name { margin: 0; font-size: 43px; line-height: 1.1; font-weight: 400; overflow-wrap: anywhere; }
-.font__summary { margin: 0; max-width: 65ch; font-size: 1.375rem; line-height: 2.125rem; }
-.font__desc { margin: 0; max-width: 65ch; }
-.font__section-title { margin: 0 0 var(--space-4); font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 400; }
-.font__facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--space-1) var(--space-4); margin: 0; font-size: 1.125rem; line-height: 1.75rem; }
-.font__facts dt { font-family: var(--font-ui); font-weight: 700; color: var(--muted); }
-.font__facts dd { margin: 0; }
-.font__actions .gr-btn { text-decoration: none; }
+.polices { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-16); }
+.police { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-12); scroll-margin-top: var(--space-6); padding-top: var(--space-12); border-top: 6px double var(--gilding); }
+.police__tete { display: grid; gap: var(--space-4); }
+.police__nom { margin: 0; font-size: 2.6875rem; line-height: 1.1; font-weight: 400; overflow-wrap: anywhere; }
+.police__resume { margin: 0; max-width: 65ch; font-size: 1.375rem; line-height: 2.125rem; }
+.police__description { margin: 0; max-width: 65ch; }
+.police__titre-section { margin: 0 0 var(--space-4); font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 400; }
+.police__fiche { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--space-1) var(--space-4); margin: 0; font-size: 1.125rem; line-height: 1.75rem; }
+.police__fiche dt { font-family: var(--font-ui); font-weight: 700; color: var(--muted); }
+.police__fiche dd { margin: 0; }
+.police__tete .gr-btn { text-decoration: none; }
+.police__css, .police__historique { max-width: 60rem; }
 
-/* Banc d'essai : sur toute la largeur, le texte peut passer à la ligne */
-.tester { max-width: none; }
-.tester .font__section-title { margin-bottom: 0; }
-.tester__out { margin: 0; min-height: 1.2em; line-height: 1.15; overflow-wrap: anywhere; }
+/* Essai : sur toute la largeur, le texte peut passer à la ligne */
+.essai { max-width: none; grid-template-columns: minmax(0, 1fr); }
+.essai fieldset { min-width: 0; }
+.essai .gr-field { grid-template-columns: minmax(0, 1fr); flex: 1 1 16rem; }
+.essai .police__titre-section { margin-bottom: 0; }
+.essai__sortie { margin: 0; min-height: 1.2em; line-height: 1.15; overflow-wrap: anywhere; }
+.essai__graisses { border: 0; margin: 0; padding: 0; }
+.essai__graisses legend { padding: 0; margin-bottom: var(--space-1); }
+.gr-field .essai__taille { box-sizing: border-box; width: 6.5rem; height: 44px; padding: 0 var(--space-3); font-family: var(--font-mono); font-size: 1rem; font-weight: 400; font-variant-numeric: tabular-nums; color: var(--ink); background: var(--surface-sunken); border: 2px solid var(--outline); border-radius: 0; }
+.gr-field output { min-width: 5ch; color: var(--gold); font-family: var(--font-ui); font-size: 1.125rem; }
+.essai__fonctions { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); }
+.essai__fonctions legend { width: 100%; font-family: var(--font-ui); font-size: 1.125rem; line-height: 1.25rem; font-weight: 700; }
 
 /* Graisses */
-.weights { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-6); }
-.weights li { display: grid; gap: var(--space-1); }
-.weights__sample { font-size: 43px; line-height: 1.15; overflow-wrap: anywhere; }
+.graisses { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-6); }
+.graisses li { display: grid; gap: var(--space-1); }
+.graisses__exemple { font-size: 2.6875rem; line-height: 1.15; overflow-wrap: anywhere; }
 
 /* Glyphes : grille + loupe */
-.glyphs { display: grid; gap: var(--space-6); align-items: start; }
-.glyphs__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); border-top: 1px solid var(--outline); border-left: 1px solid var(--outline); }
-.glyph {
+.glyphes { display: grid; gap: var(--space-6); align-items: start; }
+.glyphes__grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(4rem, 1fr)); border-top: 1px solid var(--outline); border-inline-start: 1px solid var(--outline); }
+.glyphe {
   display: grid; place-items: center; aspect-ratio: 1; min-height: 44px; padding: 0;
-  font-family: inherit; font-size: 43px; line-height: 1; color: var(--ink); cursor: pointer;
-  background: var(--surface); border: 0; border-right: 1px solid var(--outline); border-bottom: 1px solid var(--outline);
+  font-family: inherit; font-size: 2.6875rem; line-height: 1; color: var(--ink);
+  background: var(--surface); border: 0; border-inline-end: 1px solid var(--outline); border-bottom: 1px solid var(--outline);
 }
-.glyph:hover { background: var(--primary-soft); }
-.glyph[aria-selected="true"] { background: var(--primary-soft); box-shadow: inset 0 0 0 2px var(--primary); }
-.glyph:focus-visible { outline-offset: -3px; position: relative; z-index: 2; }
-.glyphs__zoom { position: sticky; top: var(--space-4); display: grid; justify-items: center; gap: var(--space-2); margin: 0; }
-.glyphs__big { font-size: 129px; line-height: 1.2; min-height: 1.2em; }
-.glyphs__zoom figcaption { font-family: var(--font-mono); font-size: 1rem; }
-
-/* Code CSS */
-.font__css .gr-code { max-width: 60rem; }
+.glyphe:hover { background: var(--primary-soft); }
+.glyphe[aria-selected="true"] { background: var(--primary-soft); box-shadow: inset 0 0 0 2px var(--primary); }
+.glyphe:focus-visible { outline-offset: -3px; position: relative; z-index: 2; }
+.glyphes__loupe { position: sticky; top: var(--space-4); display: grid; justify-items: center; gap: var(--space-2); margin: 0; }
+.glyphes__grand { font-size: 8.0625rem; line-height: 1.2; min-height: 1.2em; }
+.glyphes__loupe figcaption { font-family: var(--font-mono); font-size: 1rem; }
 
 /* Historique */
-.font__history .gr-accordion { max-width: 60rem; }
-.changes { display: grid; gap: var(--space-3); }
-.changes h5 { margin: 0; font-family: var(--font-ui); font-size: 1.25rem; line-height: 1.5rem; font-weight: 700; }
-.changes ul { margin: 0; padding-left: 1.25em; display: grid; gap: var(--space-1); font-size: 1.125rem; line-height: 1.75rem; }
-.changes ul li::marker { content: "✦  "; font-family: var(--font-display); color: var(--gold); }
-.changes p { margin: 0; }
+.changements { display: grid; gap: var(--space-3); }
+.changements h5 { margin: 0; font-family: var(--font-ui); font-size: 1.25rem; line-height: 1.5rem; font-weight: 700; }
+.changements ul { margin: 0; padding-inline-start: 1.25em; display: grid; gap: var(--space-1); font-size: 1.125rem; line-height: 1.75rem; }
+.changements ul li::marker { content: "✦  "; font-family: var(--font-display); color: var(--gold); }
+.changements p { margin: 0; }
 
-.ornament { margin: 0 0 var(--space-2); font-family: var(--font-display); font-size: 43px; line-height: 1; color: var(--gold); }
+/* ---------- Pied de page ---------- */
+.ornement { margin: 0 0 var(--space-2); font-family: var(--font-display); font-size: 2.6875rem; line-height: 1; color: var(--gold); }
 .gr-footer p { margin: 0 0 var(--space-2); }
 
-@media (min-width: 48rem) {
-  .font__name { font-size: 86px; }
-}
 @media (max-width: 59.99rem) {
   /* Écran étroit : la loupe passe au-dessus de la grille et reste visible pendant le défilement */
-  .glyphs__zoom { order: -1; top: 0; z-index: 3; grid-template-columns: auto auto; justify-content: center; align-items: center; gap: var(--space-6); padding-block: var(--space-2); }
-  .glyphs__big { font-size: 86px; }
+  .glyphes__loupe { order: -1; top: 0; z-index: 3; grid-template-columns: auto auto; justify-content: center; align-items: center; gap: var(--space-6); padding-block: var(--space-2); }
+  .glyphes__grand { font-size: 5.375rem; }
+}
+@media (min-width: 48rem) {
+  .intro h1, .police__nom { font-size: 5.375rem; line-height: 5.375rem; }
 }
 @media (min-width: 60rem) {
-  .glyphs { grid-template-columns: minmax(0, 1fr) 14rem; }
+  .glyphes { grid-template-columns: minmax(0, 1fr) 14rem; }
 }
-
-/* Fonctions OpenType du banc d'essai */
-.tester__features { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); }
-.tester__features legend { width: 100%; font-family: var(--font-ui); font-size: 1.125rem; line-height: 1.25rem; font-weight: 700; }

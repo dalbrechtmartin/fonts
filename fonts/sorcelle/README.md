@@ -2,19 +2,22 @@
 
 Police de titres de mon portfolio, en pixels, style « lombarde arrondie ». Trois graisses : Regular (400), SemiBold (600), Bold (700).
 
-![Les trois graisses de Sorcelle](images/graisses.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/apercu-sombre.png">
+  <img src="images/apercu-clair.png" alt="Le mot Sorcelle en lettres pixel de style lombarde, suivi de la ligne « Danaé Albrecht--Martin ✦ Projets · Créations · Réseaux ».">
+</picture>
 
 Dérivée de **Jacquard 24** (Soft Type, licence SIL OFL 1.1, sans nom réservé).
 Sorcelle reste sous OFL 1.1 : gratuite, modifiable, jamais vendue seule, crédits d'origine conservés.
 
-- Version actuelle : voir [`font.json`](font.json) ; historique : [`CHANGELOG.md`](CHANGELOG.md).
+- Version actuelle : voir [`police.json`](police.json) ; historique : [`CHANGELOG.md`](CHANGELOG.md).
 - Télécharger : [versions publiées](https://github.com/dalbrechtmartin/fonts/releases?q=sorcelle) (zip avec TTF, WOFF2 et licence).
 
 ## Contenu du dossier
 
 | Fichier | Rôle |
 | --- | --- |
-| `font.json` | Nom, version, graisses, commande de build et textes du spécimen (lu par le site et par `tools/fonts.py`) |
+| `police.json` | Nom, version, graisses, commande de construction et textes du spécimen (lu par le site et par `tools/polices.py`) |
 | `CHANGELOG.md` | Historique des versions (tenu par release-please) |
 | `OFL.txt` | Licence de Sorcelle |
 | `sources/Jacquard24-Regular.ttf` + `sources/OFL.txt` | Police d'origine et sa licence |
@@ -30,7 +33,7 @@ Sorcelle reste sous OFL 1.1 : gratuite, modifiable, jamais vendue seule, crédit
 | `variants_minuscules.py` | Compare les deux styles de minuscules |
 | `specimen.py` | Aperçu Sorcelle / Jacquard 24 côte à côte (`images/specimen.png`) |
 | `legibility.py` | Test de lisibilité : OCR Tesseract + capitales les plus proches |
-| `images/` | Spécimens et comparaisons |
+| `images/` | Aperçus clair et sombre du README (`tools/polices.py apercus`), spécimens et comparaisons |
 | `dist/` | Polices compilées (non versionnées : générées par `build.py`) |
 
 ## Installer (une fois)
@@ -58,8 +61,8 @@ pip install -r requirements.txt
 Depuis la racine du dépôt :
 
 ```bash
-python tools/fonts.py build sorcelle      # les 3 graisses dans fonts/sorcelle/dist/
-python tools/fonts.py check sorcelle
+python tools/polices.py construire sorcelle   # les 3 graisses dans fonts/sorcelle/dist/
+python tools/polices.py verifier sorcelle
 ```
 
 Ou depuis ce dossier, avec les images de contrôle :
@@ -72,7 +75,7 @@ python specimen.py sources/Jacquard24-Regular.ttf dist/Sorcelle-Regular.ttf imag
 
 Ouvre `images/specimen.png` pour voir le résultat. La largeur de chaque lettre suit ton dessin.
 
-La version écrite dans les polices vient de `font.json` : ne la change pas à la main, release-please s'en charge
+La version écrite dans les polices vient de `police.json` : ne la change pas à la main, release-please s'en charge
 (voir le [README du dépôt](../../README.md#versions-et-changelog)).
 
 ## Ce qui change par rapport à Jacquard 24
