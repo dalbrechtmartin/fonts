@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://github.com/dalbrechtmartin/fonts/compare/sorcelle-v0.6.0...sorcelle-v1.0.0) (2026-10-26)
+
+
+### Features
+
+* **sorcelle:** redraw every GF Latin Core glyph in the Sorcelle style ([5e22574](https://github.com/dalbrechtmartin/fonts/commit/5e22574c4a95f553bf93543f7fe385468df7113e))
+
 ## 0.6.0 (2026-10-25)
 
 
