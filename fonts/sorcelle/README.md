@@ -69,14 +69,14 @@ Ou depuis ce dossier, avec les images de contrôle :
 
 ```bash
 python build.py sources/Jacquard24-Regular.ttf planche.png dist   # les 3 graisses
-python weights.py dist images/graisses.png
+python weights.py dist images/graisses.png                         # nécessite Tesseract (lecture OCR)
 python specimen.py sources/Jacquard24-Regular.ttf dist/Sorcelle-Regular.ttf images/specimen.png
 ```
 
 Ouvre `images/specimen.png` pour voir le résultat. La largeur de chaque lettre suit ton dessin.
 
 La version écrite dans les polices vient de `police.json` : ne la change pas à la main, release-please s'en charge
-(voir le [README du dépôt](../../README.md#versions-et-changelog)).
+(voir le [README du dépôt](../../README.md#publier-une-nouvelle-version)).
 
 ## Ce qui change par rapport à Jacquard 24
 
@@ -143,7 +143,7 @@ python extract.py sources/Jacquard24-Regular.ttf planche.png
 python design_caps.py sources/Jacquard24-Regular.ttf planche.png
 python design_lower.py sources/Jacquard24-Regular.ttf planche.png
 python build.py sources/Jacquard24-Regular.ttf planche.png dist   # les 3 graisses
-python weights.py dist images/graisses.png
+python weights.py dist images/graisses.png                         # nécessite Tesseract (lecture OCR)
 python specimen.py sources/Jacquard24-Regular.ttf dist/Sorcelle-Regular.ttf images/specimen.png
 python legibility.py sources/Jacquard24-Regular.ttf dist/Sorcelle-Regular.ttf   # nécessite Tesseract
 ```

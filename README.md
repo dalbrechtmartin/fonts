@@ -19,7 +19,7 @@ Les polices d'écriture que je dessine : sources, versions, changelog et spécim
   <img src="fonts/sorcelle/images/apercu-clair.png" alt="Le mot Sorcelle en lettres pixel de style lombarde, suivi de la ligne « Danaé Albrecht--Martin ✦ Projets · Créations · Réseaux ».">
 </picture>
 
-Chaque version publiée a son zip (OTF ou TTF, WOFF2, licence, changelog) dans les
+Chaque version publiée a son zip (TTF, WOFF2, OTF quand la police en a un, licence, changelog) dans les
 [releases](https://github.com/dalbrechtmartin/fonts/releases).
 
 ## Lancer en local
@@ -52,8 +52,11 @@ Tout passe par GitHub Actions, sans variable ni secret :
 - [`pages.yml`](.github/workflows/pages.yml) : publie le site sur GitHub Pages à chaque push sur `main`.
 - [`release-please.yml`](.github/workflows/release-please.yml) : ouvre la PR de version, crée la release et y joint le zip.
 
-Réglages du dépôt en place : Pages en source « GitHub Actions » ; Actions avec les droits en écriture et l'autorisation
-de créer des PR (nécessaire à release-please).
+Réglages du dépôt en place :
+
+- `main` protégée : PR obligatoire, ni push forcé ni suppression, règle appliquée aussi aux admins ;
+- Pages en source « GitHub Actions » ;
+- Actions avec les droits en écriture et l'autorisation de créer des PR (nécessaire à release-please).
 
 ## Maintenance
 
@@ -67,8 +70,9 @@ Chaque police a sa propre version (semver), son `CHANGELOG.md` et ses tags (`gri
    - `fix(sorcelle): …` → correctif (0.6.0 → 0.6.1) ;
    - `feat(sorcelle)!: …` → majeure (mineure tant qu'on est en 0.x) ;
    - `refactor`, `docs`, `chore`, `ci` → pas de version.
-2. Fusionner `develop` dans `main`.
+2. Ouvrir une PR `develop` → `main` et la fusionner une fois la CI verte.
 3. release-please ouvre une PR par police modifiée (version dans `police.json`, manifeste, `CHANGELOG.md`).
+   Elle n'a pas de CI : GitHub ne lance pas les workflows sur une PR créée par GitHub Actions.
 4. La fusionner : tag, release et zip, puis le site se met à jour.
 
 La version écrite dans les fichiers de police vient de `police.json` (Sorcelle) ou se reconstruit à la main (Griffonne,
