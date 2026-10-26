@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Polices de Danaé</title>
+  <meta name="description" content="Les polices d'écriture que je dessine, libres sous licence OFL : essai en ligne, glyphes, téléchargement et historique des versions.">
+  <script>
+    // Thème avant le premier rendu : choix mémorisé, sinon celui du système.
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('theme'); } catch (e) {}
+      var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    })();
+  </script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="grimoire/tokens.css">
+  <link rel="stylesheet" href="grimoire/bundle.css">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <a class="gr-btn gr-skip" href="#contenu">Aller au contenu</a>
+
+  <header class="gr-header">
+    <a class="gr-brand" href="./">Polices<span class="brand-star" aria-hidden="true">✦</span></a>
+    <nav class="gr-nav" aria-label="Polices">
+      <ul id="nav"></ul>
+    </nav>
+    <div class="gr-toggle">
+      <span id="theme-label">Thème Crypte<span class="gr-toggle__hint">Fond sombre, dorures plus vives.</span></span>
+      <button type="button" role="switch" class="gr-toggle__switch" aria-checked="false" aria-labelledby="theme-label" id="theme-switch">
+        <span class="gr-toggle__track" aria-hidden="true"><span class="gr-toggle__thumb"><span data-icon="sun"><svg class="gr-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M122,40V16a6,6,0,0,1,12,0V40a6,6,0,0,1-12,0Zm68,88a62,62,0,1,1-62-62A62.07,62.07,0,0,1,190,128Zm-12,0a50,50,0,1,0-50,50A50.06,50.06,0,0,0,178,128ZM59.76,68.24a6,6,0,1,0,8.48-8.48l-16-16a6,6,0,0,0-8.48,8.48Zm0,119.52-16,16a6,6,0,1,0,8.48,8.48l16-16a6,6,0,1,0-8.48-8.48ZM192,70a6,6,0,0,0,4.24-1.76l16-16a6,6,0,0,0-8.48-8.48l-16,16A6,6,0,0,0,192,70Zm4.24,117.76a6,6,0,0,0-8.48,8.48l16,16a6,6,0,0,0,8.48-8.48ZM46,128a6,6,0,0,0-6-6H16a6,6,0,0,0,0,12H40A6,6,0,0,0,46,128Zm82,82a6,6,0,0,0-6,6v24a6,6,0,0,0,12,0V216A6,6,0,0,0,128,210Zm112-88H216a6,6,0,0,0,0,12h24a6,6,0,0,0,0-12Z"/></svg></span><span data-icon="moon" hidden><svg class="gr-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M232.13,143.64a6,6,0,0,0-6-1.49A90.07,90.07,0,0,1,113.86,29.85a6,6,0,0,0-7.49-7.48A102.88,102.88,0,0,0,54.48,58.68,102,102,0,0,0,197.32,201.52a102.88,102.88,0,0,0,36.31-51.89A6,6,0,0,0,232.13,143.64Zm-42,48.29a90,90,0,0,1-126-126A90.9,90.9,0,0,1,99.65,37.66,102.06,102.06,0,0,0,218.34,156.35,90.9,90.9,0,0,1,190.1,191.93Z"/></svg></span></span></span>
+        <span class="gr-toggle__state" aria-hidden="true">Non</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="gr-main" id="contenu">
+    <section class="gr-hero" aria-labelledby="titre">
+      <div class="intro">
+        <h1 id="titre">Mes polices</h1>
+        <p class="intro__lead">Les polices d'écriture que je dessine. Tu peux les essayer ici, les télécharger et les utiliser librement : elles sont sous licence OFL.</p>
+        <p class="gr-meta" id="stats" aria-live="polite">Chargement…</p>
+      </div>
+      <aside class="gr-panel gr-frame howto" aria-labelledby="howto-title">
+        <h2 class="gr-panel__title" id="howto-title">Utiliser une police</h2>
+        <ol class="howto__steps">
+          <li><strong>Télécharger</strong> le zip de la version voulue.</li>
+          <li><strong>Sur un ordinateur</strong> : installer les fichiers <code>.ttf</code>.</li>
+          <li><strong>Sur un site</strong> : servir les fichiers <code>.woff2</code> avec le code CSS donné sous chaque police.</li>
+          <li><strong>Licence OFL</strong> : utilisation libre, même commerciale ; la police ne se vend pas seule et garde ses crédits.</li>
+        </ol>
+      </aside>
+    </section>
+
+    <ul class="gr-gallery font-index" id="index" aria-label="Liste des polices"></ul>
+
+    <div id="fonts" class="fonts"></div>
+
+    <noscript><p>Cette page a besoin de JavaScript pour afficher les polices. Les fichiers restent disponibles sur <a href="https://github.com/dalbrechtmartin/fonts/releases">GitHub</a>.</p></noscript>
+  </main>
+
+  <footer class="gr-footer">
+    <p class="ornament" aria-hidden="true">✦</p>
+    <p>Polices sous licence <a href="https://openfontlicense.org">SIL Open Font License 1.1</a>. Code du site sous licence BSD 3-Clause.</p>
+    <p><a href="https://github.com/dalbrechtmartin/fonts">Sources et versions sur GitHub</a> · <a href="https://danaedev.fr">danaedev.fr</a></p>
+  </footer>
+
+  <p class="gr-sr" role="status" id="status"></p>
+
+  <template id="tpl-font">
+    <article class="font">
+      <header class="font__head">
+        <h2 class="font__name" data-name></h2>
+        <ul class="gr-chips" data-chips></ul>
+        <p class="font__summary" data-summary></p>
+        <p class="font__desc" data-description></p>
+        <dl class="font__facts" data-facts></dl>
+        <div class="gr-row font__actions" data-actions></div>
+      </header>
+
+      <section class="gr-tester gr-frame tester" data-tester>
+        <h3 class="font__section-title">Essayer</h3>
+        <p class="gr-tester__out tester__out" data-out></p>
+        <p class="gr-tester__note" data-caption aria-hidden="true"></p>
+        <div class="gr-tester__controls">
+          <div class="gr-field gr-field--wide">
+            <label data-for="text">Texte</label>
+            <input type="text" data-input="text" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="gr-field">
+            <label data-for="weight">Graisse</label>
+            <select data-input="weight"></select>
+          </div>
+          <div class="gr-field">
+            <label data-for="size">Taille</label>
+            <span class="gr-field__range">
+              <input type="range" data-input="size" step="1">
+              <output data-value></output>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section class="font__weights" data-weights-section>
+        <h3 class="font__section-title">Graisses</h3>
+        <ul class="weights" data-weights></ul>
+      </section>
+
+      <section class="font__glyphs">
+        <h3 class="font__section-title" data-glyphs-title>Glyphes</h3>
+        <div class="glyphs">
+          <div class="glyphs__grid" role="listbox" data-glyphs></div>
+          <figure class="glyphs__zoom gr-panel gr-frame" aria-live="polite">
+            <span class="glyphs__big" data-zoom-char></span>
+            <figcaption class="gr-meta" data-zoom-code></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="font__css">
+        <h3 class="font__section-title">Sur un site</h3>
+        <figure class="gr-code" data-code>
+          <figcaption class="gr-code__head">
+            <span class="gr-code__title"><svg class="gr-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M180.24,147.76a6,6,0,0,1,0,8.48l-24,24a6,6,0,0,1-8.48-8.48L167.51,152l-19.75-19.76a6,6,0,1,1,8.48-8.48Zm-72-24a6,6,0,0,0-8.48,0l-24,24a6,6,0,0,0,0,8.48l24,24a6,6,0,1,0,8.48-8.48L88.49,152l19.75-19.76A6,6,0,0,0,108.24,123.76ZM214,88V216a14,14,0,0,1-14,14H56a14,14,0,0,1-14-14V40A14,14,0,0,1,56,26h96a6,6,0,0,1,4.25,1.76l56,56A6,6,0,0,1,214,88Zm-56-6h35.52L158,46.48Zm44,134V94H152a6,6,0,0,1-6-6V38H56a2,2,0,0,0-2,2V216a2,2,0,0,0,2,2H200A2,2,0,0,0,202,216Z"/></svg><span class="gr-code__name">fonts.css</span></span>
+            <span class="gr-code__lang">css</span>
+            <span class="gr-code__actions">
+              <button type="button" class="gr-code__action" data-copy><svg class="gr-icon" viewBox="0 0 256 256" aria-hidden="true"><path d="M216,34H88a6,6,0,0,0-6,6V82H40a6,6,0,0,0-6,6V216a6,6,0,0,0,6,6H168a6,6,0,0,0,6-6V174h42a6,6,0,0,0,6-6V40A6,6,0,0,0,216,34ZM162,210H46V94H162Zm48-48H174V88a6,6,0,0,0-6-6H94V46H210Z"/></svg><span class="gr-code__action-text">Copier</span></button>
+            </span>
+          </figcaption>
+          <pre class="gr-code__pre" tabindex="0" dir="ltr"><code data-css></code></pre>
+        </figure>
+      </section>
+
+      <section class="font__history">
+        <h3 class="font__section-title">Historique des versions</h3>
+        <div class="gr-accordion" data-history></div>
+      </section>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

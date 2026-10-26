@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  fonts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: "pip"
+          cache-dependency-path: requirements.txt
+
+      - run: pip install -r requirements.txt
+
+      # Compile every font from its sources, then check names, weights,
+      # specimen coverage and that font.json matches the release-please manifest.
+      - run: python tools/fonts.py build
+
+      - run: python tools/fonts.py check
+
+      - run: python tools/fonts.py site

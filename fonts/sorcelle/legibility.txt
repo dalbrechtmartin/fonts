@@ -1,0 +1,22 @@
+== Jacquard 24
+    50%  'THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG' -> 'WHE VNIECK BRVMN FVX JUMPS VIER WHE TALI DVEG'
+    91%  'PACK MY BOX WITH FIVE DOZEN LIQUOR JUGS' -> 'PACK MY BOX WITH FIVE DOZEN LIVNAVOR JUGS'
+    77%  'ALBRECHT MARTIN PARCOURS PROJETS GRIMOIRE' -> 'NUAUBRECHD MARTIN PARECOMURS PRVIETS ORIMVINE'
+    79%  'Danae Albrecht Martin' -> 'Nanae Uibrecht Wartin'
+    77%  'Quiz Jumps Over Kind Vexed Wizards' -> 'Wmz Jumps Vver Rind Dered Wizards'
+   100%  'the quick brown fox jumps over the lazy dog' -> 'the quick brown fox jumps over the lazy dog'
+   100%  'Parcours 2021 2024 2026 et 365 jours' -> 'Parcours 2021 2024 2026 et 365 jours'
+  Moyenne OCR : 82%
+  Capitales les plus proches (différence) : CE (5%), NR (22%), MW (25%), NV (26%), BQ (31%), RV (33%)
+  Paires à risque : Il (78%), I1 (86%), l1 (56%), O0 (78%), o0 (12%), ao (14%), ce (16%), hn (38%), nu (10%), rn (74%), il (23%), 5S (72%), 8B (77%), 2Z (90%)
+== Sorcelle
+   100%  'THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG' -> 'THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG'
+   100%  'PACK MY BOX WITH FIVE DOZEN LIQUOR JUGS' -> 'PACK MY BOX WITH FIVE DOZEN LIQUOR JUGS'
+   100%  'ALBRECHT MARTIN PARCOURS PROJETS GRIMOIRE' -> 'ALBRECHT MARTIN PARCOURS PROJETS GRIMOIRE'
+   100%  'Danae Albrecht Martin' -> 'Danae Albrecht Martin'
+   100%  'Quiz Jumps Over Kind Vexed Wizards' -> 'Quiz Jumps Over Kind Vexed Wizards'
+    97%  'the quick brown fox jumps over the lazy dog' -> 'the quick brown fox jumps over the Lazy dog'
+   100%  'Parcours 2021 2024 2026 et 365 jours' -> 'Parcours 2021 2024 2026 et 365 jours'
+  Moyenne OCR : 100%
+  Capitales les plus proches (différence) : CG (27%), HN (31%), IT (31%), HU (31%), GO (35%), FL (35%)
+  Paires à risque : Il (63%), I1 (53%), l1 (73%), O0 (74%), o0 (49%), ao (52%), ce (22%), hn (56%), nu (33%), rn (62%), il (66%), 5S (75%), 8B (50%), 2Z (67%)
