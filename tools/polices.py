@@ -150,6 +150,11 @@ def verifier(police):
     for document in ("OFL.txt", "CHANGELOG.md", "README.md"):
         if not (police["_dossier"] / document).exists():
             erreurs.append(f"{document} manquant")
+    if (police["_dossier"] / "CHANGELOG.md").exists():
+        publiees = {version["version"] for version in historique(police)}
+        for version in police.get("notes", {}):
+            if version not in publiees:
+                erreurs.append(f"police.json : notes pour la version {version}, absente du CHANGELOG")
 
     chemin = f"fonts/{id_police}"
     config = json.loads(CONFIG_RELEASE.read_text(encoding="utf-8"))
@@ -230,6 +235,12 @@ def historique(police):
             versions[-1]["sections"].append({"titre": section[1].strip(), "entrees": []})
         elif (entree := re.match(r"^\*\s+(.+)", ligne)) and versions and versions[-1]["sections"]:
             versions[-1]["sections"][-1]["entrees"].append(markdown_en_ligne(entree[1]))
+    # Notes en français de police.json (facultatives) : remplacent les messages de commit d'une version
+    notes = police.get("notes", {})
+    for version in versions:
+        if version["version"] in notes:
+            version["sections"] = [{"titre": titre, "entrees": [markdown_en_ligne(entree) for entree in entrees]}
+                                   for titre, entrees in notes[version["version"]].items()]
     return versions
 
 

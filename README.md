@@ -96,6 +96,9 @@ Chaque police a sa propre version (semver), son `CHANGELOG.md` et ses tags (`gri
 3. release-please ouvre une PR par police modifiée (version dans `police.json`, manifeste, `CHANGELOG.md`).
    Elle n'a pas de CI : GitHub ne lance pas les workflows sur une PR créée par GitHub Actions.
 4. La fusionner : tag, release et zip, puis le site se met à jour.
+5. Facultatif : décrire la version en français pour le site dans `police.json`, clé `notes`
+   (`{"1.2.0": {"Nouveautés": ["…"], "Corrections": ["…"]}}`). Sans note, le site affiche les messages de commit ;
+   `verifier` refuse une note pour une version absente du CHANGELOG.
 
 La version écrite dans les fichiers de police vient toujours de `police.json` : `construire` l'écrit aussi dans les
 polices fournies compilées (Griffonne), et `verifier` refuse un écart.
@@ -107,7 +110,7 @@ python tools/polices.py nouvelle <id> "<Nom>"
 ```
 
 Crée `fonts/<id>/` (police.json, CHANGELOG, README, OFL.txt) et la déclare à release-please en `0.0.0` : non publiée,
-absente du site. La commande affiche ensuite les étapes : compléter `police.json`, ajouter les fichiers compilés
+absente du site. La commande affiche ensuite les étapes : compléter `police.json` (dont `langues`, affichées sur le site), ajouter les fichiers compilés
 dans `compilees/` (ou une commande `construction`), vérifier, puis committer `feat(<id>): première version`.
 
 ### Publier une police sur npm pour la première fois

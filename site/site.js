@@ -167,6 +167,7 @@
     }
     ajouterLigne('Graisses', police.graisses.map(function (graisse) { return graisse.nom + ' (' + graisse.poids + ')'; }).join(', '));
     ajouterLigne('Glyphes', String(Array.from(police.glyphes).length));
+    if (police.langues) ajouterLigne('Langues', police.langues.join(', '));
     ajouterLigne('Licence', LICENCES[police.licence] || police.licence);
     if (police.nomReserve) ajouterLigne('Nom réservé', '« ' + police.nomReserve + ' » : une version modifiée doit changer de nom');
     if (police.historique.length) ajouterLigne('Mise à jour', dateLisible(police.historique[0].date));
