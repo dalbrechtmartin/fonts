@@ -8,6 +8,8 @@ ASC_PX = 36             # place au-dessus de la ligne de base (accents des capit
 DESC_PX = 10            # place sous la ligne de base
 CELL_H = LABEL_H + ASC_PX + DESC_PX
 ORIGIN_X = 4            # marge gauche : la colonne 0 du glyphe est à x0 + ORIGIN_X
+LIGNE_ACCENT_MINUSCULE = 21   # première ligne d'un accent posé sur une lettre de hauteur d'x
+ECART_ACCENT_HAUT = 3         # écart entre le haut d'une capitale ou d'une hampe et le bas de son accent
 
 # Couleurs des repères (tout ce qui n'est pas noir pur est ignoré par build.py)
 GUIDE_BASE = (230, 80, 120, 255)    # ligne de base
@@ -23,6 +25,14 @@ CHARSET = (
     "àâäçéèêëîïôöùûüÿœæ"
     ".,;:!?'’\"«»()[]-–—…&@#%*/+=_<>§©"
     "✦"
+    # 0.7 : le reste de GF Latin Core, ajouté à la fin pour ne pas déplacer les cases existantes
+    "ÁÃÅÌÍÐÑÒÓÕØÚÝÞßáãåìíðñòóõøúýþ"
+    "ĀāĂăĄąĆćĊċČčĎďĐđĒēĖėĘęĚěĞğĠġĢģĦħĪīĮįİıĲĳĶķĹĺĻļĽľŁłŃńŅņŇň"
+    "ŊŋŌōŐőŔŕŖŗŘřŚśŞşŠšŤťŪūŬŭŮůŰűŲųŴŵŶŷŹźŻżŽžȘșȚțȷẀẁẂẃẄẅẞỲỳªº"
+    "^`¨¯´¸ˆˇ˘˙˚˛˜˝"
+    "̧̨̦̀́̂̃̄̆̇̈̊̋̌̒"  # combinants
+    "$\\{|}~¡¢£¥®°¶·¿×÷‘‚“”„•‹›€™−"
+    "Λ"                     # capitale de λ (glyphs_extra.json)
 )
 
 
@@ -32,3 +42,15 @@ def cell_origin(index):
     x0 = col * CELL_W
     base_y = row * CELL_H + LABEL_H + ASC_PX
     return x0, base_y
+
+
+def read_cell(img, index):
+    """Pixels noirs de la case : {(colonne, ligne depuis la ligne de base)}."""
+    x0, base_y = cell_origin(index)
+    pixels = set()
+    for y in range(base_y - ASC_PX, base_y + DESC_PX):
+        for x in range(x0, x0 + CELL_W):
+            r, g, b, a = img.getpixel((x, y))
+            if a > 0 and r == 0 and g == 0 and b == 0:
+                pixels.add((x - x0 - ORIGIN_X, base_y - 1 - y))
+    return pixels

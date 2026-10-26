@@ -9,6 +9,7 @@ Sur la planche :
   étiquettes) sont ignorés par build.py : tu peux les laisser.
 """
 import sys
+import unicodedata
 
 from fontTools.pens.recordingPen import DecomposingRecordingPen
 from fontTools.ttLib import TTFont
@@ -65,16 +66,29 @@ def glyph_pixels(font, char):
     return filled
 
 
-def main(ttf_path, out_path):
+def case_presente(img, index):
+    """La case a déjà ses repères (planche existante)."""
+    x0, base_y = cell_origin(index)
+    return base_y < img.height and img.getpixel((x0, base_y)) == GUIDE_BASE
+
+
+def main(ttf_path, out_path, etendre=False):
     font = TTFont(ttf_path)
-    os2, hhea = font["OS/2"], font["hhea"]
+    os2 = font["OS/2"]
     cap_px, xh_px = os2.sCapHeight // PX, os2.sxHeight // PX
     rows = (len(CHARSET) + COLS - 1) // COLS
     img = Image.new("RGBA", (COLS * CELL_W, rows * CELL_H), (255, 255, 255, 0))
+    if etendre:
+        ancienne = Image.open(out_path).convert("RGBA")
+        img.paste(ancienne, (0, 0))
     draw = ImageDraw.Draw(img)
     hmtx = font["hmtx"]
     cmap = font.getBestCmap()
+    ajoutes = 0
     for index, char in enumerate(CHARSET):
+        if etendre and case_presente(img, index):
+            continue
+        ajoutes += 1
         x0, base_y = cell_origin(index)
         advance_px = hmtx[cmap[ord(char)]][0] // PX if ord(char) in cmap else 0
         # Repères (ignorés à la reconstruction)
@@ -83,12 +97,14 @@ def main(ttf_path, out_path):
         draw.line([(x0, base_y - xh_px), (x0 + CELL_W - 2, base_y - xh_px)], fill=GUIDE_XH)
         draw.line([(x0 + ORIGIN_X + advance_px, base_y - cap_px - 4),
                    (x0 + ORIGIN_X + advance_px, base_y + 6)], fill=GUIDE_LABEL)
-        draw.text((x0 + 3, base_y - ASC_PX - LABEL_H + 1), char, fill=GUIDE_LABEL, font=LABEL_FONT)
+        etiquette = f"◌{char}" if unicodedata.category(char) == "Mn" else char
+        draw.text((x0 + 3, base_y - ASC_PX - LABEL_H + 1), etiquette, fill=GUIDE_LABEL, font=LABEL_FONT)
         for col, row in glyph_pixels(font, char):
-            img.putpixel((x0 + ORIGIN_X + col, base_y - 1 - row), (0, 0, 0, 255))
+            if 0 <= ORIGIN_X + col < CELL_W:      # accents combinants : contours à gauche de l'origine
+                img.putpixel((x0 + ORIGIN_X + col, base_y - 1 - row), (0, 0, 0, 255))
     img.save(out_path)
-    print(f"{len(CHARSET)} caractères -> {out_path} ({img.width} × {img.height} px)")
+    print(f"{ajoutes} caractère(s) -> {out_path} ({img.width} × {img.height} px)")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2], etendre="--etendre" in sys.argv[3:])

@@ -20,15 +20,19 @@ Sorcelle reste sous OFL 1.1 : gratuite, modifiable, jamais vendue seule, crédit
 | `police.json` | Nom, version, graisses, commande de construction et textes du spécimen (lu par le site et par `tools/polices.py`) |
 | `CHANGELOG.md` | Historique des versions (tenu par release-please) |
 | `OFL.txt` | Licence de Sorcelle |
+| `FONTLOG.txt` | Description et historique de la police (recommandé par l'OFL) |
+| `documentation/` | Brief, audit, spécification et contrôle de la version 1.0 |
 | `sources/Jacquard24-Regular.ttf` + `sources/OFL.txt` | Police d'origine et sa licence |
-| `planche.png` | Les 131 caractères (base de travail, retouchable dans Aseprite) |
+| `planche.png` | Les 329 caractères (base de travail, retouchable dans Aseprite) |
 | `glyphs_extra.json` | Glyphes ajoutés hors planche (λ) |
 | `grid.py` | Géométrie de la planche (taille des cases, liste des caractères) |
-| `extract.py` | Police → planche |
+| `extract.py` | Police → planche (`--etendre` : ajoute les cases des caractères nouveaux de `grid.py`) |
 | `build.py` | Planche → `dist/` : Regular, SemiBold et Bold, en `.ttf` et `.woff2` |
 | `weights.py` | Spécimen des trois graisses (`images/graisses.png`) et lecture OCR de chacune |
 | `design_caps.py` | Dessine sur la planche les 26 capitales lisibles, leurs accentuées, Œ, Æ, le x minuscule et ✦ |
 | `design_lower.py` | Dessine les minuscules, leurs accentuées, œ, æ, les chiffres et la ponctuation (à lancer après `design_caps.py`) |
+| `design_accents.py` | Dessine les accents (seuls et combinants) et compose les lettres accentuées de GF Latin Core, ß, ẞ, Ł, Ø, Þ, Ŋ… (à lancer après `design_lower.py`) |
+| `design_symboles.py` | Dessine les 28 symboles de GF Latin Core : $ € £ ¥ ¢ ° × ÷ ™ ® ¶ ¿ ¡ { } \\ \| ~ • ‹ › “ ” „ ‘ ‚ − · (à lancer après `design_accents.py`) |
 | `variants.py` | Génère plusieurs styles de capitales et `variantes/comparaison.png` pour choisir |
 | `variants_minuscules.py` | Compare les deux styles de minuscules |
 | `specimen.py` | Aperçu Sorcelle / Jacquard 24 côte à côte (`images/specimen.png`) |
@@ -88,7 +92,10 @@ Toute la police est redessinée dans le même style « lombarde arrondie », sau
   a à deux étages (≠ o), l avec sortie à droite (≠ I et 1), g à crochet ouvert. Accentuées, œ et æ suivent.
 - **Chiffres** alignés (23 px, un peu sous les capitales) : 0 plus étroit et barré (≠ O), 1 avec long drapeau et socle.
 - **Ponctuation** redessinée au même poids : points carrés, guillemets « », tirets, parenthèses, @, &, #, %…
-- **Nouveaux glyphes** ✦ (U+2726) et λ (U+03BB).
+- **GF Latin Core entier** : 143 lettres accentuées composées à partir des lettres de la planche (virgule souscrite
+  pour le roumain et le letton, caron en apostrophe sur ď ľ ť Ľ, ẞ distinct du B), accents seuls et combinants, et
+  28 symboles ($ € £ ¥ ¢ ° × ÷ ™ ® ¶ ¿ ¡ { } guillemets…). Détails : [`documentation/`](documentation/).
+- **Nouveaux glyphes** ✦ (U+2726), λ (U+03BB) et Λ (U+039B).
 - Hauteurs de Jacquard conservées : x = 17 px, capitales et hampes = 25 px, jambages = 7 px.
 - Un seul contour par forme et un petit pont sur les jointures diagonales : pas de stries ni de trous à l'anticrénelage
   (`images/stries-avant-apres.png`).
@@ -102,10 +109,10 @@ l'intérieur des lettres restent lisibles.
 | Graisse | Fichier | CSS | Lecture OCR (7 phrases) |
 | --- | --- | --- | --- |
 | Regular | `Sorcelle-Regular.woff2` | `font-weight: 400` | 99,6 % |
-| SemiBold | `Sorcelle-SemiBold.woff2` | `font-weight: 600` | 98,7 % |
-| Bold | `Sorcelle-Bold.woff2` | `font-weight: 700` | 99,5 % |
+| SemiBold | `Sorcelle-SemiBold.woff2` | `font-weight: 600` | 99,1 % |
+| Bold | `Sorcelle-Bold.woff2` | `font-weight: 700` | 99,1 % |
 
-Les glyphes hors de la planche (rares symboles hérités de Jacquard 24) restent en Regular dans les trois fichiers.
+Tous les caractères de GF Latin Core sont sur la planche : les trois graisses s'appliquent à chacun.
 
 ## Lisibilité mesurée (24/10/2026)
 

@@ -2,9 +2,9 @@
   "id": "sorcelle",
   "nom": "Sorcelle",
   "version": "0.6.0",
-  "statut": "bêta",
+  "statut": "stable",
   "resume": "Pixel « lombarde arrondie » pour les titres de mon portfolio.",
-  "description": "Sorcelle redessine Jacquard 24 dans un style lombarde arrondie : capitales romaines à fûts de 5 px, minuscules rondes, chiffres et ponctuation au même poids, et une étoile ✦ en ornement. Elle est faite pour les titres, nette à 43 et 86 px.",
+  "description": "Sorcelle redessine Jacquard 24 dans un style lombarde arrondie : capitales romaines à fûts de 5 px, minuscules rondes, chiffres, ponctuation et symboles au même poids, et une étoile ✦ en ornement. Elle couvre GF Latin Core : les langues d’Europe de l’Ouest et centrale, dans les trois graisses. Elle est faite pour les titres, nette à 43 et 86 px.",
   "dessin": "Danaé Albrecht--Martin",
   "licence": "OFL-1.1",
   "origine": {
