@@ -7,6 +7,7 @@ Usage (depuis la racine du dépôt) :
   python tools/polices.py empaqueter <id> [--sortie dossier]
   python tools/polices.py site [--sortie _site]
   python tools/polices.py npm <id> [--sortie npm]
+  python tools/polices.py npm-confiance <id> [--essai]
   python tools/polices.py apercus [id ...]
   python tools/polices.py tag <id>
   python tools/polices.py nouvelle <id> "<Nom>"
@@ -34,6 +35,7 @@ URL_DEPOT = "https://github.com/dalbrechtmartin/fonts"
 URL_SITE = "https://dalbrechtmartin.github.io/fonts/"
 PORTEE_NPM = "@danaedev"
 AUTRICE = "Danaé Albrecht--Martin (https://danaedev.fr)"
+WORKFLOW_PUBLICATION = "release-please.yml"
 NON_PUBLIEE = "0.0.0"
 CLES_OBLIGATOIRES = ("id", "nom", "version", "resume", "dessin", "licence", "graisses", "specimen")
 EXTENSIONS = ("otf", "ttf", "woff2")
@@ -328,6 +330,16 @@ Sans bundler : `@import url("https://cdn.jsdelivr.net/npm/{nom}@{police["version
     return dossier
 
 
+def confiance_npm(police, essai):
+    """Autorise le workflow de release à publier le paquet (trusted publishing) ; npm demande la 2FA."""
+    commande = [shutil.which("npm") or "npm", "trust", "github", nom_npm(police), "--file", WORKFLOW_PUBLICATION,
+                "--repo", URL_DEPOT.removeprefix("https://github.com/"), "--allow-publish"]
+    if essai:
+        commande.append("--dry-run")
+    print(" ".join(["npm", *commande[1:]]), flush=True)
+    subprocess.run(commande, check=True)
+
+
 # --- apercus -------------------------------------------------------------------------------------
 
 def apercus(police):
@@ -415,6 +427,9 @@ def main():
     commande_npm = commandes.add_parser("npm")
     commande_npm.add_argument("id")
     commande_npm.add_argument("--sortie", type=Path, default=RACINE / "npm")
+    commande_confiance = commandes.add_parser("npm-confiance")
+    commande_confiance.add_argument("id")
+    commande_confiance.add_argument("--essai", action="store_true", help="montrer sans rien changer (--dry-run)")
     commandes.add_parser("tag").add_argument("id")
     commande_nouvelle = commandes.add_parser("nouvelle")
     commande_nouvelle.add_argument("id")
@@ -437,6 +452,8 @@ def main():
         site(arguments.sortie.resolve())
     elif arguments.commande == "npm":
         paquet_npm(charger(arguments.id), arguments.sortie.resolve())
+    elif arguments.commande == "npm-confiance":
+        confiance_npm(charger(arguments.id), arguments.essai)
     elif arguments.commande == "apercus":
         for id_police in arguments.ids or tous_les_id():
             apercus(charger(id_police))

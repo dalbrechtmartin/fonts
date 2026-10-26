@@ -114,7 +114,7 @@ dans `compilees/` (ou une commande `construction`), vérifier, puis committer `f
 
 npm ne permet de déclarer la publication depuis GitHub Actions (trusted publishing) que pour un paquet qui existe déjà :
 
-1. avoir le scope `@danaedev` sur npmjs.com (compte ou organisation `danaedev`) ;
+1. être membre de l'organisation npm `danaedev`, avec la 2FA activée, et connectée (`npm login`) ;
 2. publier la première version à la main :
 
    ```bash
@@ -122,8 +122,15 @@ npm ne permet de déclarer la publication depuis GitHub Actions (trusted publish
    npm publish ./npm/<id> --access public
    ```
 
-3. sur npmjs.com, dans *Settings* du paquet, ajouter le *Trusted Publisher* GitHub Actions : dépôt
-   `dalbrechtmartin/fonts`, workflow `release-please.yml`. Les versions suivantes partent ensuite avec la release.
+3. autoriser `release-please.yml` à publier le paquet (`npm trust github`, 2FA demandée ; `--essai` pour voir sans
+   rien changer) :
+
+   ```bash
+   python tools/polices.py npm-confiance <id>
+   ```
+
+Les versions suivantes partent ensuite avec la release. La première doit arriver dans les 2 jours, sinon l'autorisation
+expire : `npm trust list @danaedev/<id>`, `npm trust revoke @danaedev/<id> --id=<id-confiance>`, puis la recréer.
 
 Les images du README d'une police se régénèrent avec `python tools/polices.py apercus <id>`.
 
