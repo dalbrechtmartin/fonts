@@ -9,6 +9,7 @@ Usage : python legibility.py sources/Jacquard24-Regular.ttf dist/Sorcelle-Regula
 """
 import difflib
 import itertools
+import os
 import subprocess
 import sys
 import tempfile
@@ -34,9 +35,11 @@ def ocr(font_path, text):
     left, top, right, bottom = font.getbbox(text)
     img = Image.new("L", (right + 80, bottom + 80), 255)
     ImageDraw.Draw(img).text((40, 40), text, font=font, fill=0)
-    with tempfile.NamedTemporaryFile(suffix=".png") as tmp:
-        img.save(tmp.name)
-        out = subprocess.run(["tesseract", tmp.name, "-", "--psm", "7", "-l", "eng"],
+    # Dossier temporaire plutôt que NamedTemporaryFile : sous Windows, un fichier encore ouvert ne peut pas être réécrit
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        image_path = os.path.join(tmp_dir, "ocr.png")
+        img.save(image_path)
+        out = subprocess.run(["tesseract", image_path, "-", "--psm", "7", "-l", "eng"],
                              capture_output=True, text=True).stdout.strip()
     return out
 
