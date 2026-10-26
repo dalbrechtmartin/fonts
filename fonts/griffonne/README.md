@@ -7,7 +7,7 @@
 
 Une police au pinceau où chaque lettre cache un chat : des oreilles sur les hampes, des yeux dans les panses, des queues aux terminaisons. Lisible dès 16 px, féline dès le premier regard.
 
-- **Version** 1.000 · **Licence** [SIL Open Font License 1.1](OFL.txt) · **Autrice** Danaé ALBRECHT--MARTIN
+- **Version** : voir le [CHANGELOG](CHANGELOG.md) · **Licence** [SIL Open Font License 1.1](OFL.txt) · **Autrice** Danaé ALBRECHT--MARTIN
 - **8 langues** (couverture GF Latin Core, 319 caractères) : français, anglais, allemand, espagnol, polonais, tchèque, roumain, turc
 - **Spécimen** : [en ligne](https://dalbrechtmartin.github.io/fonts/#griffonne), ou `specimen/index.html` (thèmes clair et sombre, fonctions à essayer)
 
@@ -55,10 +55,9 @@ Les lettres sont dessinées en code (`sources/generateur/`) : un squelette par l
 
 Dans le dépôt [fonts](https://github.com/dalbrechtmartin/fonts), les polices compilées de `fonts/` sont versionnées telles quelles :
 la CI du dépôt les vérifie, les publie sur le site et les joint aux releases, sans relancer cette chaîne (elle demande
-fontmake, ttfautohint et Font Bakery). Pour une nouvelle version : mettre la version voulue dans
-`sources/Griffonne-Regular.ufo/fontinfo.plist` (`versionMajor`, `versionMinor`, ex. 1.1.0 → 1 et 100), relancer
-la chaîne ci-dessous depuis ce dossier, puis committer les nouveaux fichiers de `fonts/` avec la release PR.
-`python tools/polices.py verifier griffonne` signale un écart entre la version de `police.json` et celle des fichiers.
+fontmake, ttfautohint et Font Bakery). La version n'est jamais à écrire à la main : `python tools/polices.py construire`
+copie ces fichiers et y écrit celle de `police.json`, tenue par release-please. Relancer la chaîne seulement quand le dessin
+change, puis committer les nouveaux fichiers de `fonts/`.
 
 ```bash
 python -m venv .venv && source .venv/Scripts/activate   # PowerShell : .venv\Scripts\Activate.ps1 ; macOS, Linux : .venv/bin/activate

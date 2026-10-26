@@ -97,8 +97,8 @@ Chaque police a sa propre version (semver), son `CHANGELOG.md` et ses tags (`gri
    Elle n'a pas de CI : GitHub ne lance pas les workflows sur une PR créée par GitHub Actions.
 4. La fusionner : tag, release et zip, puis le site se met à jour.
 
-La version écrite dans les fichiers de police vient de `police.json` (Sorcelle) ou se reconstruit à la main (Griffonne,
-voir son README).
+La version écrite dans les fichiers de police vient toujours de `police.json` : `construire` l'écrit aussi dans les
+polices fournies compilées (Griffonne), et `verifier` refuse un écart.
 
 ### Ajouter une police
 

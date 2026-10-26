@@ -117,13 +117,26 @@ def construire(police):
         for fichier in compilees.rglob("*"):
             if fichier.suffix.lstrip(".") in EXTENSIONS:
                 shutil.copy2(fichier, sortie / fichier.name)
-        print(f"[{police['id']}] fichiers copiés depuis {compilees.relative_to(RACINE)}")
+                ecrire_revision(sortie / fichier.name, police["version"])
+        print(f"[{police['id']}] fichiers copiés depuis {compilees.relative_to(RACINE)}, "
+              f"révision {revision_opentype(police['version'])}")
+
+
+def ecrire_revision(fichier, version):
+    """Écrit la version de police.json dans une police fournie compilée : head.fontRevision, noms 3 et 5."""
+    fonte = TTFont(fichier)
+    revision = revision_opentype(version)
+    fonte["head"].fontRevision = float(revision)
+    for nom in fonte["name"].names:
+        if nom.nameID in (3, 5):
+            nom.string = re.sub(r"\d+\.\d{3}", revision, nom.toUnicode(), count=1)
+    fonte.save(fichier)
 
 
 # --- verifier ------------------------------------------------------------------------------------
 
 def verifier(police):
-    erreurs, alertes = [], []
+    erreurs = []
     id_police = police["id"]
     for cle in CLES_OBLIGATOIRES:
         if cle not in police:
@@ -162,15 +175,11 @@ def verifier(police):
             absents = sorted({car for car in texte_specimen if not car.isspace() and ord(car) not in fonte.getBestCmap()})
             if absents:
                 erreurs.append(f"{fichier.name} : glyphes absents du spécimen : {' '.join(absents)}")
-            # Une police construite ici lit sa version dans police.json : un écart est une erreur.
-            # Une police fournie compilée garde la sienne jusqu'à sa reconstruction.
+            # construire écrit la version de police.json dans chaque police : un écart est une erreur
             attendue = revision_opentype(police["version"])
             if f"{fonte['head'].fontRevision:.3f}" != f"{float(attendue):.3f}":
-                (erreurs if "construction" in police else alertes).append(
-                    f"{fichier.name} : révision {fonte['head'].fontRevision:.3f} ≠ {attendue}"
-                    f" (version {police['version']}), à reconstruire")
-    for alerte in alertes:
-        print(f"[{id_police}] attention : {alerte}")
+                erreurs.append(f"{fichier.name} : révision {fonte['head'].fontRevision:.3f} ≠ {attendue}"
+                               f" (version {police['version']}), à reconstruire")
     for erreur in erreurs:
         print(f"[{id_police}] ERREUR : {erreur}")
     if not erreurs:
