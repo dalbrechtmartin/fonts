@@ -42,8 +42,8 @@ def revision(version):
 BRIDGE = 0.3
 WEIGHTS = {400: ("Regular", 0), 600: ("SemiBold", 1), 700: ("Bold", 2)}
 COPYRIGHT = ("Copyright 2023 The Soft Type Project Authors (https://github.com/scfried/soft-type-jacquard). "
-             "Copyright 2026 Danaé Albrecht--Martin (https://danaedev.fr), modifications de Jacquard 24.")
-CREATRICE = "Danaé Albrecht--Martin"
+             "Copyright 2026 Danaé ALBRECHT--MARTIN (https://danaedev.fr), modifications de Jacquard 24.")
+CREATRICE = "Danaé ALBRECHT--MARTIN"
 CENTRE_ACCENT_COMBINANT = -8    # colonne du centre d'un accent combinant (chasse nulle, au-dessus de la lettre d'avant)
 ACCENTS_DESSOUS = {0x326, 0x327, 0x328}
 

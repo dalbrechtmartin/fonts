@@ -34,7 +34,7 @@ MANIFESTE_RELEASE = RACINE / ".release-please-manifest.json"
 URL_DEPOT = "https://github.com/dalbrechtmartin/fonts"
 URL_SITE = "https://dalbrechtmartin.github.io/fonts/"
 PORTEE_NPM = "@danaedev"
-AUTRICE = "Danaé Albrecht--Martin (https://danaedev.fr)"
+AUTRICE = "Danaé ALBRECHT--MARTIN (https://danaedev.fr)"
 WORKFLOW_PUBLICATION = "release-please.yml"
 NON_PUBLIEE = "0.0.0"
 CLES_OBLIGATOIRES = ("id", "nom", "version", "resume", "dessin", "licence", "graisses", "specimen")
@@ -390,7 +390,7 @@ def nouvelle(id_police, nom):
         "statut": "brouillon",
         "resume": "",
         "description": "",
-        "dessin": "Danaé Albrecht--Martin",
+        "dessin": "Danaé ALBRECHT--MARTIN",
         "licence": "OFL-1.1",
         "etiquettes": [],
         "graisses": [{"nom": "Regular", "poids": 400}],
@@ -404,7 +404,7 @@ def nouvelle(id_police, nom):
     (dossier / "README.md").write_text(f"# {nom}\n\nÀ décrire.\n", encoding="utf-8")
     # Texte de l'OFL repris de Jacquard 24, avec ma ligne de copyright à la place de la sienne
     licence = (POLICES / "sorcelle" / "sources" / "OFL.txt").read_text(encoding="utf-8").split("\n", 1)[1]
-    (dossier / "OFL.txt").write_text(f"Copyright 2026 Danaé Albrecht--Martin (https://danaedev.fr)\n{licence}",
+    (dossier / "OFL.txt").write_text(f"Copyright 2026 Danaé ALBRECHT--MARTIN (https://danaedev.fr)\n{licence}",
                                      encoding="utf-8")
     config = json.loads(CONFIG_RELEASE.read_text(encoding="utf-8"))
     config["packages"][f"fonts/{id_police}"] = {
