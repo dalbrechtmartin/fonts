@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/dalbrechtmartin/fonts/compare/griffonne-v1.0.0...griffonne-v1.0.1) (2026-10-26)
+
+
+### Bug Fixes
+
+* **griffonne:** drop the reserved font name ([8b89145](https://github.com/dalbrechtmartin/fonts/commit/8b89145a51a2e767a627cb0ccbe5f8793f40691e))
+
 ## 1.0.0 (2026-10-26)
 
 

@@ -1,22 +1,42 @@
 {
   "id": "griffonne",
   "nom": "Griffonne",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "statut": "stable",
   "resume": "Pinceau irrégulier où chaque lettre cache un chat.",
   "description": "Griffonne est une police au pinceau générée en code : des oreilles sur les hampes, des yeux dans les panses, des queues aux terminaisons. Trois tracés alternent pour que deux lettres voisines ne soient jamais identiques. Lisible dès 16 px, féline dès le premier regard, elle couvre GF Latin Core (8 langues).",
   "dessin": "Danaé Albrecht--Martin",
   "licence": "OFL-1.1",
-  "etiquettes": ["pinceau", "chat", "affiches"],
+  "etiquettes": [
+    "pinceau",
+    "chat",
+    "affiches"
+  ],
   "graisses": [
-    { "nom": "Regular", "poids": 400 }
+    {
+      "nom": "Regular",
+      "poids": 400
+    }
   ],
   "compilees": "fonts",
   "fonctions": [
-    { "code": "calt", "libelle": "Pinceau (3 tracés qui alternent)", "parDefaut": true },
-    { "code": "ss01", "libelle": "Chats complets (moustaches)" },
-    { "code": "case", "libelle": "Signes centrés sur les capitales" },
-    { "code": "zero", "libelle": "Zéro barré" }
+    {
+      "code": "calt",
+      "libelle": "Pinceau (3 tracés qui alternent)",
+      "parDefaut": true
+    },
+    {
+      "code": "ss01",
+      "libelle": "Chats complets (moustaches)"
+    },
+    {
+      "code": "case",
+      "libelle": "Signes centrés sur les capitales"
+    },
+    {
+      "code": "zero",
+      "libelle": "Zéro barré"
+    }
   ],
   "specimen": {
     "titre": "Griffonne",
