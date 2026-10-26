@@ -32,6 +32,8 @@ a, button, label[for], .gr-check, summary { cursor: pointer; }
 
 /* ---------- Une police ---------- */
 .polices { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-16); }
+/* Place réservée aux fiches tant que polices.json n'est pas chargé : le pied de page ne remonte pas puis redescend */
+.polices:empty { min-height: 100vh; }
 .police { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-12); scroll-margin-top: var(--space-6); padding-top: var(--space-12); border-top: 6px double var(--gilding); }
 .police__tete { display: grid; gap: var(--space-4); }
 .police__nom { margin: 0; font-size: 2.6875rem; line-height: 1.1; font-weight: 400; overflow-wrap: anywhere; }

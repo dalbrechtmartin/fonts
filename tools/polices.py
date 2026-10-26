@@ -266,9 +266,33 @@ def site(sortie):
             "sources": f"{URL_DEPOT}/tree/main/fonts/{id_police}",
         })
         catalogue.append(fiche)
+    prerendre_accueil(sortie / "index.html", catalogue)
     (sortie / "polices.json").write_text(json.dumps({"depot": URL_DEPOT, "polices": catalogue},
                                                     ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"-> {sortie} ({len(catalogue)} police(s))")
+
+
+def prerendre_accueil(page, catalogue):
+    """Écrit dans index.html ce qui est connu au build (navigation, sommaire, statistiques) : rien ne bouge au chargement."""
+    liens = "".join(f'<li><a href="#{police["id"]}">{html.escape(police["nom"])}</a></li>' for police in catalogue)
+    vignettes = "".join(
+        f'<li><a class="gr-tile" href="#{police["id"]}">'
+        f'<span class="gr-tile__art gr-frame" aria-hidden="true" style="font-family: &quot;essai-{police["id"]}&quot;">Aa</span>'
+        f'<span class="gr-tile__name">{html.escape(police["nom"])}</span>'
+        f'<span class="gr-tile__kind">Version {police["version"]} · {html.escape(police["resume"])}</span></a></li>'
+        for police in catalogue)
+    nombre_glyphes = sum(len(police["glyphes"]) for police in catalogue)
+    statistiques = f'{len(catalogue)} police{"s" if len(catalogue) > 1 else ""} · {nombre_glyphes} glyphes au total'
+    texte = page.read_text(encoding="utf-8")
+    for vide, plein in (('<ul id="navigation"></ul>', f'<ul id="navigation">{liens}</ul>'),
+                        ('id="sommaire" aria-label="Liste des polices"></ul>',
+                         f'id="sommaire" aria-label="Liste des polices">{vignettes}</ul>'),
+                        ('id="statistiques" aria-live="polite">Chargement…</p>',
+                         f'id="statistiques" aria-live="polite">{statistiques}</p>')):
+        if texte.count(vide) != 1:
+            sys.exit(f"{page.name} : emplacement introuvable pour le pré-rendu : {vide}")
+        texte = texte.replace(vide, plein)
+    page.write_text(texte, encoding="utf-8")
 
 
 # --- npm -----------------------------------------------------------------------------------------

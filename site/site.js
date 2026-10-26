@@ -369,34 +369,17 @@
     return article;
   }
 
-  function construireVignette(police) {
-    var lien = creer('a', { 'class': 'gr-tile', href: '#' + police.id });
-    var apercu = creer('span', { 'class': 'gr-tile__art gr-frame', 'aria-hidden': 'true' }, 'Aa');
-    apercu.style.fontFamily = famille(police);
-    lien.append(apercu, creer('span', { 'class': 'gr-tile__name' }, police.nom),
-      creer('span', { 'class': 'gr-tile__kind' }, 'Version ' + police.version + ' · ' + police.resume));
-    var element = creer('li');
-    element.appendChild(lien);
-    return element;
-  }
-
   fetch('polices.json')
     .then(function (reponse) { if (!reponse.ok) throw new Error(reponse.status); return reponse.json(); })
     .then(function (donnees) {
-      var navigation = document.getElementById('navigation');
-      var sommaire = document.getElementById('sommaire');
+      // Navigation, sommaire et statistiques sont déjà dans index.html (pré-rendus par tools/polices.py site)
       var conteneur = document.getElementById('polices');
       donnees.polices.forEach(function (police) {
         chargerPolice(police);
-        navigation.appendChild(creer('li')).appendChild(creer('a', { href: '#' + police.id }, police.nom));
-        sommaire.appendChild(construireVignette(police));
         var article = conteneur.appendChild(construirePolice(police, donnees.depot));
         // L'historique s'ajoute une fois l'article dans la page : ses panneaux se retrouvent par id
         remplirHistorique(article, police);
       });
-      var nombreGlyphes = donnees.polices.reduce(function (total, police) { return total + Array.from(police.glyphes).length; }, 0);
-      document.getElementById('statistiques').textContent = donnees.polices.length +
-        (donnees.polices.length > 1 ? ' polices' : ' police') + ' · ' + nombreGlyphes + ' glyphes au total';
       if (location.hash) {
         var cible = document.getElementById(location.hash.slice(1));
         if (cible) cible.scrollIntoView();
