@@ -1,0 +1,14 @@
+# Hooks Git locaux, installés par `npm install`
+pre-commit:
+  parallel: true
+  commands:
+    ruff:
+      glob: "*.py"
+      run: ruff check {staged_files}
+    gitleaks:
+      run: gitleaks git --staged --redact --no-banner
+
+commit-msg:
+  commands:
+    commitlint:
+      run: npx --no -- commitlint --edit {1}

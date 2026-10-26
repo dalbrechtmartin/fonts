@@ -66,6 +66,19 @@ python tools/polices.py verifier         # toutes les polices, ou : verifier sor
 Contrôle les clés de `police.json`, la licence, le changelog, la famille et la graisse de chaque fichier, les glyphes du
 spécimen, la révision écrite dans la police et l'accord avec `.release-please-manifest.json`. Code de sortie 1 en cas d'erreur.
 
+### Hooks Git
+
+Une fois par poste, depuis la racine (Node 20 ou plus) :
+
+```bash
+npm install                              # lefthook et commitlint, puis installe les hooks
+pip install -r requirements-dev.txt      # ruff
+winget install Gitleaks.Gitleaks         # macOS : brew install gitleaks
+```
+
+À chaque commit : `ruff check` sur les fichiers Python indexés et `gitleaks` (secrets) ; le message doit suivre
+Conventional Commits (`commitlint`). Lint de tout le dépôt : `ruff check .`.
+
 ## Déploiement
 
 Tout passe par GitHub Actions, sans variable ni secret :

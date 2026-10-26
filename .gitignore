@@ -16,3 +16,6 @@ npm/
 .DS_Store
 Thumbs.db
 *.sw?
+
+# --- Node (hooks) ---
+node_modules/
