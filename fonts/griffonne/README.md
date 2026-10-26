@@ -8,7 +8,7 @@
 Une police au pinceau où chaque lettre cache un chat : des oreilles sur les hampes, des yeux dans les panses, des queues aux terminaisons. Lisible dès 16 px, féline dès le premier regard.
 
 - **Version** : voir le [CHANGELOG](CHANGELOG.md) · **Licence** [SIL Open Font License 1.1](OFL.txt) · **Autrice** Danaé ALBRECHT--MARTIN
-- **8 langues** (couverture GF Latin Core, 319 caractères) : français, anglais, allemand, espagnol, polonais, tchèque, roumain, turc
+- **8 langues** (jeu GF Latin Core, 317 glyphes visibles) : français, anglais, allemand, espagnol, polonais, tchèque, roumain, turc
 - **Spécimen** : [en ligne](https://dalbrechtmartin.github.io/fonts/#griffonne), ou `specimen/index.html` (thèmes clair et sombre, fonctions à essayer)
 
 ## Ce qu’elle sait faire
@@ -20,7 +20,7 @@ Une police au pinceau où chaque lettre cache un chat : des oreilles sur les ham
 | `case` | parenthèses, crochets, tirets et guillemets centrés sur les capitales | `font-feature-settings: "case" 1` |
 | `zero` | zéro barré | `font-variant-numeric: slashed-zero` |
 
-Chiffres tabulaires par défaut (les colonnes de nombres s’alignent), capitales centrées verticalement dans les boutons, typographie française complète.
+Chiffres alignés par défaut (les colonnes de nombres tombent juste), capitales centrées verticalement dans les boutons, typographie française complète.
 
 ## Installer
 
