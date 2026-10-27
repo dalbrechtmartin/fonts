@@ -47,6 +47,9 @@ DOCUMENTS = ("OFL.txt", "OFL-FAQ.txt", "FONTLOG.txt", "AUTHORS.txt", "README.md"
 # Couleurs des thèmes Parchemin et Crypte de Grimoire (fond, encre, texte secondaire)
 THEMES_APERCU = {"clair": ("#f1e9d8", "#1d1822", "#5a4f5f"), "sombre": ("#17141c", "#ece4d8", "#b3a9b8")}
 DORURE = "#d4a03a"  # gilding de Grimoire : filets décoratifs
+# Filtres « Usage » et « Style » de l'accueil : chaque police en choisit au moins un de chaque liste
+USAGES = ("Titres", "Texte courant")
+STYLES = ("Avec empattements", "Sans empattements", "Manuscrite", "Pixel", "Gothique")
 POLICE_DES_TITRES = "sorcelle"  # titres du site (Grimoire)
 MODELES = SITE / "modeles"  # pages du site (Jinja), rendues par la commande site
 # Une phrase par langue, qui utilise ses lettres propres : essai et section Langues du site.
@@ -184,6 +187,14 @@ def verifier(police):
         erreurs.append(f"absente de {CONFIG_RELEASE.name}")
     if manifeste.get(chemin) != police.get("version"):
         erreurs.append(f"{MANIFESTE_RELEASE.name} dit {manifeste.get(chemin)}, police.json dit {police.get('version')}")
+
+    for cle, permises in (("usages", USAGES), ("styles", STYLES)):
+        choisies = police.get(cle, [])
+        if not choisies:
+            erreurs.append(f"police.json : « {cle} » vide (au choix : {', '.join(permises)})")
+        for valeur in choisies:
+            if valeur not in permises:
+                erreurs.append(f"police.json : {cle} « {valeur} » inconnu (au choix : {', '.join(permises)})")
 
     texte_specimen = police["specimen"].get("titre", "") + police["specimen"].get("texte", "")
     for langue in police.get("langues", []):
@@ -594,6 +605,8 @@ def nouvelle(id_police, nom):
         "dessin": "Danaé ALBRECHT--MARTIN",
         "licence": "OFL-1.1",
         "etiquettes": [],
+        "usages": [],
+        "styles": [],
         "graisses": [{"nom": "Regular", "poids": 400}],
         "compilees": "compilees",
         "specimen": {"titre": nom, "texte": "Portez ce vieux whisky au juge blond qui fume",
