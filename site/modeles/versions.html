@@ -1,35 +1,91 @@
 {% extends "base.html" %}
-{% from "_polices.html" import faces %}
+{% from "_polices.html" import icone %}
+{% from "_changements.html" import changements %}
 {% block titre %}Versions de {{ police.nom }} · Polices de Danaé{% endblock %}
 {% block description %}Toutes les versions de la police {{ police.nom }}, avec ce qui change à chaque fois.{% endblock %}
 {% block adresse %}{{ url_site }}{{ police.id }}/versions/{% endblock %}
+
+{% macro periode(versions) %}{% if versions | length > 1 %}du {{ (versions | last).date_courte }} au {{ (versions | first).date_courte }}{% else %}le {{ (versions | first).date_courte }}{% endif %}{% endmacro %}
+{% set nombre = police.historique | length %}
 
 {% block contenu %}
 <div class="presentation">
   <nav aria-label="Fil d’Ariane" class="gr-crumbs fil">
     <ol>
       <li><a href="{{ base }}">Toutes les polices</a></li>
+      <li><a href="{{ base }}?style={{ police.styles | first | urlencode }}">{{ police.styles | first }}</a></li>
       <li><a href="{{ police.page }}">{{ police.nom }}</a></li>
       <li aria-current="page">Versions</li>
     </ol>
   </nav>
-  <section class="intro" aria-labelledby="titre">
-    <h1 id="titre" tabindex="-1">Versions de {{ police.nom }}</h1>
-    <p class="intro__accroche">{{ police.historique | length }} version{{ "s" if police.historique | length > 1 }}, la plus récente en premier. Chaque version dit ce qui change pour toi.</p>
-    <p><a class="gr-btn gr-btn--primary btn-telecharger" href="{{ police.telechargement }}" download><span class="gr-btn__star" aria-hidden="true">✦</span>Télécharger la {{ police.version }}<span class="gr-btn__star" aria-hidden="true">✦</span></a></p>
+  <section class="intro intro--accueil" aria-labelledby="titre">
+    <div class="intro__texte">
+      <h1 id="titre" tabindex="-1">Versions de {{ police.nom }}</h1>
+      <p class="intro__accroche">Ce qui a changé à chaque version, de la plus récente à la plus ancienne.</p>
+    </div>
+    <div class="versions__resume">
+      <p class="gr-meta intro__compte">{{ nombre }} version{{ "s" if nombre > 1 }}, {{ periode(police.historique) }}</p>
+      <a class="gr-btn gr-btn--primary btn-telecharger" href="{{ police.telechargement }}" download><span class="gr-btn__star" aria-hidden="true">✦</span>Télécharger la version actuelle, {{ police.version }}<span class="gr-btn__star" aria-hidden="true">✦</span></a>
+    </div>
   </section>
 </div>
 
-{% for groupe in groupes %}
-{% set groupe_recent = loop.first %}
-<section class="section" aria-labelledby="majeure-{{ groupe.majeure }}">
-  <h2 id="majeure-{{ groupe.majeure }}">Version {{ groupe.majeure }}{% if groupe.majeure == "0" %} (versions de travail){% endif %} · {{ groupe.versions | length }} version{{ "s" if groupe.versions | length > 1 }}</h2>
-  <div class="gr-accordion historique" data-accordeon>
-    {% for version in groupe.versions %}
-    {% set premiere = groupe_recent and loop.first %}
-    {% include "_version.html" %}
-    {% endfor %}
+{# Sans JavaScript, tout l'historique reste ouvert et lisible : la recherche n'apparaît qu'avec lui #}
+<section class="gr-frame chercher" aria-label="Chercher dans l’historique" data-filtre-versions hidden>
+  <div class="chercher__champs">
+    <div class="gr-field chercher__recherche">
+      <label for="recherche-versions">Chercher dans l’historique</label>
+      <span class="champ-icone">
+        {{ icone(base, "loupe") }}
+        <input id="recherche-versions" type="search" autocomplete="off" placeholder="Ex. : graisse, accent, zoom" data-recherche-versions>
+      </span>
+    </div>
+    <fieldset class="facette">
+      <legend>Type de changement</legend>
+      <div class="onglets-boutons">
+        {% for valeur, libelle in [("", "Tout"), ("Nouveautés", "Nouveautés"), ("Corrections", "Corrections")] %}
+        <button type="button" class="gr-btn bouton-choix" aria-pressed="{{ 'true' if not valeur else 'false' }}" data-type-changement="{{ valeur }}"><span class="gr-star" aria-hidden="true">✦</span><span class="bouton-choix__libelle">{{ libelle }}</span><span class="compte" data-compte></span></button>
+        {% endfor %}
+      </div>
+    </fieldset>
   </div>
+  <p class="gr-meta" aria-live="polite" data-etat-versions>Versions regroupées par version majeure. Les versions de travail sont repliées.</p>
+</section>
+
+<div class="gr-frame aucune-police" data-aucun-changement hidden>
+  <p class="aucune-police__titre">Aucun changement ne correspond.</p>
+  <p>Essaie un autre mot ou choisis « Tout ».</p>
+  <button type="button" class="gr-btn bouton-cadre" data-effacer-versions>Effacer la recherche</button>
+</div>
+
+{% for groupe in groupes %}
+{% set travail = groupe.majeure == "0" %}
+<section class="section groupe-versions" aria-labelledby="majeure-{{ groupe.majeure }}" data-groupe-versions{% if travail %} data-replie{% endif %}>
+  <h2 class="groupe-versions__titre">
+    <button type="button" class="groupe-versions__bouton" id="majeure-{{ groupe.majeure }}" aria-expanded="true" aria-controls="versions-{{ groupe.majeure }}">
+      <span class="groupe-versions__nom">{{ "Versions de travail (0.x)" if travail else "Version " ~ groupe.majeure }}</span>
+      <span class="groupe-versions__detail">{{ groupe.versions | length }} version{{ "s" if groupe.versions | length > 1 }}, {{ periode(groupe.versions) }}</span>
+      <svg class="gr-icon groupe-versions__chevron" aria-hidden="true"><use href="{{ base }}icones.svg#chevron-bas"/></svg>
+    </button>
+  </h2>
+  <ol class="versions" id="versions-{{ groupe.majeure }}" reversed>
+    {% for version in groupe.versions %}
+    <li class="version" data-version>
+      <div class="version__tete">
+        <h3 class="version__numero"><span class="gr-sr">Version </span>{{ version.version }}</h3>
+        <p class="gr-meta">{{ version.date_courte }}</p>
+        <p class="gr-meta">{{ version.type }}</p>
+      </div>
+      <div class="version__corps">
+        <div class="changements">{{ changements(version) }}</div>
+        <ul class="liens-utiles">
+          {% if version.version == police.version %}<li><a href="{{ police.telechargement }}" download>Télécharger la version {{ version.version }} (zip, {{ police.ko_zip }} Ko)</a></li>{% endif %}
+          {% if version.url %}<li><a href="{{ version.url }}">Voir le détail technique sur GitHub</a></li>{% endif %}
+        </ul>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
 </section>
 {% endfor %}
 

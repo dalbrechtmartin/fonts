@@ -37,15 +37,18 @@
 
   <header class="gr-header">
     <a class="gr-brand" href="{{ base }}">Polices<span class="marque-etoile" aria-hidden="true">✦</span></a>
-    <nav class="gr-nav" aria-label="Polices">
-      <ul>
-        {% for fiche in catalogue %}
-        <li><a href="{{ fiche.page }}"{% if police is defined and police.id == fiche.id %} aria-current="page"{% endif %}>{{ fiche.nom }}</a></li>
-        {% endfor %}
-      </ul>
-    </nav>
-    <button type="button" class="gr-btn gr-btn--ghost" id="ouvrir-options" aria-haspopup="dialog" aria-expanded="false">
-      <svg class="gr-icon" aria-hidden="true"><use href="{{ base }}icones.svg#engrenage"/></svg>Options
+    {# Recherche : vers l'accueil filtré (?q=), sauf sur l'accueil qui a la sienne #}
+    {% block recherche_entete %}
+    <form class="recherche-entete" role="search" action="{{ base }}">
+      <label class="gr-sr" for="recherche-entete">Rechercher une police</label>
+      <span class="champ-icone">
+        <svg class="gr-icon" aria-hidden="true"><use href="{{ base }}icones.svg#loupe"/></svg>
+        <input id="recherche-entete" type="search" name="q" autocomplete="off" placeholder="Ex. : chat, pixel, Sorcelle">
+      </span>
+    </form>
+    {% endblock %}
+    <button type="button" class="gr-btn gr-btn--ghost bouton-options" id="ouvrir-options" aria-haspopup="dialog" aria-expanded="false">
+      <svg class="gr-icon" aria-hidden="true"><use href="{{ base }}icones.svg#engrenage"/></svg><span class="bouton-options__libelle">Options</span>
     </button>
   </header>
 
@@ -54,7 +57,6 @@
   </main>
 
   <footer class="gr-footer">
-    <p class="ornement" aria-hidden="true">✦</p>
     <p>Polices sous licence <a href="https://openfontlicense.org">SIL Open Font License 1.1</a>. Code du site sous licence BSD 3-Clause.</p>
     <p><a href="{{ depot }}">Voir les sources et les versions sur GitHub</a> · <a href="https://danaedev.fr">danaedev.fr</a></p>
   </footer>

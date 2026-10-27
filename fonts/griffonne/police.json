@@ -12,6 +12,8 @@
     "chat",
     "affiches"
   ],
+  "usages": ["Titres", "Texte courant"],
+  "styles": ["Manuscrite"],
   "langues": [
     "français",
     "anglais",

@@ -1,0 +1,9 @@
+{# Changements d'une version : ✦ doré devant les nouveautés, ✓ turquoise devant les corrections #}
+{% macro changements(version, niveau="h4") %}
+{% for section in version.sections %}
+<{{ niveau }} class="changements__titre changements__titre--{{ 'correction' if section.titre == 'Corrections' else 'nouveaute' }}"><span class="changements__marque" aria-hidden="true">{{ "✓" if section.titre == "Corrections" else "✦" }}</span>{{ section.titre }}</{{ niveau }}>
+<ul data-section="{{ section.titre }}">
+  {% for entree in section.entrees %}<li>{{ entree | safe }}</li>{% endfor %}
+</ul>
+{% endfor %}
+{% endmacro %}

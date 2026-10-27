@@ -11,4 +11,7 @@
   <symbol id="ordinateur" viewBox="0 0 256 256"><g fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><rect x="32" y="48" width="192" height="128" rx="12"/><path d="M96 216h64M128 176v40"/></g></symbol>
   <symbol id="lien" viewBox="0 0 256 256"><g fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><path d="M112 192l-8 8a44 44 0 0 1-62-62l30-30a44 44 0 0 1 62 0"/><path d="M144 64l8-8a44 44 0 0 1 62 62l-30 30a44 44 0 0 1-62 0"/></g></symbol>
   <symbol id="info" viewBox="0 0 256 256"><g fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="96"/><path d="M128 120v56"/></g><circle cx="128" cy="84" r="10" fill="currentColor"/></symbol>
+  <symbol id="loupe" viewBox="0 0 256 256"><path d="M228.24,219.76l-51.38-51.38a86.15,86.15,0,1,0-8.48,8.48l51.38,51.38a6,6,0,0,0,8.48-8.48ZM38,112a74,74,0,1,1,74,74A74.09,74.09,0,0,1,38,112Z"/></symbol>
+  <symbol id="filtres" viewBox="0 0 256 256"><path d="M198,136a6,6,0,0,1-6,6H64a6,6,0,0,1,0-12H192A6,6,0,0,1,198,136Zm34-54H24a6,6,0,0,0,0,12H232a6,6,0,0,0,0-12Zm-80,96H104a6,6,0,0,0,0,12h48a6,6,0,0,0,0-12Z"/></symbol>
+  <symbol id="valide" viewBox="0 0 256 256"><path d="M226.24,76.24l-128,128a6,6,0,0,1-8.48,0l-56-56a6,6,0,0,1,8.48-8.48L94,191.51,217.76,67.76a6,6,0,0,1,8.48,8.48Z"/></symbol>
 </svg>
