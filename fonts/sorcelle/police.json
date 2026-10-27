@@ -1,7 +1,7 @@
 {
   "id": "sorcelle",
   "nom": "Sorcelle",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "statut": "stable",
   "resume": "Pixel « lombarde arrondie » pour les titres de mon portfolio.",
   "description": "Sorcelle redessine Jacquard 24 dans un style lombarde arrondie : capitales romaines à fûts de 5 px, minuscules rondes, chiffres, ponctuation et symboles au même poids, et une étoile ✦ en ornement. Elle est faite pour les titres, nette à 43 et 86 px, dans les trois graisses.",
