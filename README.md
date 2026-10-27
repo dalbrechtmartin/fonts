@@ -26,7 +26,7 @@ Chaque version publiée a son zip (TTF, WOFF2, OTF quand la police en a un, lice
 
 Chaque police a un `index.css` (toutes les graisses) et une feuille par graisse (`400.css`, `700.css`…).
 
-- Sans rien installer, depuis GitHub Pages :
+- Sans rien installer, depuis le site :
 
   ```css
   @import url("https://polices.danaedev.fr/fonts/sorcelle/index.css");
@@ -56,8 +56,14 @@ python -m http.server 8000 --directory _site
 ```
 
 Puis ouvrir <http://localhost:8000/> : les liens du site partent du chemin de `URL_SITE` (`tools/polices.py`), ici la
-racine du domaine. Le site est publié par GitHub Pages sur le domaine `polices.danaedev.fr` (réglage du dépôt, DNS chez
-l'hébergeur du domaine) ; les anciennes adresses `dalbrechtmartin.github.io/fonts/…` y sont redirigées par GitHub.
+racine du domaine.
+
+Tester l'image servie en production (nginx, port 8080) :
+
+```bash
+docker build -t polices .
+docker run --rm -p 8080:8080 polices
+```
 
 ## Vérifier
 
@@ -83,7 +89,17 @@ Conventional Commits (`commitlint`). Lint de tout le dépôt : `ruff check .`.
 
 ## Déploiement
 
-Tout passe par GitHub Actions, sans variable ni secret :
+Le site est servi par une image Docker (`Dockerfile` : construction Python, puis nginx non root sur le port 8080,
+`nginx/`) que Dokploy reconstruit à chaque push :
+
+| Environnement | Branche   | Particularité                  |
+| ------------- | --------- | ------------------------------ |
+| Recette       | `develop` | Protégée par mot de passe      |
+| Production    | `main`    | `polices.danaedev.fr`         |
+
+nginx ajoute les en-têtes de sécurité et autorise les autres sites à charger `/fonts/` (CORS), pour les `@import`.
+
+Versions et paquets passent par GitHub Actions, sans variable ni secret :
 
 - [`ci.yml`](.github/workflows/ci.yml) : `construire`, `verifier` et `site` à chaque push et PR vers `main` et `develop`.
 - [`pages.yml`](.github/workflows/pages.yml) : publie le site sur GitHub Pages à chaque push sur `main`.
@@ -165,6 +181,8 @@ fonts/<id>/        une police : police.json, CHANGELOG.md, OFL.txt, README.md, s
 tools/polices.py   construire, vérifier, empaqueter, site, paquet npm, aperçus, nouvelle police
 site/modeles/      pages du site (Jinja) : accueil, une page par police, ses versions, 404 ; rendues par la commande site
 site/              CSS, interactions (site.js) et copie du design system Grimoire
+Dockerfile         image du site : construction des polices et du site, puis nginx
+nginx/             configuration nginx : cache, CORS de /fonts/, en-têtes de sécurité
 ```
 
 ## Licences
