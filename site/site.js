@@ -197,6 +197,11 @@
   // ---------- Accueil : un texte pour toutes les polices ----------
   var texteCatalogue = un('[data-texte-catalogue]');
   if (texteCatalogue) {
+    // Anciens liens (accueil#griffonne, quand toutes les polices étaient sur une page) : vers la page de la police
+    if (location.hash) {
+      var anciennePolice = un('.carte-police__nom a[href$="/' + CSS.escape(location.hash.slice(1)) + '/"]');
+      if (anciennePolice) location.replace(anciennePolice.href);
+    }
     texteCatalogue.addEventListener('input', function () {
       tous('[data-exemple-catalogue]').forEach(function (exemple) {
         exemple.textContent = texteCatalogue.value.trim() || exemple.getAttribute('data-exemple-catalogue');
