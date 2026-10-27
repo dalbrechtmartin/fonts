@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/dalbrechtmartin/fonts/compare/griffonne-v1.0.1...griffonne-v1.0.2) (2026-10-27)
+
+
+### Bug Fixes
+
+* **griffonne:** write the version from police.json into the font files ([ce6e18e](https://github.com/dalbrechtmartin/fonts/commit/ce6e18eef3a40d139697044de17ed6bde00a1c33))
+* write the author name in capitals ([7eb0c35](https://github.com/dalbrechtmartin/fonts/commit/7eb0c353bebf495db4ff2df013d1ca9b40c4fe30))
+
 ## [1.0.1](https://github.com/dalbrechtmartin/fonts/compare/griffonne-v1.0.0...griffonne-v1.0.1) (2026-10-26)
 
 
