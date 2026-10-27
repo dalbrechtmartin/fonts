@@ -360,6 +360,9 @@ def fiche_du_site(police, sortie, base):
         "glyphes": [{"caractere": car, "nom": nom_unicode(car), "code": point_de_code(car)} for car in glyphes(police)],
         "historique": versions,
         "date": date_courte(versions[0]["date"]) if versions else "",
+        # Accueil : tri par date et filtre « Mise à jour » (dernière version), « dernière ajoutée » (première)
+        "date_iso": versions[0]["date"] if versions else "",
+        "date_ajout": versions[-1]["date"] if versions else "",
         "telechargement": f"{base}downloads/{archive.name}",
         "ko_zip": kilo_octets(archive),
         "css": f"{URL_SITE}fonts/{id_police}/index.css",
@@ -405,14 +408,15 @@ def site(sortie):
     modeles = Environment(loader=FileSystemLoader(MODELES), autoescape=True, undefined=StrictUndefined,
                           trim_blocks=True, lstrip_blocks=True)
     modeles.filters["json"] = json_dans_page
-    commun = {"base": base, "url_site": URL_SITE, "depot": URL_DEPOT, "catalogue": catalogue}
+    commun = {"base": base, "url_site": URL_SITE, "depot": URL_DEPOT, "catalogue": catalogue,
+              "usages": USAGES, "styles": STYLES}
 
     def rendre(modele, chemin, **valeurs):
         chemin.parent.mkdir(parents=True, exist_ok=True)
         chemin.write_text(modeles.get_template(modele).render(**commun, **valeurs), encoding="utf-8")
 
-    rendre("accueil.html", sortie / "index.html",
-           nombre_glyphes=sum(len(police["glyphes"]) for police in catalogue))
+    ajouts = [police["date_ajout"] for police in catalogue if police["date_ajout"]]
+    rendre("accueil.html", sortie / "index.html", derniere_ajout=date_courte(max(ajouts)) if ajouts else "")
     for police in catalogue:
         rendre("police.html", sortie / police["id"] / "index.html", police=police)
         rendre("versions.html", sortie / police["id"] / "versions" / "index.html", police=police,
