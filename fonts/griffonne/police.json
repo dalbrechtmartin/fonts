@@ -1,7 +1,7 @@
 {
   "id": "griffonne",
   "nom": "Griffonne",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "statut": "stable",
   "resume": "Pinceau irrégulier où chaque lettre cache un chat.",
   "description": "Griffonne est une police au pinceau générée en code : des oreilles sur les hampes, des yeux dans les panses, des queues aux terminaisons. Trois tracés alternent pour que deux lettres voisines ne soient jamais identiques. Lisible dès 16 px, féline dès le premier regard.",
