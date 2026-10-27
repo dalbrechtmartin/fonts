@@ -70,5 +70,14 @@
     "tailleParDefaut": 48,
     "taillesNettes": []
   },
-  "usage": "Texte courant dès 12 px avec un interlignage d'au moins 1,5 ; interfaces, petites tailles, malvoyance."
+  "usage": "Texte courant dès 12 px avec un interlignage d'au moins 1,5 ; interfaces, petites tailles, malvoyance.",
+  "notes": {
+    "0.2.0": {
+      "Nouveautés": [
+        "Première version publique : la version sobre de Tendrille, avec un contraste faible, des points ronds et sans ruban.",
+        "Faite pour les petites tailles (lisible dès 12 px), les interfaces et les personnes malvoyantes.",
+        "Fonctions OpenType : a d’école (ss01), points en cœur (ss02), chiffres tabulaires (tnum), zéro barré (zero) et ponctuation centrée sur les capitales (case)."
+      ]
+    }
+  }
 }
