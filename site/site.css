@@ -28,9 +28,17 @@ a, button, label[for], label:has(input), summary { cursor: pointer; }
 
 /* ---------- En-tête et pied de page ---------- */
 .marque-etoile { margin-inline-start: var(--space-2); color: var(--gold); }
-.gr-header .gr-nav { flex: 1 1 auto; }
+/* Recherche de l'en-tête : prend la place libre, 560 px au plus */
+.recherche-entete { flex: 1 1 14rem; max-width: 35rem; margin-inline-start: auto; }
+.recherche-entete input { box-sizing: border-box; width: 100%; height: 48px; padding: 0 var(--space-3) 0 44px; font-family: var(--font-body); font-size: 1.125rem; color: var(--ink); background: var(--surface-sunken); border: 2px solid var(--outline); border-radius: 0; }
+.recherche-entete input:focus-visible { border-color: var(--primary); }
+@media (max-width: 37.49rem) {
+  /* Mobile : la recherche passe sous la marque, Options garde son icône seule (nom lu par les lecteurs d'écran) */
+  .recherche-entete { order: 3; flex-basis: 100%; max-width: none; }
+  .bouton-options { min-width: 48px; padding-inline: 0; }
+  .bouton-options__libelle { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 .interrupteur { gap: var(--space-2); }
-.ornement { margin: 0 0 var(--space-2); font-family: var(--font-display); font-size: 2.6875rem; line-height: 1; color: var(--gold); }
 .gr-footer p { margin: 0 0 var(--space-2); }
 /* Bouton « Haut » aligné sur la colonne de contenu */
 .gr-top { max-width: 75rem; margin-inline: auto; padding-inline: max(var(--space-4), env(safe-area-inset-right, 0px)); box-sizing: border-box; }
@@ -54,12 +62,12 @@ a, button, label[for], label:has(input), summary { cursor: pointer; }
   .intro h1, .presentation h1 { font-size: 5.375rem; line-height: 5.375rem; }
 }
 
-/* ---------- Boutons de choix (onglets en boutons segmentés : un seul choisi) ---------- */
+/* ---------- Boutons de choix (onglets en boutons segmentés : un seul choisi) et boutons à cadre simple ---------- */
 /* Choisi : fond doux, cadre violet, ✦ et libellé souligné ; l'étoile n'est jamais soulignée */
-.bouton-choix { margin: 0; box-shadow: none; text-transform: none; letter-spacing: 0.04em; font-weight: 500; border-color: var(--outline); }
-.bouton-choix::after { display: none; }
+.bouton-choix, .bouton-cadre { margin: 0; box-shadow: none; text-transform: none; letter-spacing: 0.04em; font-weight: 500; border-color: var(--outline); }
+.bouton-choix::after, .bouton-cadre::after { display: none; }
 .bouton-choix .gr-star { display: none; color: var(--primary); }
-.bouton-choix:hover { background: var(--primary-soft); }
+.bouton-choix:hover, .bouton-cadre:hover { background: var(--primary-soft); }
 .bouton-choix[aria-pressed="true"] { padding-inline-start: 2.1em; background: var(--primary-soft); border-color: var(--primary); }
 .bouton-choix[aria-pressed="true"] .gr-star { display: block; inset-inline-start: 0.7em; }
 .bouton-choix[aria-pressed="true"] .bouton-choix__libelle { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
@@ -73,18 +81,123 @@ a, button, label[for], label:has(input), summary { cursor: pointer; }
 .bouton-icone:hover { background: var(--primary-soft); color: var(--ink); }
 .bouton-icone:active { transform: translateY(2px); }
 
-/* ---------- Accueil : catalogue ---------- */
-.catalogue { display: grid; gap: var(--space-8); }
-.catalogue__essai { max-width: 40rem; }
-.catalogue__liste { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-8); }
-.carte-police { display: grid; gap: var(--space-3); padding-top: var(--space-8); border-top: 6px double var(--gilding); }
-.carte-police__tete { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
-.carte-police__nom { margin: 0; font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 400; }
+/* ---------- Accueil ---------- */
+.intro--accueil { max-width: none; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-4) var(--space-12); }
+.intro__texte { flex: 1 1 32rem; display: grid; gap: var(--space-3); }
+.intro__accroche { max-width: 40rem; }
+.intro__compte { font-family: var(--font-ui); font-weight: 500; letter-spacing: 0.04em; }
+
+/* Champs : recherche (loupe à gauche) et nombre, de la même allure que les champs texte de Grimoire */
+.gr-field input[type="search"], .gr-field input[type="number"] { box-sizing: border-box; height: 48px; font: inherit; font-family: var(--font-body); font-size: 1.125rem; font-weight: 400; padding: 0 var(--space-3); color: var(--ink); background: var(--surface-sunken); border: 2px solid var(--outline); border-radius: 0; }
+.chercher .gr-field input[type="text"] { height: 48px; }
+.gr-field input[type="number"] { width: 6rem; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.gr-field input:focus-visible, select:focus-visible { border-color: var(--primary); }
+.champ-icone { position: relative; display: block; }
+.champ-icone .gr-icon { position: absolute; left: var(--space-3); top: 50%; translate: 0 -50%; color: var(--muted); pointer-events: none; }
+.gr-field .champ-icone input { width: 100%; padding-inline-start: 44px; }
+.chercher .gr-field label { font-weight: 500; letter-spacing: 0.04em; }
+select { box-sizing: border-box; min-height: 44px; padding: 0 var(--space-2); font-family: var(--font-body); font-size: 1.125rem; color: var(--ink); background: var(--surface-sunken); border: 2px solid var(--outline); border-radius: 0; }
+/* Compteur d'un choix ou d'une case : jamais souligné */
+.compte { font-family: var(--font-mono); font-size: 1rem; font-weight: 400; letter-spacing: 0; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bouton-choix .compte { margin-inline-start: var(--space-1); }
+.bouton-lien { min-height: 44px; padding: 0 var(--space-2); font-family: var(--font-ui); font-size: 1.125rem; font-weight: 500; color: var(--primary); background: transparent; border: 0; text-decoration: underline; text-underline-offset: 4px; white-space: nowrap; }
+.bouton-lien:hover { text-decoration-thickness: 2px; color: var(--ink); }
+/* Bouton carré à icône seule (télécharger, fermer) */
+.bouton-carre { width: 48px; min-height: 48px; padding: 0; }
+
+/* Chercher et essayer : cadre doré, champs puis filtres rapides */
+.chercher { display: grid; gap: var(--space-6); padding: var(--space-6); background: var(--surface); }
+.chercher__champs { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-6); }
+.chercher__recherche { flex: 1 1 17.5rem; }
+.chercher__texte { flex: 2 1 20rem; }
+.chercher__taille { flex: 1 1 16rem; }
+.chercher__facettes { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-12); }
+.facette { margin: 0; padding: 0; border: 0; min-width: 0; }
+.facette legend { padding: 0; margin-bottom: var(--space-2); font-family: var(--font-ui); font-size: 1.125rem; font-weight: 500; letter-spacing: 0.04em; }
+
+/* Résultats : titre, outils, filtres actifs */
+.resultats { display: grid; gap: var(--space-4); }
+.resultats__tete { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4); padding-bottom: var(--space-4); border-bottom: 2px solid var(--gilding); }
+.resultats__tete h2 { margin: 0; font-family: var(--font-display); font-size: 2rem; line-height: 2.5rem; font-weight: 400; }
+.resultats__outils { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.resultats__outils .gr-btn { margin-block: 0; }
+.resultats__tri { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-ui); font-size: 1.125rem; font-weight: 500; }
+.filtres-actifs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.filtres-actifs__titre { font-family: var(--font-ui); font-size: 1.125rem; font-weight: 500; color: var(--muted); }
+.filtres-actifs__puces { display: contents; }
+.puce-active { --frame: var(--primary); min-height: 44px; margin: 0; padding: 0 var(--space-3); gap: var(--space-2); background: var(--primary-soft); text-transform: none; letter-spacing: 0.04em; box-shadow: none; }
+.puce-active::after { display: none; }
+.puce-active .gr-icon { width: 1.1em; height: 1.1em; }
+.aucune-police { display: grid; justify-items: start; gap: var(--space-3); padding: var(--space-8); background: var(--surface); }
+.aucune-police__titre { font-weight: 700; }
+
+/* Liste des polices : une ligne par police (nom, aperçu, actions) ; vue en cartes au choix */
+.catalogue__liste { list-style: none; margin: 0; padding: 0; display: grid; }
+.carte-police { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-8); padding-block: 20px; border-bottom: 1px solid var(--gilding); }
+.carte-police__infos { flex: 1 1 18rem; display: grid; justify-items: start; gap: var(--space-1); min-width: 0; }
+.carte-police__nom { margin: 0; font-family: var(--font-display); font-size: 2rem; line-height: 2.5rem; font-weight: 400; }
 .carte-police__nom a { color: var(--ink); text-decoration: none; }
 .carte-police__nom a:hover { color: var(--primary); text-decoration: underline; }
-.carte-police__exemple { padding: var(--space-4) var(--space-6); font-size: clamp(2rem, 1.4rem + 3vw, 4rem); line-height: 1.3; color: var(--on-page); background: var(--page); overflow-wrap: anywhere; }
-.carte-police__resume { font-weight: 700; }
-.carte-police__actions { margin-top: var(--space-2); }
+.carte-police__meta, .carte-police__statut { font-family: var(--font-ui); font-size: 1.125rem; font-weight: 500; line-height: 1.5rem; color: var(--muted); }
+.carte-police__statut { display: inline-flex; align-items: center; gap: 6px; }
+.carte-police__statut--stable { color: var(--teal); }
+.carte-police__statut--autre { color: var(--gold); }
+.carte-police__apercu { flex: 999 1 30rem; min-width: 0; margin: 0; display: grid; gap: var(--space-1); padding: var(--space-2) var(--space-4); color: var(--on-page); background: var(--page); }
+.carte-police__exemple { font-size: clamp(2rem, 1.4rem + 3vw, 3.5rem); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.carte-police__note { font-family: var(--font-ui); font-size: 1.125rem; font-weight: 500; line-height: 1.5rem; }
+.carte-police__actions { flex: 0 0 auto; display: flex; gap: var(--space-2); }
+.carte-police__actions .gr-btn { margin-block: 0; text-transform: none; letter-spacing: 0.04em; }
+.catalogue__liste--cartes { grid-template-columns: repeat(auto-fill, minmax(min(100%, 22.5rem), 1fr)); gap: var(--space-6); }
+.catalogue__liste--cartes .carte-police { position: relative; flex-direction: column; align-items: stretch; gap: 0; padding: 0; border: 2px solid var(--gilding); background: var(--surface); }
+.catalogue__liste--cartes .carte-police::after { content: ""; position: absolute; inset: 3px; border: 1px solid var(--gilding); pointer-events: none; }
+.catalogue__liste--cartes .carte-police__apercu { order: -1; flex: none; height: 200px; box-sizing: border-box; padding: var(--space-4); overflow: hidden; border-bottom: 1px solid var(--gilding); align-content: start; }
+.catalogue__liste--cartes .carte-police__exemple { white-space: normal; line-height: 1.2; overflow-wrap: anywhere; }
+.catalogue__liste--cartes .carte-police__note { display: none; }
+.catalogue__liste--cartes .carte-police__infos { flex: 1 1 auto; padding: var(--space-4) var(--space-4) 0; }
+.catalogue__liste--cartes .carte-police__actions { padding: var(--space-2) var(--space-4) var(--space-4); }
+.catalogue__liste--cartes .carte-police__fiche { flex: 1 1 auto; }
+@media (max-width: 40rem) {
+  /* Mobile : nom, détails et téléchargement sur une ligne, l'aperçu dessous ; la fiche s'ouvre par le nom */
+  .chercher { padding: var(--space-4); }
+  .chercher__taille input[type="range"] { display: none; }
+  .catalogue__liste:not(.catalogue__liste--cartes) .carte-police { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2) var(--space-3); }
+  .catalogue__liste:not(.catalogue__liste--cartes) .carte-police__apercu { grid-column: 1 / -1; }
+  .catalogue__liste:not(.catalogue__liste--cartes) .carte-police__actions { grid-column: 2; grid-row: 1; align-self: start; }
+  /* Une seule colonne : la vue en cartes n'apporterait rien */
+  .resultats__vue { display: none; }
+  .catalogue__liste:not(.catalogue__liste--cartes) .carte-police__note, .carte-police__fiche { display: none; }
+  .carte-police__exemple { white-space: normal; overflow-wrap: anywhere; }
+}
+
+/* Afficher plus */
+.plus-de-polices { display: grid; justify-items: center; gap: var(--space-3); padding-top: var(--space-4); }
+.plus-de-polices__barre { width: 20rem; max-width: 100%; height: 8px; background: var(--surface-sunken); border: 1px solid var(--outline); }
+.plus-de-polices__barre div { height: 100%; background: var(--gold); }
+
+/* Comment utiliser ces polices */
+.etapes__liste--accueil li strong { font-family: var(--font-ui); font-size: 1.5rem; line-height: 2rem; }
+.etapes__liste--accueil li span { font-size: 1.125rem; line-height: 1.75rem; }
+
+/* Feuille « Plus de filtres » : panneau à droite, plein écran sur mobile */
+.feuille-filtres { box-sizing: border-box; width: min(100%, 460px); max-width: 100%; height: 100%; max-height: 100%; margin: 0 0 0 auto; padding: 0; color: var(--ink); background: var(--surface); border: 0; border-inline-start: 6px double var(--gilding); box-shadow: -6px 0 0 0 var(--shadow-ink); }
+.feuille-filtres::backdrop { background: rgb(0 0 0 / 0.4); }
+.feuille-filtres__cadre { height: 100%; display: flex; flex-direction: column; }
+.feuille-filtres__tete { flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-3) var(--space-6); border-bottom: 1px solid var(--gilding); }
+.feuille-filtres__tete h2 { margin: 0; font-family: var(--font-display); font-size: 2rem; line-height: 2.5rem; font-weight: 400; }
+.feuille-filtres__tete .gr-btn { margin: 0; }
+.feuille-filtres__corps { flex: 1 1 auto; overflow-y: auto; display: grid; align-content: start; gap: var(--space-6); padding: var(--space-4) var(--space-6) var(--space-6); }
+.feuille-filtres__pied { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-3); padding: var(--space-3) var(--space-6) var(--space-4); border-top: 6px double var(--gilding); }
+.feuille-filtres__appliquer { flex: 1 1 16rem; min-height: 56px; margin-block: 0; }
+.groupe-filtre { margin: 0; padding: 0; border: 0; min-width: 0; display: grid; gap: var(--space-1); }
+.groupe-filtre legend { padding: 0; margin-bottom: var(--space-2); font-family: var(--font-ui); font-size: 1.25rem; font-weight: 700; }
+.groupe-filtre__legende { display: flex; align-items: center; gap: var(--space-2); }
+.groupe-filtre .bouton-lien { justify-self: start; padding: 0; }
+.case-filtre { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; }
+.case-filtre input { flex: none; width: 24px; height: 24px; margin: 0; accent-color: var(--primary); }
+.case-filtre__texte { flex: 1 1 auto; display: grid; }
+.case-filtre__aide { font-size: 1rem; line-height: 1.5rem; color: var(--muted); }
+.aide-filtre { display: grid; gap: 6px; margin-bottom: var(--space-2); padding: var(--space-3) var(--space-4); font-size: 1.125rem; line-height: 1.75rem; background: var(--bg); border: 2px solid var(--gilding); }
+@media (max-width: 40rem) { .feuille-filtres { width: 100%; border-inline-start: 0; box-shadow: none; } }
 
 /* ---------- Page d'une police : présentation et fiche ---------- */
 .presentation { display: grid; gap: var(--space-6); }
@@ -247,3 +360,40 @@ a, button, label[for], label:has(input), summary { cursor: pointer; }
 .changements h4 { margin: 0; font-family: var(--font-ui); font-size: 1.25rem; line-height: 1.5rem; font-weight: 700; }
 .changements ul { margin: 0; padding-inline-start: 1.25em; display: grid; gap: var(--space-1); font-size: 1.125rem; line-height: 1.75rem; }
 .changements ul li::marker { content: "✦  "; font-family: var(--font-display); color: var(--gold); }
+
+/* Titre de section avec un compteur à droite */
+.section__ligne { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-2) var(--space-6); }
+.section__ligne h2 { margin: 0; font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 400; }
+.glyphes__colonne { display: grid; gap: var(--space-4); align-content: start; min-width: 0; }
+
+/* Changements d'une version : ✦ doré pour les nouveautés, ✓ turquoise pour les corrections */
+.changements__marque { margin-inline-end: var(--space-2); font-family: var(--font-display); }
+.changements__titre--nouveaute .changements__marque { color: var(--gold); }
+.changements__titre--correction .changements__marque { color: var(--teal); }
+.version-resumee { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-4); text-align: start; }
+.version-resumee__numero { font-family: var(--font-display); font-size: 2rem; line-height: 2.5rem; font-weight: 400; text-transform: none; letter-spacing: 0; }
+.version-resumee__detail { font-family: var(--font-ui); font-size: 1.125rem; font-weight: 500; color: var(--muted); text-transform: none; }
+
+/* ---------- Page des versions ---------- */
+.versions__resume { display: grid; justify-items: start; gap: var(--space-3); }
+.groupe-versions { gap: var(--space-2); }
+.groupe-versions__titre { margin: 0; }
+.groupe-versions__bouton { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-4); width: 100%; min-height: 48px; padding: var(--space-2) 0; text-align: start; color: var(--ink); background: none; border: 0; border-bottom: 2px solid var(--gilding); }
+.groupe-versions__nom { font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 400; }
+.groupe-versions__detail { font-family: var(--font-ui); font-size: 1.125rem; font-weight: 500; color: var(--muted); }
+.groupe-versions__chevron { margin-inline-start: auto; align-self: center; transition: rotate var(--duration-fast) var(--ease-enter); }
+.groupe-versions__bouton[aria-expanded="false"] .groupe-versions__chevron { rotate: -90deg; }
+.groupe-versions__bouton:hover .groupe-versions__nom { text-decoration: underline; text-underline-offset: 6px; }
+.versions { list-style: none; margin: 0; padding: 0; display: grid; }
+.version { display: grid; grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr); gap: var(--space-2) var(--space-8); padding-block: var(--space-6); border-bottom: 1px solid var(--gilding); }
+.version__numero { margin: 0; font-family: var(--font-display); font-size: 2rem; line-height: 2.5rem; font-weight: 400; }
+.version__corps { max-width: 48rem; display: grid; gap: var(--space-3); }
+@media (max-width: 37.49rem) { .version { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Page introuvable ---------- */
+.introuvable { max-width: 48rem; padding-block: var(--space-8); }
+.introuvable form { max-width: none; }
+.introuvable .champ-icone input { width: 100%; }
+.liens-filets { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--gilding); }
+.liens-filets li { border-top: 1px solid var(--gilding); }
+.liens-filets a { display: flex; align-items: center; min-height: 48px; }

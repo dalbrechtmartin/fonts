@@ -16,6 +16,8 @@
     "titres",
     "lombarde"
   ],
+  "usages": ["Titres"],
+  "styles": ["Pixel", "Gothique"],
   "langues": [
     "français",
     "anglais",

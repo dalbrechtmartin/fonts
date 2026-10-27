@@ -1,39 +1,221 @@
 {% extends "base.html" %}
-{% from "_polices.html" import faces, bouton_telecharger, icone %}
+{% from "_polices.html" import faces, icone %}
 {% block titre %}Polices de Danaé{% endblock %}
-{% block description %}Les polices d'écriture que je dessine, libres sous licence OFL : essai en ligne, glyphes, installation et historique des versions.{% endblock %}
+{% block description %}Les polices d'écriture que je dessine, libres sous licence OFL : recherche par usage ou par style, essai en ligne, glyphes, installation et historique des versions.{% endblock %}
 {% block adresse %}{{ url_site }}{% endblock %}
 {% block tete %}{{ faces(catalogue) }}{% endblock %}
+{% block recherche_entete %}{% endblock %}
+
+{# Un bouton de choix (un seul choisi dans son groupe) ; le compteur est rempli par site.js #}
+{% macro choix(groupe, valeur, libelle) %}
+<button type="button" class="gr-btn bouton-choix" aria-pressed="{{ 'true' if not valeur else 'false' }}" data-choix="{{ groupe }}" data-valeur="{{ valeur }}"><span class="gr-star" aria-hidden="true">✦</span><span class="bouton-choix__libelle">{{ libelle }}</span><span class="compte" data-compte></span></button>
+{% endmacro %}
+{# Une case de la feuille « Plus de filtres » (plusieurs choix possibles dans son groupe) #}
+{% macro case(groupe, valeur, libelle, aide="") %}
+<label class="case-filtre"><input type="checkbox" data-case="{{ groupe }}" value="{{ valeur }}"><span class="case-filtre__texte"><span>{{ libelle }}</span>{% if aide %}<span class="case-filtre__aide">{{ aide }}</span>{% endif %}</span><span class="compte" data-compte></span></label>
+{% endmacro %}
+
+{% set taille_min = catalogue | map(attribute="specimen.tailleMin") | min %}
+{% set taille_max = catalogue | map(attribute="specimen.tailleMax") | max %}
+{% set langues = catalogue | map(attribute="langues") | sum(start=[]) | unique | list %}
+{# Fonctions OpenType dont le nom ne dépend pas de la police (les ssXX et calt changent de sens d'une police à l'autre) #}
+{% set fonctions = [
+  ("tnum", "Chiffres alignés", "Les colonnes de nombres tombent juste"),
+  ("zero", "Zéro barré", "Distingue 0 de O"),
+  ("smcp", "Petites capitales", "Des majuscules à la hauteur des minuscules"),
+  ("case", "Signes pour capitales", "Parenthèses et tirets centrés sur les majuscules"),
+] %}
 
 {% block contenu %}
-<section class="intro" aria-labelledby="titre">
-  <h1 id="titre" tabindex="-1">Mes polices</h1>
-  <p class="intro__accroche">Les polices d'écriture que je dessine. Essaie-les ici, puis télécharge-les et utilise-les librement : elles sont sous licence OFL, même pour un usage commercial.</p>
-  <p class="gr-meta">{{ catalogue | length }} police{{ "s" if catalogue | length > 1 }} · {{ nombre_glyphes }} glyphes au total</p>
+<section class="intro intro--accueil" aria-labelledby="titre">
+  <div class="intro__texte">
+    <h1 id="titre" tabindex="-1">Mes polices</h1>
+    <p class="intro__accroche">Les polices que je dessine, libres sous licence OFL. Cherche par usage ou par style, essaie ton texte, puis télécharge celle qui te plaît.</p>
+  </div>
+  <p class="gr-meta intro__compte">{{ catalogue | length }} police{{ "s" if catalogue | length > 1 }}{% if derniere_ajout %} · dernière ajoutée le {{ derniere_ajout }}{% endif %}</p>
 </section>
 
-<section class="catalogue" aria-labelledby="titre-catalogue">
-  <h2 id="titre-catalogue" class="gr-sr">Toutes les polices</h2>
-  <div class="gr-field gr-field--wide catalogue__essai">
-    <label for="texte-catalogue">Écris ton texte pour le voir dans chaque police</label>
-    <input id="texte-catalogue" type="text" autocomplete="off" spellcheck="false" placeholder="Ex. : Joyeux anniversaire Lou&#8239;!" data-texte-catalogue>
+{# Sans JavaScript, la liste complète reste lisible : recherche, filtres et essai n'apparaissent qu'avec lui #}
+<section class="gr-frame chercher" aria-label="Chercher et essayer" data-outils hidden>
+  <div class="chercher__champs">
+    <div class="gr-field chercher__recherche">
+      <label for="recherche">Rechercher une police</label>
+      <span class="champ-icone">
+        {{ icone(base, "loupe") }}
+        <input id="recherche" type="search" autocomplete="off" placeholder="Ex. : chat, pixel, Sorcelle" data-recherche>
+      </span>
+    </div>
+    <div class="gr-field chercher__texte">
+      <label for="texte-catalogue">Ton texte, dans toutes les polices</label>
+      <input id="texte-catalogue" type="text" autocomplete="off" spellcheck="false" placeholder="Ex. : Lune rousse sur le grimoire" data-texte-catalogue>
+    </div>
+    <div class="gr-field chercher__taille">
+      <label for="taille-catalogue">Taille (px)</label>
+      <span class="gr-field__range">
+        <input type="range" min="{{ taille_min }}" max="{{ taille_max }}" step="1" value="56" aria-label="Taille en pixels, curseur" data-curseur-catalogue>
+        <input id="taille-catalogue" type="number" min="{{ taille_min }}" max="{{ taille_max }}" step="1" value="56" inputmode="numeric" data-taille-catalogue>
+      </span>
+    </div>
   </div>
-  <ul class="catalogue__liste">
-    {% for fiche in catalogue %}
-    <li class="carte-police">
-      <div class="carte-police__tete">
-        <h3 class="carte-police__nom"><a href="{{ fiche.page }}">{{ fiche.nom }}</a></h3>
-        {% if fiche.statut %}<span class="gr-badge {{ {'bêta': 'gr-badge--beta', 'stable': 'gr-badge--done', 'retirée': 'gr-badge--retired'}.get(fiche.statut, '') }}">{{ fiche.statut | capitalize }}</span>{% endif %}
+  <div class="chercher__facettes">
+    <fieldset class="facette">
+      <legend>Usage</legend>
+      <div class="onglets-boutons">
+        {{ choix("usage", "", "Tous") }}
+        {% for usage in usages %}{{ choix("usage", usage, usage) }}{% endfor %}
       </div>
-      <p class="carte-police__exemple" lang="fr" style="font-family: &quot;essai-{{ fiche.id }}&quot;, var(--font-body)" data-exemple-catalogue="{{ fiche.specimen.texte or fiche.specimen.titre }}">{{ fiche.specimen.texte or fiche.specimen.titre }}</p>
-      <p class="carte-police__resume">{{ fiche.resume }}</p>
-      <p class="gr-meta">Version {{ fiche.version }}{% if fiche.date %} du {{ fiche.date }}{% endif %} · {{ fiche.graisses | length }} graisse{{ "s" if fiche.graisses | length > 1 }} · {{ fiche.glyphes | length }} glyphes{% if fiche.langues %} · {{ fiche.langues | length }} langues{% endif %}</p>
-      <div class="gr-row carte-police__actions">
-        {{ bouton_telecharger(fiche, "Télécharger " ~ fiche.nom) }}
-        <a class="gr-btn" href="{{ fiche.page }}">Essayer et installer {{ fiche.nom }}</a>
+    </fieldset>
+    <fieldset class="facette">
+      <legend>Style</legend>
+      <div class="onglets-boutons">
+        {{ choix("style", "", "Tous") }}
+        {% for style in styles %}{{ choix("style", style, style) }}{% endfor %}
+      </div>
+    </fieldset>
+  </div>
+</section>
+
+<section class="resultats" aria-labelledby="titre-resultats">
+  <div class="resultats__tete">
+    <h2 id="titre-resultats" data-titre-resultats>{{ catalogue | length }} police{{ "s" if catalogue | length > 1 }}</h2>
+    <div class="resultats__outils" data-outils hidden>
+      <button type="button" class="gr-btn bouton-cadre" aria-haspopup="dialog" aria-expanded="false" data-ouvrir-filtres>{{ icone(base, "filtres") }}<span data-libelle-filtres>Plus de filtres</span></button>
+      <span class="resultats__tri">
+        <label for="tri">Trier par</label>
+        <select id="tri" data-tri>
+          <option value="recent">Plus récentes</option>
+          <option value="nom">Nom, de A à Z</option>
+        </select>
+      </span>
+      <div class="onglets-boutons resultats__vue" role="group" aria-label="Affichage">
+        {{ choix("vue", "", "Liste") }}
+        {{ choix("vue", "cartes", "Cartes") }}
+      </div>
+    </div>
+  </div>
+
+  <div class="filtres-actifs" data-filtres-actifs hidden>
+    <span class="filtres-actifs__titre">Filtres actifs :</span>
+    <span class="filtres-actifs__puces" data-puces></span>
+    <button type="button" class="bouton-lien" data-tout-effacer>Tout effacer</button>
+  </div>
+
+  <div class="gr-frame aucune-police" data-aucune hidden>
+    <p class="aucune-police__titre" data-aucune-titre></p>
+    <p>Essaie un autre mot (un usage, un style, un nom) ou retire un filtre.</p>
+    <button type="button" class="gr-btn bouton-cadre" data-tout-effacer>Effacer la recherche et les filtres</button>
+  </div>
+
+  <ul class="catalogue__liste" data-liste>
+    {% for fiche in catalogue %}
+    {% set categorie = fiche.styles | first %}
+    {% set graisses = fiche.graisses | length %}
+    <li class="carte-police"
+        data-police="{{ fiche.id }}"
+        data-nom="{{ fiche.nom }}"
+        data-mots="{{ fiche.nom }} {{ fiche.usages | join(' ') }} {{ fiche.styles | join(' ') }} {{ fiche.etiquettes | default([]) | join(' ') }} {{ fiche.resume }}"
+        data-usages="{{ fiche.usages | join('|') }}"
+        data-styles="{{ fiche.styles | join('|') }}"
+        data-langues="{{ fiche.langues | join('|') }}"
+        data-graisses="{{ graisses }}"
+        data-fonctions="{{ fiche.fonctions | map(attribute='code') | join('|') }}"
+        data-statut="{{ fiche.statut or '' }}"
+        data-date="{{ fiche.date_iso }}"
+        data-taille-min="{{ fiche.specimen.tailleMin }}"
+        data-taille-max="{{ fiche.specimen.tailleMax }}"
+        data-tailles-nettes="{{ fiche.specimen.taillesNettes | join('|') }}">
+      <div class="carte-police__infos">
+        <h3 class="carte-police__nom"><a href="{{ fiche.page }}">{{ fiche.nom }}</a></h3>
+        <p class="carte-police__meta">{{ categorie }} · {{ graisses }} graisse{{ "s" if graisses > 1 }}</p>
+        <p class="carte-police__meta">{{ fiche.glyphes | length }} glyphes · version {{ fiche.version }}</p>
+        {% if fiche.statut %}
+        <p class="carte-police__statut carte-police__statut--{{ 'stable' if fiche.statut == 'stable' else 'autre' }}">{% if fiche.statut == "stable" %}{{ icone(base, "valide") }}{% endif %}{{ fiche.statut | capitalize }}</p>
+        {% endif %}
+      </div>
+      <figure class="carte-police__apercu">
+        <p class="carte-police__exemple" lang="fr" style="font-family: &quot;essai-{{ fiche.id }}&quot;, var(--font-body)" data-exemple-catalogue="{{ fiche.specimen.texte or fiche.specimen.titre }}">{{ fiche.specimen.texte or fiche.specimen.titre }}</p>
+        <figcaption class="carte-police__note" data-note hidden></figcaption>
+      </figure>
+      <div class="carte-police__actions">
+        <a class="gr-btn bouton-cadre carte-police__fiche" href="{{ fiche.page }}">Voir la fiche</a>
+        <a class="gr-btn bouton-cadre bouton-carre" href="{{ fiche.telechargement }}" download aria-label="Télécharger {{ fiche.nom }} (zip, {{ fiche.ko_zip }} Ko)" title="Télécharger {{ fiche.nom }} (zip, {{ fiche.ko_zip }} Ko)">{{ icone(base, "telecharger") }}</a>
       </div>
     </li>
     {% endfor %}
   </ul>
+
+  <div class="plus-de-polices" data-plus hidden>
+    <p class="gr-meta" data-progression></p>
+    <div class="plus-de-polices__barre" aria-hidden="true"><div data-barre></div></div>
+    <button type="button" class="gr-btn bouton-cadre" data-afficher-plus>{{ icone(base, "chevron-bas") }}<span data-libelle-plus></span></button>
+  </div>
 </section>
+
+<section class="section" id="utiliser" aria-labelledby="titre-utiliser">
+  <h2 id="titre-utiliser">Comment utiliser ces polices&#8239;?</h2>
+  <ol class="etapes__liste etapes__liste--accueil">
+    <li><strong>Télécharger le zip</strong><span>Il contient la police à installer (.otf ou .ttf), les fichiers .woff2 pour le web et la licence.</span></li>
+    <li><strong>Installer sur l’ordinateur</strong><span>Double-clic sur le fichier .otf ou .ttf, puis Installer. La fiche de chaque police détaille Windows, macOS et Linux.</span></li>
+    <li><strong>Utiliser sur un site</strong><span>Copie le CSS de la fiche, sans rien héberger, ou installe le paquet npm.</span></li>
+    <li><strong>Respecter la licence OFL</strong><span>Usage libre, même commercial. La police ne se vend pas seule et garde ses crédits.</span></li>
+  </ol>
+</section>
+
+{# « Plus de filtres » : panneau latéral sur grand écran, plein écran sur mobile #}
+<dialog class="feuille-filtres" id="feuille-filtres" aria-labelledby="titre-filtres" data-feuille>
+  <form method="dialog" class="feuille-filtres__cadre">
+    <div class="feuille-filtres__tete">
+      <h2 id="titre-filtres">Filtres</h2>
+      <button type="submit" class="gr-btn bouton-cadre bouton-carre" aria-label="Fermer les filtres" title="Fermer les filtres">{{ icone(base, "croix") }}</button>
+    </div>
+    <div class="feuille-filtres__corps">
+      <fieldset class="groupe-filtre" data-groupe>
+        <legend>Langues couvertes</legend>
+        {% for langue in langues %}{{ case("langue", langue, langue | capitalize) }}{% endfor %}
+        <button type="button" class="bouton-lien" aria-expanded="false" data-autres-langues hidden></button>
+      </fieldset>
+      <fieldset class="groupe-filtre" data-groupe>
+        <legend>Graisses</legend>
+        <div class="onglets-boutons">
+          {{ choix("graisses", "", "Toutes") }}
+          {{ choix("graisses", "une", "Une seule") }}
+          {{ choix("graisses", "plusieurs", "Plusieurs") }}
+        </div>
+      </fieldset>
+      <fieldset class="groupe-filtre" data-groupe>
+        <legend>Style et lecture</legend>
+        {{ case("lecture", "petit", "Lisible en petit", "Conseillée dès 16 px ou moins") }}
+      </fieldset>
+      <fieldset class="groupe-filtre" data-groupe>
+        <legend><span class="groupe-filtre__legende">Fonctions OpenType<button type="button" class="bouton-icone" aria-expanded="false" aria-controls="aide-filtre-ot" aria-label="Qu’est-ce qu’une fonction OpenType ?" title="Qu’est-ce qu’une fonction OpenType ?" data-aide-filtre>{{ icone(base, "info") }}</button></span></legend>
+        <div class="aide-filtre" id="aide-filtre-ot" hidden>
+          <p><strong>Qu’est-ce qu’une fonction OpenType&#8239;?</strong></p>
+          <p>Des variantes rangées dans la police, que tu actives au besoin : le texte ne change pas, seulement le dessin des lettres.</p>
+          <p><strong>Exemple :</strong> le zéro barré évite de confondre 0 et O dans un code.</p>
+        </div>
+        {% for code, libelle, aide in fonctions %}{{ case("fonction", code, libelle, aide) }}{% endfor %}
+      </fieldset>
+      <fieldset class="groupe-filtre" data-groupe>
+        <legend>Statut</legend>
+        <div class="onglets-boutons">
+          {{ choix("statut", "", "Tous") }}
+          {{ choix("statut", "stable", "Stables") }}
+          {{ choix("statut", "cours", "En cours") }}
+        </div>
+      </fieldset>
+      <fieldset class="groupe-filtre" data-groupe>
+        <legend>Mise à jour</legend>
+        <div class="onglets-boutons">
+          {{ choix("maj", "", "Peu importe") }}
+          {{ choix("maj", "mois", "Ce mois-ci") }}
+          {{ choix("maj", "an", "Cette année") }}
+        </div>
+      </fieldset>
+    </div>
+    <div class="feuille-filtres__pied">
+      <button type="button" class="bouton-lien" data-effacer-feuille>Tout effacer</button>
+      <button type="submit" class="gr-btn gr-btn--primary feuille-filtres__appliquer"><span class="gr-btn__star" aria-hidden="true">✦</span><span data-libelle-appliquer>Afficher les polices</span><span class="gr-btn__star" aria-hidden="true">✦</span></button>
+    </div>
+  </form>
+</dialog>
 {% endblock %}

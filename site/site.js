@@ -194,20 +194,405 @@
     choisir(defaut);
   });
 
-  // ---------- Accueil : un texte pour toutes les polices ----------
-  var texteCatalogue = un('[data-texte-catalogue]');
-  if (texteCatalogue) {
+  // ---------- Accueil : recherche, filtres, tri, affichage et essai sur tout le catalogue ----------
+  (function catalogue() {
+    var liste = un('[data-liste]');
+    if (!liste) return;
     // Anciens liens (accueil#griffonne, quand toutes les polices étaient sur une page) : vers la page de la police
     if (location.hash) {
       var anciennePolice = un('.carte-police__nom a[href$="/' + CSS.escape(location.hash.slice(1)) + '/"]');
-      if (anciennePolice) location.replace(anciennePolice.href);
+      if (anciennePolice) { location.replace(anciennePolice.href); return; }
     }
-    texteCatalogue.addEventListener('input', function () {
-      tous('[data-exemple-catalogue]').forEach(function (exemple) {
-        exemple.textContent = texteCatalogue.value.trim() || exemple.getAttribute('data-exemple-catalogue');
+
+    var PAR_PAGE = 24;
+    // Critères gardés dans l'adresse ; les listes acceptent plusieurs valeurs (la police doit les avoir toutes)
+    var CRITERES_SIMPLES = ['q', 'usage', 'style', 'graisses', 'statut', 'maj'];
+    var CRITERES_LISTES = ['langue', 'fonction', 'lecture'];
+    var CRITERES_FEUILLE = ['graisses', 'statut', 'maj', 'langue', 'fonction', 'lecture'];
+    var titre = un('[data-titre-resultats]');
+    var recherche = un('[data-recherche]');
+    var texte = un('[data-texte-catalogue]');
+    var curseur = un('[data-curseur-catalogue]');
+    var champTaille = un('[data-taille-catalogue]');
+    var tri = un('[data-tri]');
+    var feuille = un('[data-feuille]');
+    var boutonFiltres = un('[data-ouvrir-filtres]');
+    var actifs = un('[data-filtres-actifs]');
+    var aucune = un('[data-aucune]');
+    var plus = un('[data-plus]');
+    var croix = un('.feuille-filtres__tete svg');
+    var maintenant = new Date();
+    var mois = maintenant.toISOString().slice(0, 7);
+    var annee = mois.slice(0, 4);
+
+    // « coeur » trouve « cœur », « eclat » trouve « Éclat »
+    function sansAccents(mot) {
+      return mot.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/œ/g, 'oe').replace(/æ/g, 'ae');
+    }
+    function valeurs(carte, nom) { var valeur = carte.getAttribute('data-' + nom); return valeur ? valeur.split('|') : []; }
+    var polices = tous('.carte-police', liste).map(function (carte) {
+      return {
+        carte: carte,
+        nom: carte.getAttribute('data-nom'),
+        mots: sansAccents(carte.getAttribute('data-mots')),
+        usage: valeurs(carte, 'usages'),
+        style: valeurs(carte, 'styles'),
+        langue: valeurs(carte, 'langues'),
+        fonction: valeurs(carte, 'fonctions'),
+        graisses: Number(carte.getAttribute('data-graisses')),
+        statut: carte.getAttribute('data-statut'),
+        date: carte.getAttribute('data-date'),
+        min: Number(carte.getAttribute('data-taille-min')),
+        max: Number(carte.getAttribute('data-taille-max')),
+        nettes: valeurs(carte, 'tailles-nettes').map(Number),
+        exemple: un('[data-exemple-catalogue]', carte),
+        note: un('[data-note]', carte)
+      };
+    });
+
+    // La police remplit-elle ce critère pour cette valeur ?
+    var TESTS = {
+      q: function (police, valeur) {
+        return sansAccents(valeur).split(/\s+/).every(function (mot) { return police.mots.indexOf(mot) !== -1; });
+      },
+      usage: function (police, valeur) { return police.usage.indexOf(valeur) !== -1; },
+      style: function (police, valeur) { return police.style.indexOf(valeur) !== -1; },
+      langue: function (police, valeur) { return police.langue.indexOf(valeur) !== -1; },
+      fonction: function (police, valeur) { return police.fonction.indexOf(valeur) !== -1; },
+      lecture: function (police) { return police.min <= 16; },
+      graisses: function (police, valeur) { return valeur === 'une' ? police.graisses === 1 : police.graisses > 1; },
+      statut: function (police, valeur) { return (police.statut === 'stable') === (valeur === 'stable'); },
+      maj: function (police, valeur) { return police.date.slice(0, valeur === 'mois' ? 7 : 4) === (valeur === 'mois' ? mois : annee); }
+    };
+    function convient(police, etat) {
+      return CRITERES_SIMPLES.every(function (cle) { return !etat[cle] || TESTS[cle](police, etat[cle]); }) &&
+        CRITERES_LISTES.every(function (cle) { return etat[cle].every(function (valeur) { return TESTS[cle](police, valeur); }); });
+    }
+
+    // État : lu dans l'adresse, réécrit à chaque changement (le lien garde la recherche)
+    var etat = { vue: '', tri: 'recent' };
+    var affichees = PAR_PAGE;
+    function viderCriteres(cles) {
+      cles.forEach(function (cle) { etat[cle] = CRITERES_LISTES.indexOf(cle) !== -1 ? [] : ''; });
+    }
+    viderCriteres(CRITERES_SIMPLES.concat(CRITERES_LISTES));
+    var parametres = new URLSearchParams(location.search);
+    CRITERES_SIMPLES.concat(['vue', 'tri']).forEach(function (cle) { if (parametres.get(cle)) etat[cle] = parametres.get(cle).trim(); });
+    CRITERES_LISTES.forEach(function (cle) { if (parametres.get(cle)) etat[cle] = parametres.get(cle).split(','); });
+    function ecrireAdresse() {
+      var nouveaux = new URLSearchParams();
+      CRITERES_SIMPLES.forEach(function (cle) { if (etat[cle]) nouveaux.set(cle, etat[cle]); });
+      CRITERES_LISTES.forEach(function (cle) { if (etat[cle].length) nouveaux.set(cle, etat[cle].join(',')); });
+      if (etat.vue) nouveaux.set('vue', etat.vue);
+      if (etat.tri !== 'recent') nouveaux.set('tri', etat.tri);
+      var chaine = nouveaux.toString();
+      history.replaceState(null, '', location.pathname + (chaine ? '?' + chaine : '') + location.hash);
+    }
+
+    // Compteurs : polices du catalogue qui remplissent ce seul critère. Un choix qui ne retient aucune police,
+    // ou qui les retient toutes, ne sert à rien : il est masqué (sauf s'il est déjà actif), et son groupe avec lui.
+    var choix = tous('[data-choix]');
+    var cases = tous('[data-case]');
+    function compter(cle, valeur) {
+      return polices.filter(function (police) { return TESTS[cle](police, valeur); }).length;
+    }
+    choix.forEach(function (bouton) {
+      var cle = bouton.getAttribute('data-choix');
+      var valeur = bouton.getAttribute('data-valeur');
+      if (cle === 'vue') return;
+      var nombre = valeur ? compter(cle, valeur) : polices.length;
+      un('[data-compte]', bouton).textContent = nombre;
+      bouton.hidden = !!valeur && (nombre === 0 || nombre === polices.length) && etat[cle] !== valeur;
+    });
+    cases.forEach(function (caseFiltre) {
+      var cle = caseFiltre.getAttribute('data-case');
+      var nombre = compter(cle, caseFiltre.value);
+      un('[data-compte]', caseFiltre.closest('label')).textContent = nombre;
+      caseFiltre.closest('label').hidden = (nombre === 0 || nombre === polices.length) && etat[cle].indexOf(caseFiltre.value) === -1;
+    });
+    tous('[data-groupe]', feuille).forEach(function (groupe) {
+      var utiles = tous('[data-valeur]:not([data-valeur=""]), [data-case]', groupe).filter(function (element) {
+        return !(element.closest('label') || element).hidden;
+      });
+      groupe.hidden = !utiles.length;
+    });
+    boutonFiltres.hidden = tous('[data-groupe]', feuille).every(function (groupe) { return groupe.hidden; });
+    // Beaucoup de langues : les cinq premières, puis « Voir les N autres langues »
+    var langues = tous('[data-case="langue"]', feuille).map(function (caseFiltre) { return caseFiltre.closest('label'); })
+      .filter(function (label) { return !label.hidden; });
+    var autresLangues = un('[data-autres-langues]', feuille);
+    if (langues.length > 6) {
+      var cachees = langues.slice(5).filter(function (label) { return !un('input', label).checked && etat.langue.indexOf(un('input', label).value) === -1; });
+      cachees.forEach(function (label) { label.hidden = true; });
+      autresLangues.textContent = 'Voir les ' + cachees.length + ' autres langues';
+      autresLangues.hidden = !cachees.length;
+      autresLangues.addEventListener('click', function () {
+        cachees.forEach(function (label) { label.hidden = false; });
+        autresLangues.hidden = true;
+        un('input', cachees[0]).focus();
+      });
+    }
+
+    function libelleDe(element) {
+      var texteLibelle = element.matches('[data-choix]') ? un('.bouton-choix__libelle', element) : un('.case-filtre__texte > span', element.closest('label'));
+      return texteLibelle.textContent;
+    }
+    function legendeDe(element) { return un('legend', element.closest('fieldset')).textContent.trim(); }
+    function pluriel(nombre, mot) { return nombre + ' ' + mot + (nombre > 1 ? 's' : ''); }
+
+    function afficher(annoncerResultat) {
+      var trouvees = polices.filter(function (police) { return convient(police, etat); });
+      trouvees.sort(etat.tri === 'nom'
+        ? function (a, b) { return a.nom.localeCompare(b.nom, 'fr'); }
+        : function (a, b) { return b.date.localeCompare(a.date) || a.nom.localeCompare(b.nom, 'fr'); });
+      polices.forEach(function (police) { police.carte.hidden = true; });
+      trouvees.forEach(function (police, rang) {
+        liste.appendChild(police.carte);
+        police.carte.hidden = rang >= affichees;
+      });
+      liste.classList.toggle('catalogue__liste--cartes', etat.vue === 'cartes');
+
+      // Commandes : reflètent l'état
+      recherche.value = etat.q;
+      tri.value = etat.tri;
+      choix.forEach(function (bouton) {
+        var cle = bouton.getAttribute('data-choix');
+        bouton.setAttribute('aria-pressed', etat[cle] === bouton.getAttribute('data-valeur') ? 'true' : 'false');
+      });
+      cases.forEach(function (caseFiltre) { caseFiltre.checked = etat[caseFiltre.getAttribute('data-case')].indexOf(caseFiltre.value) !== -1; });
+
+      // Filtres actifs : un bouton par filtre, qui le retire
+      var puces = un('[data-puces]', actifs);
+      puces.textContent = '';
+      function puce(libelle, retirer) {
+        var bouton = document.createElement('button');
+        bouton.type = 'button';
+        bouton.className = 'gr-btn puce-active';
+        bouton.setAttribute('aria-label', 'Retirer le filtre ' + libelle);
+        bouton.appendChild(document.createElement('span')).textContent = libelle;
+        bouton.appendChild(croix.cloneNode(true));
+        bouton.addEventListener('click', function () {
+          retirer();
+          changer();
+          (un('.puce-active', puces) || recherche).focus();
+        });
+        puces.appendChild(bouton);
+      }
+      if (etat.q) puce('« ' + etat.q + ' »', function () { etat.q = ''; });
+      choix.forEach(function (bouton) {
+        var cle = bouton.getAttribute('data-choix');
+        var valeur = bouton.getAttribute('data-valeur');
+        if (cle === 'vue' || !valeur || etat[cle] !== valeur) return;
+        var dansFeuille = feuille.contains(bouton);
+        puce((dansFeuille ? legendeDe(bouton) + ' : ' : '') + libelleDe(bouton), function () { etat[cle] = ''; });
+      });
+      cases.forEach(function (caseFiltre) {
+        if (!caseFiltre.checked) return;
+        var cle = caseFiltre.getAttribute('data-case');
+        puce(libelleDe(caseFiltre), function () {
+          etat[cle] = etat[cle].filter(function (valeur) { return valeur !== caseFiltre.value; });
+        });
+      });
+      var nombreFiltres = puces.children.length;
+      actifs.hidden = !nombreFiltres;
+      var nombreFeuille = CRITERES_FEUILLE.reduce(function (total, cle) {
+        return total + (Array.isArray(etat[cle]) ? etat[cle].length : etat[cle] ? 1 : 0);
+      }, 0);
+      un('[data-libelle-filtres]', boutonFiltres).textContent = 'Plus de filtres' + (nombreFeuille ? ' (' + nombreFeuille + ')' : '');
+      un('[data-libelle-appliquer]', feuille).textContent = trouvees.length
+        ? 'Afficher ' + pluriel(trouvees.length, 'police') : 'Aucune police';
+
+      // Titre, état vide, « Afficher plus »
+      titre.textContent = nombreFiltres
+        ? pluriel(trouvees.length, 'police') + ' trouvée' + (trouvees.length > 1 ? 's' : '')
+        : pluriel(trouvees.length, 'police');
+      aucune.hidden = trouvees.length > 0;
+      un('[data-aucune-titre]', aucune).textContent = etat.q
+        ? 'Aucune police pour « ' + etat.q + ' ».' : 'Aucune police ne correspond à ces filtres.';
+      var visibles = Math.min(affichees, trouvees.length);
+      plus.hidden = visibles >= trouvees.length;
+      un('[data-progression]', plus).textContent = visibles + ' sur ' + pluriel(trouvees.length, 'police') + ' affichées';
+      un('[data-barre]', plus).style.width = (trouvees.length ? 100 * visibles / trouvees.length : 0) + '%';
+      un('[data-libelle-plus]', plus).textContent = 'Afficher ' + pluriel(Math.min(PAR_PAGE, trouvees.length - visibles), 'police') + ' de plus';
+
+      if (annoncerResultat) annoncer(titre.textContent + '.');
+    }
+    function changer() {
+      affichees = PAR_PAGE;
+      ecrireAdresse();
+      afficher(true);
+    }
+
+    // Recherche : le résultat suit la frappe, l'annonce attend une courte pause
+    var attente = null;
+    recherche.addEventListener('input', function () {
+      etat.q = recherche.value.trim();
+      affichees = PAR_PAGE;
+      ecrireAdresse();
+      afficher(false);
+      clearTimeout(attente);
+      attente = setTimeout(function () { annoncer(titre.textContent + '.'); }, 700);
+    });
+    tri.addEventListener('change', function () { etat.tri = tri.value; changer(); });
+    choix.forEach(function (bouton) {
+      bouton.addEventListener('click', function () {
+        etat[bouton.getAttribute('data-choix')] = bouton.getAttribute('data-valeur');
+        changer();
       });
     });
-  }
+    cases.forEach(function (caseFiltre) {
+      caseFiltre.addEventListener('change', function () {
+        var cle = caseFiltre.getAttribute('data-case');
+        etat[cle] = cases.filter(function (autre) { return autre.getAttribute('data-case') === cle && autre.checked; })
+          .map(function (autre) { return autre.value; });
+        changer();
+      });
+    });
+    tous('[data-tout-effacer]').forEach(function (bouton) {
+      bouton.addEventListener('click', function () {
+        viderCriteres(CRITERES_SIMPLES.concat(CRITERES_LISTES));
+        changer();
+        recherche.focus();
+      });
+    });
+    un('[data-effacer-feuille]', feuille).addEventListener('click', function () { viderCriteres(CRITERES_FEUILLE); changer(); });
+    un('[data-afficher-plus]', plus).addEventListener('click', function () {
+      var premiere = affichees;
+      affichees += PAR_PAGE;
+      afficher(false);
+      var suivante = tous('.carte-police', liste)[premiere];
+      if (suivante) un('.carte-police__nom a', suivante).focus();
+    });
+
+    // Feuille « Plus de filtres » : fenêtre modale, fermée par Échap, la croix, le bouton du bas ou un clic à côté
+    boutonFiltres.addEventListener('click', function () {
+      feuille.showModal();
+      boutonFiltres.setAttribute('aria-expanded', 'true');
+    });
+    feuille.addEventListener('close', function () {
+      boutonFiltres.setAttribute('aria-expanded', 'false');
+      boutonFiltres.focus();
+    });
+    feuille.addEventListener('click', function (evenement) { if (evenement.target === feuille) feuille.close(); });
+    var aide = un('[data-aide-filtre]', feuille);
+    aide.addEventListener('click', function () {
+      var ouverte = aide.getAttribute('aria-expanded') !== 'true';
+      aide.setAttribute('aria-expanded', ouverte ? 'true' : 'false');
+      document.getElementById(aide.getAttribute('aria-controls')).hidden = !ouverte;
+    });
+
+    // Essai : un texte et une taille pour toutes les polices, chacune bornée à ses tailles conseillées
+    function borner(valeur, min, max) { return Math.min(max, Math.max(min, Math.round(Number(valeur) || min))); }
+    function essayer() {
+      var taille = borner(champTaille.value, Number(curseur.min), Number(curseur.max));
+      polices.forEach(function (police) {
+        var affichee = borner(taille, police.min, police.max);
+        police.exemple.textContent = texte.value.trim() || police.exemple.getAttribute('data-exemple-catalogue');
+        police.exemple.style.fontSize = affichee + 'px';
+        police.note.textContent = affichee !== taille
+          ? 'Affichée à ' + affichee + ' px : ' + (affichee > taille ? 'taille minimale' : 'taille maximale') + ' de cette police'
+          : police.nom + ' · ' + affichee + ' px' + (police.nettes.indexOf(affichee) !== -1 ? ', pixels nets' : '');
+        police.note.hidden = false;
+      });
+    }
+    // Écran étroit : une taille plus petite, pour garder des mots entiers
+    if (window.matchMedia('(max-width: 40rem)').matches) champTaille.value = curseur.value = 40;
+    curseur.addEventListener('input', function () { champTaille.value = curseur.value; essayer(); });
+    champTaille.addEventListener('input', function () { curseur.value = champTaille.value; essayer(); });
+    champTaille.addEventListener('change', function () {
+      champTaille.value = curseur.value = borner(champTaille.value, Number(curseur.min), Number(curseur.max));
+      essayer();
+    });
+    texte.addEventListener('input', essayer);
+
+    tous('[data-outils]').forEach(function (outils) { outils.hidden = false; });
+    essayer();
+    afficher(false);
+  })();
+
+  // ---------- Page des versions : groupes repliables, recherche et type de changement ----------
+  (function versions() {
+    var filtre = un('[data-filtre-versions]');
+    if (!filtre) return;
+    var recherche = un('[data-recherche-versions]', filtre);
+    var types = tous('[data-type-changement]', filtre);
+    var etat = un('[data-etat-versions]', filtre);
+    var aucun = un('[data-aucun-changement]');
+    var groupes = tous('[data-groupe-versions]');
+    var messageInitial = etat.textContent;
+    var type = '';
+
+    function ouvrir(groupe, ouvert) {
+      var bouton = un('.groupe-versions__bouton', groupe);
+      bouton.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+      document.getElementById(bouton.getAttribute('aria-controls')).hidden = !ouvert;
+    }
+    groupes.forEach(function (groupe) {
+      var bouton = un('.groupe-versions__bouton', groupe);
+      bouton.addEventListener('click', function () { ouvrir(groupe, bouton.getAttribute('aria-expanded') !== 'true'); });
+      // Les versions de travail sont repliées au départ
+      if (groupe.hasAttribute('data-replie')) ouvrir(groupe, false);
+    });
+
+    // Compteurs : versions qui ont au moins un changement de ce type
+    var toutes = tous('[data-version]');
+    types.forEach(function (bouton) {
+      var valeur = bouton.getAttribute('data-type-changement');
+      un('[data-compte]', bouton).textContent = valeur
+        ? toutes.filter(function (version) { return un('[data-section="' + valeur + '"]', version); }).length
+        : toutes.length;
+    });
+
+    function sansAccents(mot) { return mot.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+    function filtrer() {
+      var mots = sansAccents(recherche.value.trim()).split(/\s+/).filter(Boolean);
+      var actif = mots.length > 0 || type !== '';
+      var trouvees = 0;
+      groupes.forEach(function (groupe) {
+        var dansGroupe = 0;
+        tous('[data-version]', groupe).forEach(function (version) {
+          var entreesVisibles = 0;
+          tous('[data-section]', version).forEach(function (section) {
+            var bonType = !type || section.getAttribute('data-section') === type;
+            var visibles = 0;
+            tous('li', section).forEach(function (entree) {
+              var texteEntree = sansAccents(entree.textContent);
+              var garde = bonType && mots.every(function (mot) { return texteEntree.indexOf(mot) !== -1; });
+              entree.hidden = !garde;
+              if (garde) visibles += 1;
+            });
+            section.hidden = !visibles;
+            section.previousElementSibling.hidden = !visibles;
+            entreesVisibles += visibles;
+          });
+          version.hidden = !entreesVisibles;
+          if (entreesVisibles) dansGroupe += 1;
+        });
+        groupe.hidden = !dansGroupe;
+        // Un filtre ouvre les groupes qui ont des résultats ; sans filtre, chacun revient à son état de départ
+        ouvrir(groupe, actif ? dansGroupe > 0 : !groupe.hasAttribute('data-replie'));
+        trouvees += dansGroupe;
+      });
+      aucun.hidden = trouvees > 0;
+      etat.textContent = actif
+        ? (trouvees > 1 ? trouvees + ' versions correspondent.' : trouvees + ' version correspond.')
+        : messageInitial;
+    }
+    recherche.addEventListener('input', filtrer);
+    types.forEach(function (bouton) {
+      bouton.addEventListener('click', function () {
+        type = bouton.getAttribute('data-type-changement');
+        types.forEach(function (autre) { autre.setAttribute('aria-pressed', autre === bouton ? 'true' : 'false'); });
+        filtrer();
+      });
+    });
+    un('[data-effacer-versions]', aucun).addEventListener('click', function () {
+      recherche.value = '';
+      types[0].click();
+      recherche.focus();
+    });
+    filtre.hidden = false;
+  })();
 
   // ---------- Page d'une police ----------
   var donneesPage = document.getElementById('donnees-police');
@@ -225,7 +610,8 @@
     var exemples = tous('[data-exemple]', bloc);
     var cases = tous('[data-fonction]', bloc);
     var extraits = tous('[data-extrait]');
-    var texteParDefaut = champTexte.value;
+    // Champ vide : l'essai montre le texte du spécimen (celui du texte d'exemple)
+    var texteParDefaut = sortie.textContent;
 
     function bornee(valeur) {
       return Math.min(Number(curseur.max), Math.max(Number(curseur.min), Math.round(Number(valeur) || Number(curseur.value))));
@@ -336,11 +722,13 @@
       visibles = PREMIERS;
       cellules.slice(PREMIERS).forEach(function (cellule) { cellule.hidden = true; });
       un('[data-libelle]', plus).textContent = 'Afficher les ' + (cellules.length - PREMIERS) + ' autres glyphes';
+      un('[data-compte-glyphes]').textContent = PREMIERS + ' sur ' + cellules.length + ' affichés';
       plus.hidden = false;
       plus.addEventListener('click', function () {
         cellules.forEach(function (cellule) { cellule.hidden = false; });
         visibles = cellules.length;
         plus.hidden = true;
+        un('[data-compte-glyphes]').textContent = cellules.length + ' glyphes';
         selectionner(PREMIERS, true);
         annoncer(cellules.length + ' glyphes affichés.');
       });

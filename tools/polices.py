@@ -47,6 +47,9 @@ DOCUMENTS = ("OFL.txt", "OFL-FAQ.txt", "FONTLOG.txt", "AUTHORS.txt", "README.md"
 # Couleurs des thèmes Parchemin et Crypte de Grimoire (fond, encre, texte secondaire)
 THEMES_APERCU = {"clair": ("#f1e9d8", "#1d1822", "#5a4f5f"), "sombre": ("#17141c", "#ece4d8", "#b3a9b8")}
 DORURE = "#d4a03a"  # gilding de Grimoire : filets décoratifs
+# Filtres « Usage » et « Style » de l'accueil : chaque police en choisit au moins un de chaque liste
+USAGES = ("Titres", "Texte courant")
+STYLES = ("Avec empattements", "Sans empattements", "Manuscrite", "Pixel", "Gothique")
 POLICE_DES_TITRES = "sorcelle"  # titres du site (Grimoire)
 MODELES = SITE / "modeles"  # pages du site (Jinja), rendues par la commande site
 # Une phrase par langue, qui utilise ses lettres propres : essai et section Langues du site.
@@ -185,6 +188,14 @@ def verifier(police):
     if manifeste.get(chemin) != police.get("version"):
         erreurs.append(f"{MANIFESTE_RELEASE.name} dit {manifeste.get(chemin)}, police.json dit {police.get('version')}")
 
+    for cle, permises in (("usages", USAGES), ("styles", STYLES)):
+        choisies = police.get(cle, [])
+        if not choisies:
+            erreurs.append(f"police.json : « {cle} » vide (au choix : {', '.join(permises)})")
+        for valeur in choisies:
+            if valeur not in permises:
+                erreurs.append(f"police.json : {cle} « {valeur} » inconnu (au choix : {', '.join(permises)})")
+
     texte_specimen = police["specimen"].get("titre", "") + police["specimen"].get("texte", "")
     for langue in police.get("langues", []):
         if langue in PHRASES_LANGUES:
@@ -275,6 +286,33 @@ def historique(police):
     return versions
 
 
+# Titres des sections du CHANGELOG (release-please) en français, et leur nom au pluriel pour les résumés
+TITRES_SECTIONS = {"Features": "Nouveautés", "Bug Fixes": "Corrections", "Performance Improvements": "Performances"}
+
+
+def resumer_versions(versions):
+    """Ajoute à chaque version son type (selon le numéro), sa date courte et le compte de ses changements."""
+    publiques = [version for version in versions if not version["version"].startswith("0.")]
+    for version in versions:
+        majeure, mineure, corrective = (int(nombre) for nombre in version["version"].split("."))
+        if majeure == 0:
+            version["type"] = "Version de travail"
+        elif mineure == corrective == 0:
+            version["type"] = "Majeure" + (" · première version publique" if version is publiques[-1] else "")
+        elif corrective == 0:
+            version["type"] = "Mineure"
+        else:
+            version["type"] = "Correctif"
+        for section in version["sections"]:
+            section["titre"] = TITRES_SECTIONS.get(section["titre"], section["titre"])
+        version["date_courte"] = date_courte(version["date"]) if version["date"] else ""
+        version["compte"] = ", ".join(f"{len(section['entrees'])} {section['titre'].lower()}"
+                                      if len(section["entrees"]) > 1
+                                      else f"1 {section['titre'].lower().removesuffix('s')}"
+                                      for section in version["sections"] if section["entrees"])
+    return versions
+
+
 def glyphes(police):
     fonte = TTFont(fichier_graisse(police, police["graisses"][0], "ttf"))
     # Contrôles, espaces et séparateurs exclus de la grille
@@ -334,7 +372,7 @@ def fiche_du_site(police, sortie, base):
                 for graisse in police["graisses"]]
     fonctions = [{"parDefaut": False, **fonction, "differences": differences_opentype(police, fonction["code"])}
                  for fonction in police.get("fonctions", [])]
-    versions = historique(police)
+    versions = resumer_versions(historique(police))
     fiche = {cle: valeur for cle, valeur in police.items()
              if not cle.startswith("_") and cle not in ("construction", "compilees", "notes")}
     # Clés facultatives de police.json : présentes pour les modèles (StrictUndefined signale les fautes de frappe)
@@ -349,6 +387,9 @@ def fiche_du_site(police, sortie, base):
         "glyphes": [{"caractere": car, "nom": nom_unicode(car), "code": point_de_code(car)} for car in glyphes(police)],
         "historique": versions,
         "date": date_courte(versions[0]["date"]) if versions else "",
+        # Accueil : tri par date et filtre « Mise à jour » (dernière version), « dernière ajoutée » (première)
+        "date_iso": versions[0]["date"] if versions else "",
+        "date_ajout": versions[-1]["date"] if versions else "",
         "telechargement": f"{base}downloads/{archive.name}",
         "ko_zip": kilo_octets(archive),
         "css": f"{URL_SITE}fonts/{id_police}/index.css",
@@ -394,14 +435,15 @@ def site(sortie):
     modeles = Environment(loader=FileSystemLoader(MODELES), autoescape=True, undefined=StrictUndefined,
                           trim_blocks=True, lstrip_blocks=True)
     modeles.filters["json"] = json_dans_page
-    commun = {"base": base, "url_site": URL_SITE, "depot": URL_DEPOT, "catalogue": catalogue}
+    commun = {"base": base, "url_site": URL_SITE, "depot": URL_DEPOT, "catalogue": catalogue,
+              "usages": USAGES, "styles": STYLES}
 
     def rendre(modele, chemin, **valeurs):
         chemin.parent.mkdir(parents=True, exist_ok=True)
         chemin.write_text(modeles.get_template(modele).render(**commun, **valeurs), encoding="utf-8")
 
-    rendre("accueil.html", sortie / "index.html",
-           nombre_glyphes=sum(len(police["glyphes"]) for police in catalogue))
+    ajouts = [police["date_ajout"] for police in catalogue if police["date_ajout"]]
+    rendre("accueil.html", sortie / "index.html", derniere_ajout=date_courte(max(ajouts)) if ajouts else "")
     for police in catalogue:
         rendre("police.html", sortie / police["id"] / "index.html", police=police)
         rendre("versions.html", sortie / police["id"] / "versions" / "index.html", police=police,
@@ -594,6 +636,8 @@ def nouvelle(id_police, nom):
         "dessin": "Danaé ALBRECHT--MARTIN",
         "licence": "OFL-1.1",
         "etiquettes": [],
+        "usages": [],
+        "styles": [],
         "graisses": [{"nom": "Regular", "poids": 400}],
         "compilees": "compilees",
         "specimen": {"titre": nom, "texte": "Portez ce vieux whisky au juge blond qui fume",
