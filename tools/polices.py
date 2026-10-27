@@ -13,6 +13,7 @@ Usage (depuis la racine du dépôt) :
   python tools/polices.py nouvelle <id> "<Nom>"
 """
 import argparse
+import datetime
 import html
 import json
 import re
@@ -35,7 +36,7 @@ SITE = RACINE / "site"
 CONFIG_RELEASE = RACINE / "release-please-config.json"
 MANIFESTE_RELEASE = RACINE / ".release-please-manifest.json"
 URL_DEPOT = "https://github.com/dalbrechtmartin/fonts"
-URL_SITE = "https://dalbrechtmartin.github.io/fonts/"
+URL_SITE = "https://polices.danaedev.fr/"
 PORTEE_NPM = "@danaedev"
 AUTRICE = "Danaé ALBRECHT--MARTIN (https://danaedev.fr)"
 WORKFLOW_PUBLICATION = "release-please.yml"
@@ -408,6 +409,8 @@ def site(sortie):
     rendre("404.html", sortie / "404.html")
     image_partage(sortie / "partage.png", catalogue)
     plan_du_site(sortie / "sitemap.xml", catalogue)
+    if base == "/":
+        fichiers_de_racine(sortie)
     (sortie / "polices.json").write_text(json.dumps({"depot": URL_DEPOT, "polices": catalogue},
                                                     ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"-> {sortie} ({len(catalogue)} police(s))")
@@ -440,6 +443,17 @@ def image_partage(chemin, catalogue):
     total = f"{len(catalogue)} police{'s' if len(catalogue) > 1 else ''} libre{'s' if len(catalogue) > 1 else ''} · licence OFL"
     dessin.text((600, 520), total, font=ImageFont.truetype(fichier_titres, 43), fill=discret, anchor="mm")
     image.save(chemin, optimize=True)
+
+
+def fichiers_de_racine(sortie):
+    """robots.txt et security.txt : seulement quand le site est à la racine de son domaine."""
+    (sortie / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {URL_SITE}sitemap.xml\n", encoding="utf-8")
+    # Expire un an après la publication : chaque mise en ligne le renouvelle
+    expiration = (datetime.date.today() + datetime.timedelta(days=365)).isoformat()
+    (sortie / ".well-known").mkdir(exist_ok=True)
+    (sortie / ".well-known" / "security.txt").write_text(
+        f"Contact: mailto:contact@danaedev.fr\nExpires: {expiration}T00:00:00.000Z\nPreferred-Languages: fr, en\n"
+        f"Canonical: {URL_SITE}.well-known/security.txt\n", encoding="utf-8")
 
 
 def plan_du_site(chemin, catalogue):
