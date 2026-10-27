@@ -286,6 +286,33 @@ def historique(police):
     return versions
 
 
+# Titres des sections du CHANGELOG (release-please) en français, et leur nom au pluriel pour les résumés
+TITRES_SECTIONS = {"Features": "Nouveautés", "Bug Fixes": "Corrections", "Performance Improvements": "Performances"}
+
+
+def resumer_versions(versions):
+    """Ajoute à chaque version son type (selon le numéro), sa date courte et le compte de ses changements."""
+    publiques = [version for version in versions if not version["version"].startswith("0.")]
+    for version in versions:
+        majeure, mineure, corrective = (int(nombre) for nombre in version["version"].split("."))
+        if majeure == 0:
+            version["type"] = "Version de travail"
+        elif mineure == corrective == 0:
+            version["type"] = "Majeure" + (" · première version publique" if version is publiques[-1] else "")
+        elif corrective == 0:
+            version["type"] = "Mineure"
+        else:
+            version["type"] = "Correctif"
+        for section in version["sections"]:
+            section["titre"] = TITRES_SECTIONS.get(section["titre"], section["titre"])
+        version["date_courte"] = date_courte(version["date"]) if version["date"] else ""
+        version["compte"] = ", ".join(f"{len(section['entrees'])} {section['titre'].lower()}"
+                                      if len(section["entrees"]) > 1
+                                      else f"1 {section['titre'].lower().removesuffix('s')}"
+                                      for section in version["sections"] if section["entrees"])
+    return versions
+
+
 def glyphes(police):
     fonte = TTFont(fichier_graisse(police, police["graisses"][0], "ttf"))
     # Contrôles, espaces et séparateurs exclus de la grille
@@ -345,7 +372,7 @@ def fiche_du_site(police, sortie, base):
                 for graisse in police["graisses"]]
     fonctions = [{"parDefaut": False, **fonction, "differences": differences_opentype(police, fonction["code"])}
                  for fonction in police.get("fonctions", [])]
-    versions = historique(police)
+    versions = resumer_versions(historique(police))
     fiche = {cle: valeur for cle, valeur in police.items()
              if not cle.startswith("_") and cle not in ("construction", "compilees", "notes")}
     # Clés facultatives de police.json : présentes pour les modèles (StrictUndefined signale les fautes de frappe)

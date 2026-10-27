@@ -28,9 +28,17 @@ a, button, label[for], label:has(input), summary { cursor: pointer; }
 
 /* ---------- En-tête et pied de page ---------- */
 .marque-etoile { margin-inline-start: var(--space-2); color: var(--gold); }
-.gr-header .gr-nav { flex: 1 1 auto; }
+/* Recherche de l'en-tête : prend la place libre, 560 px au plus */
+.recherche-entete { flex: 1 1 14rem; max-width: 35rem; margin-inline-start: auto; }
+.recherche-entete input { box-sizing: border-box; width: 100%; height: 48px; padding: 0 var(--space-3) 0 44px; font-family: var(--font-body); font-size: 1.125rem; color: var(--ink); background: var(--surface-sunken); border: 2px solid var(--outline); border-radius: 0; }
+.recherche-entete input:focus-visible { border-color: var(--primary); }
+@media (max-width: 37.49rem) {
+  /* Mobile : la recherche passe sous la marque, Options garde son icône seule (nom lu par les lecteurs d'écran) */
+  .recherche-entete { order: 3; flex-basis: 100%; max-width: none; }
+  .bouton-options { min-width: 48px; padding-inline: 0; }
+  .bouton-options__libelle { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
 .interrupteur { gap: var(--space-2); }
-.ornement { margin: 0 0 var(--space-2); font-family: var(--font-display); font-size: 2.6875rem; line-height: 1; color: var(--gold); }
 .gr-footer p { margin: 0 0 var(--space-2); }
 /* Bouton « Haut » aligné sur la colonne de contenu */
 .gr-top { max-width: 75rem; margin-inline: auto; padding-inline: max(var(--space-4), env(safe-area-inset-right, 0px)); box-sizing: border-box; }
@@ -352,3 +360,40 @@ select { box-sizing: border-box; min-height: 44px; padding: 0 var(--space-2); fo
 .changements h4 { margin: 0; font-family: var(--font-ui); font-size: 1.25rem; line-height: 1.5rem; font-weight: 700; }
 .changements ul { margin: 0; padding-inline-start: 1.25em; display: grid; gap: var(--space-1); font-size: 1.125rem; line-height: 1.75rem; }
 .changements ul li::marker { content: "✦  "; font-family: var(--font-display); color: var(--gold); }
+
+/* Titre de section avec un compteur à droite */
+.section__ligne { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-2) var(--space-6); }
+.section__ligne h2 { margin: 0; font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 400; }
+.glyphes__colonne { display: grid; gap: var(--space-4); align-content: start; min-width: 0; }
+
+/* Changements d'une version : ✦ doré pour les nouveautés, ✓ turquoise pour les corrections */
+.changements__marque { margin-inline-end: var(--space-2); font-family: var(--font-display); }
+.changements__titre--nouveaute .changements__marque { color: var(--gold); }
+.changements__titre--correction .changements__marque { color: var(--teal); }
+.version-resumee { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-4); text-align: start; }
+.version-resumee__numero { font-family: var(--font-display); font-size: 2rem; line-height: 2.5rem; font-weight: 400; text-transform: none; letter-spacing: 0; }
+.version-resumee__detail { font-family: var(--font-ui); font-size: 1.125rem; font-weight: 500; color: var(--muted); text-transform: none; }
+
+/* ---------- Page des versions ---------- */
+.versions__resume { display: grid; justify-items: start; gap: var(--space-3); }
+.groupe-versions { gap: var(--space-2); }
+.groupe-versions__titre { margin: 0; }
+.groupe-versions__bouton { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-4); width: 100%; min-height: 48px; padding: var(--space-2) 0; text-align: start; color: var(--ink); background: none; border: 0; border-bottom: 2px solid var(--gilding); }
+.groupe-versions__nom { font-family: var(--font-display); font-size: 2.6875rem; line-height: 3rem; font-weight: 400; }
+.groupe-versions__detail { font-family: var(--font-ui); font-size: 1.125rem; font-weight: 500; color: var(--muted); }
+.groupe-versions__chevron { margin-inline-start: auto; align-self: center; transition: rotate var(--duration-fast) var(--ease-enter); }
+.groupe-versions__bouton[aria-expanded="false"] .groupe-versions__chevron { rotate: -90deg; }
+.groupe-versions__bouton:hover .groupe-versions__nom { text-decoration: underline; text-underline-offset: 6px; }
+.versions { list-style: none; margin: 0; padding: 0; display: grid; }
+.version { display: grid; grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr); gap: var(--space-2) var(--space-8); padding-block: var(--space-6); border-bottom: 1px solid var(--gilding); }
+.version__numero { margin: 0; font-family: var(--font-display); font-size: 2rem; line-height: 2.5rem; font-weight: 400; }
+.version__corps { max-width: 48rem; display: grid; gap: var(--space-3); }
+@media (max-width: 37.49rem) { .version { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Page introuvable ---------- */
+.introuvable { max-width: 48rem; padding-block: var(--space-8); }
+.introuvable form { max-width: none; }
+.introuvable .champ-icone input { width: 100%; }
+.liens-filets { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--gilding); }
+.liens-filets li { border-top: 1px solid var(--gilding); }
+.liens-filets a { display: flex; align-items: center; min-height: 48px; }

@@ -4,6 +4,7 @@
 {% block description %}Les polices d'écriture que je dessine, libres sous licence OFL : recherche par usage ou par style, essai en ligne, glyphes, installation et historique des versions.{% endblock %}
 {% block adresse %}{{ url_site }}{% endblock %}
 {% block tete %}{{ faces(catalogue) }}{% endblock %}
+{% block recherche_entete %}{% endblock %}
 
 {# Un bouton de choix (un seul choisi dans son groupe) ; le compteur est rempli par site.js #}
 {% macro choix(groupe, valeur, libelle) %}

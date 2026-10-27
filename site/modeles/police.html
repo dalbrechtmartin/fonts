@@ -15,6 +15,7 @@
   <nav aria-label="Fil d’Ariane" class="gr-crumbs fil">
     <ol>
       <li><a href="{{ base }}">Toutes les polices</a></li>
+      <li><a href="{{ base }}?style={{ police.styles | first | urlencode }}">{{ police.styles | first }}</a></li>
       <li aria-current="page">{{ police.nom }}</li>
     </ol>
   </nav>
@@ -73,8 +74,8 @@
   </div>
   <div class="gr-frame gr-frame--raised installation">
     <div class="gr-row installation__telecharger">
-      {{ bouton_telecharger(police, "Télécharger le zip") }}
-      <p class="gr-meta">{{ police.nom }} {{ police.version }} · {{ police.ko_zip }} Ko · .otf, .ttf et .woff2</p>
+      {{ bouton_telecharger(police, "Télécharger le zip (" ~ police.ko_zip ~ " Ko)") }}
+      <p class="gr-meta">{{ police.nom }} {{ police.version }} · .otf, .ttf et .woff2</p>
     </div>
     {% set systemes = {
       "Windows": [
@@ -141,7 +142,7 @@
       <div class="essai__champs">
         <div class="gr-field gr-field--wide">
           <label for="essai-texte">Ton texte</label>
-          <input id="essai-texte" type="text" value="{{ police.specimen.texte or police.specimen.titre }}" autocomplete="off" spellcheck="false" data-texte>
+          <input id="essai-texte" type="text" placeholder="Ex. : {{ police.specimen.texte or police.specimen.titre }}" autocomplete="off" spellcheck="false" data-texte>
         </div>
         <div class="gr-field essai__taille">
           <label for="essai-taille">Taille (px)</label>
@@ -252,12 +253,18 @@
 {% endif %}
 
 <section id="glyphes" class="section" aria-labelledby="titre-glyphes">
-  <h2 id="titre-glyphes">Glyphes ({{ police.glyphes | length }})</h2>
+  <div class="section__ligne">
+    <h2 id="titre-glyphes">Glyphes</h2>
+    <p class="gr-meta" data-compte-glyphes>{{ police.glyphes | length }} glyphes</p>
+  </div>
   <div class="glyphes">
+    <div class="glyphes__colonne">
     <div class="glyphes__grille" role="listbox" aria-label="Glyphes de {{ police.nom }}" style="font-family: &quot;essai-{{ police.id }}&quot;, var(--font-body)" data-grille>
       {% for glyphe in police.glyphes %}
       <button type="button" class="glyphe" role="option" aria-selected="false" tabindex="-1" aria-label="{{ glyphe.caractere }}, {{ glyphe.nom }}" data-nom="{{ glyphe.nom }}" data-code="{{ glyphe.code }}">{{ glyphe.caractere }}</button>
       {% endfor %}
+    </div>
+    <button type="button" class="gr-btn glyphes__plus" hidden data-plus-glyphes>{{ icone(base, "chevron-bas") }}<span data-libelle></span></button>
     </div>
     <figure class="gr-frame glyphes__loupe">
       <span class="glyphes__grand" style="font-family: &quot;essai-{{ police.id }}&quot;, var(--font-body)" aria-hidden="true" data-loupe></span>
@@ -265,7 +272,6 @@
       <button type="button" class="gr-btn" data-copier-glyphe>{{ icone(base, "copier") }}<span data-libelle>Copier le caractère</span></button>
     </figure>
   </div>
-  <button type="button" class="gr-btn glyphes__plus" hidden data-plus-glyphes>{{ icone(base, "chevron-bas") }}<span data-libelle></span></button>
   <p class="gr-meta">Flèches, Début et Fin pour parcourir la grille au clavier.</p>
 </section>
 
@@ -301,7 +307,7 @@
     ("local", "Héberger moi-même", "index.html", "Copie le dossier woff2 du zip dans ton site : il contient la police et sa feuille CSS.",
      "<link rel=\"preload\" href=\"/woff2/" ~ fichier_otf ~ ".woff2\" as=\"font\" type=\"font/woff2\" crossorigin>\n<link rel=\"stylesheet\" href=\"/woff2/index.css\">\n\n<style>\n  h1 {\n    font-family: " ~ famille ~ ", cursive;<FSS>\n  }\n</style>")
   ] %}
-  <div class="onglets-boutons" role="group" aria-label="Façon d’utiliser la police" data-onglets="web" hidden>
+  <div class="onglets-boutons" role="group" aria-label="Ta méthode" data-onglets="web" hidden>
     {% for code, libelle, fichier, intro, extrait in web %}
     <button type="button" class="gr-btn bouton-choix" aria-pressed="false" aria-controls="web-{{ code }}" data-onglet="{{ code }}"><span class="gr-star" aria-hidden="true">✦</span><span class="bouton-choix__libelle">{{ libelle }}</span></button>
     {% endfor %}
@@ -323,33 +329,37 @@
 
 <section id="licence" class="section" aria-labelledby="titre-licence">
   <h2 id="titre-licence">Ce que la licence permet</h2>
-  <p>{{ police.nom }} est sous <a href="https://openfontlicense.org">licence SIL Open Font License 1.1</a>.</p>
   <div class="licence">
     <div>
       <h3><svg class="gr-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Tu peux</h3>
       <ul>
-        <li>l’utiliser gratuitement, même pour un projet commercial (logo, affiche, livre, site, appli) ;</li>
-        <li>l’intégrer à un site, une appli ou un document PDF ;</li>
-        <li>la modifier et partager ta version{% if police.nomReserve %}, sous un autre nom que « {{ police.nomReserve }} »{% endif %}.</li>
+        <li>L’utiliser partout, même pour un projet payant : logo, livre, affiche, site, appli.</li>
+        <li>La modifier et partager ta version, sous la même licence{% if police.nomReserve %} et sous un autre nom que « {{ police.nomReserve }} »{% endif %}.</li>
       </ul>
     </div>
     <div>
       <h3>{{ icone(base, "croix") }}Tu ne peux pas</h3>
       <ul>
-        <li>vendre la police seule, telle quelle ;</li>
-        <li>retirer la licence ou les crédits des fichiers.</li>
+        <li>Vendre la police seule, telle quelle ou modifiée.</li>
+        <li>Changer sa licence ou retirer ses crédits des fichiers.</li>
       </ul>
     </div>
   </div>
   <div class="credit">
-    <p>Mentionner l’autrice n’est pas obligatoire, mais fait plaisir. Par exemple :</p>
+    <h3>Me citer, si tu veux</h3>
+    <p>La mention n’est pas obligatoire, mais elle me fait toujours plaisir. Par exemple :</p>
     <p class="credit__texte" data-credit>Police {{ police.nom }} par {{ police.dessin }} (danaedev.fr), licence SIL OFL 1.1</p>
     <button type="button" class="gr-btn" data-copier-credit>{{ icone(base, "copier") }}<span data-libelle>Copier la mention</span></button>
   </div>
+  <p class="gr-meta">Résumé simplifié : seule la licence fait foi. <a href="https://openfontlicense.org">Lire la licence SIL OFL 1.1</a></p>
 </section>
 
 <section id="versions" class="section" aria-labelledby="titre-versions">
-  <h2 id="titre-versions">Historique des versions</h2>
+  <div class="section__tete">
+    <h2 id="titre-versions">Historique des versions</h2>
+    {% set nombre = police.historique | length %}
+    <p class="gr-meta">{{ nombre }} version{{ "s" if nombre > 1 }}{% if nombre > 1 %} depuis le {{ (police.historique | last).date_courte }}{% endif %} · version actuelle : {{ police.version }}{% if police.date %} du {{ police.date }}{% endif %}</p>
+  </div>
   {% set dernieres = police.historique[:3] %}
   <div class="gr-accordion historique" data-accordeon>
     {% for version in dernieres %}
@@ -358,7 +368,7 @@
     {% endfor %}
   </div>
   <ul class="liens-utiles">
-    {% if police.historique | length > 3 %}<li><a href="{{ police.page }}versions/">Voir les {{ police.historique | length }} versions</a></li>{% else %}<li><a href="{{ police.page }}versions/">Voir la page des versions</a></li>{% endif %}
+    <li><a href="{{ police.page }}versions/">Voir toutes les versions</a></li>
     <li><a href="{{ depot }}/releases?q={{ police.id }}">Télécharger une ancienne version sur GitHub</a></li>
     <li><a href="{{ depot }}/releases.atom">Suivre les nouvelles versions (flux Atom)</a></li>
   </ul>

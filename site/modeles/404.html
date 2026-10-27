@@ -1,16 +1,26 @@
 {% extends "base.html" %}
+{% from "_polices.html" import icone %}
 {% block titre %}Page introuvable · Polices de Danaé{% endblock %}
 {% block description %}Cette page n'existe pas, ou plus.{% endblock %}
 {% block adresse %}{% endblock %}
 
 {% block contenu %}
-<section class="intro" aria-labelledby="titre">
+<section class="intro introuvable" aria-labelledby="titre">
   <h1 id="titre" tabindex="-1">Page introuvable</h1>
-  <p class="intro__accroche">Cette page n'existe pas, ou plus. La police que tu cherches a peut-être changé d'adresse.</p>
-  <ul class="liens-utiles">
-    <li><a href="{{ base }}">Voir toutes les polices</a></li>
-    {% for fiche in catalogue %}<li><a href="{{ fiche.page }}">{{ fiche.nom }} : essayer et installer</a></li>{% endfor %}
-    <li><a href="{{ depot }}/releases">Télécharger une police sur GitHub</a></li>
-  </ul>
+  <p class="intro__accroche">Cette page n’existe pas, ou plus. La police que tu cherches a peut-être changé d’adresse.</p>
+  <form class="gr-field" role="search" action="{{ base }}">
+    <label for="recherche-404">Rechercher une police</label>
+    <span class="champ-icone">
+      {{ icone(base, "loupe") }}
+      <input id="recherche-404" type="search" name="q" autocomplete="off" placeholder="Ex. : chat, pixel, Sorcelle">
+    </span>
+  </form>
+  <nav aria-label="Pages principales">
+    <ul class="liens-filets">
+      <li><a href="{{ base }}">Voir toutes les polices</a></li>
+      {% for fiche in catalogue %}<li><a href="{{ fiche.page }}">Voir {{ fiche.nom }}</a></li>{% endfor %}
+      <li><a href="{{ base }}#utiliser">Savoir comment utiliser une police</a></li>
+    </ul>
+  </nav>
 </section>
 {% endblock %}

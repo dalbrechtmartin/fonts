@@ -510,6 +510,90 @@
     afficher(false);
   })();
 
+  // ---------- Page des versions : groupes repliables, recherche et type de changement ----------
+  (function versions() {
+    var filtre = un('[data-filtre-versions]');
+    if (!filtre) return;
+    var recherche = un('[data-recherche-versions]', filtre);
+    var types = tous('[data-type-changement]', filtre);
+    var etat = un('[data-etat-versions]', filtre);
+    var aucun = un('[data-aucun-changement]');
+    var groupes = tous('[data-groupe-versions]');
+    var messageInitial = etat.textContent;
+    var type = '';
+
+    function ouvrir(groupe, ouvert) {
+      var bouton = un('.groupe-versions__bouton', groupe);
+      bouton.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+      document.getElementById(bouton.getAttribute('aria-controls')).hidden = !ouvert;
+    }
+    groupes.forEach(function (groupe) {
+      var bouton = un('.groupe-versions__bouton', groupe);
+      bouton.addEventListener('click', function () { ouvrir(groupe, bouton.getAttribute('aria-expanded') !== 'true'); });
+      // Les versions de travail sont repliées au départ
+      if (groupe.hasAttribute('data-replie')) ouvrir(groupe, false);
+    });
+
+    // Compteurs : versions qui ont au moins un changement de ce type
+    var toutes = tous('[data-version]');
+    types.forEach(function (bouton) {
+      var valeur = bouton.getAttribute('data-type-changement');
+      un('[data-compte]', bouton).textContent = valeur
+        ? toutes.filter(function (version) { return un('[data-section="' + valeur + '"]', version); }).length
+        : toutes.length;
+    });
+
+    function sansAccents(mot) { return mot.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+    function filtrer() {
+      var mots = sansAccents(recherche.value.trim()).split(/\s+/).filter(Boolean);
+      var actif = mots.length > 0 || type !== '';
+      var trouvees = 0;
+      groupes.forEach(function (groupe) {
+        var dansGroupe = 0;
+        tous('[data-version]', groupe).forEach(function (version) {
+          var entreesVisibles = 0;
+          tous('[data-section]', version).forEach(function (section) {
+            var bonType = !type || section.getAttribute('data-section') === type;
+            var visibles = 0;
+            tous('li', section).forEach(function (entree) {
+              var texteEntree = sansAccents(entree.textContent);
+              var garde = bonType && mots.every(function (mot) { return texteEntree.indexOf(mot) !== -1; });
+              entree.hidden = !garde;
+              if (garde) visibles += 1;
+            });
+            section.hidden = !visibles;
+            section.previousElementSibling.hidden = !visibles;
+            entreesVisibles += visibles;
+          });
+          version.hidden = !entreesVisibles;
+          if (entreesVisibles) dansGroupe += 1;
+        });
+        groupe.hidden = !dansGroupe;
+        // Un filtre ouvre les groupes qui ont des résultats ; sans filtre, chacun revient à son état de départ
+        ouvrir(groupe, actif ? dansGroupe > 0 : !groupe.hasAttribute('data-replie'));
+        trouvees += dansGroupe;
+      });
+      aucun.hidden = trouvees > 0;
+      etat.textContent = actif
+        ? (trouvees > 1 ? trouvees + ' versions correspondent.' : trouvees + ' version correspond.')
+        : messageInitial;
+    }
+    recherche.addEventListener('input', filtrer);
+    types.forEach(function (bouton) {
+      bouton.addEventListener('click', function () {
+        type = bouton.getAttribute('data-type-changement');
+        types.forEach(function (autre) { autre.setAttribute('aria-pressed', autre === bouton ? 'true' : 'false'); });
+        filtrer();
+      });
+    });
+    un('[data-effacer-versions]', aucun).addEventListener('click', function () {
+      recherche.value = '';
+      types[0].click();
+      recherche.focus();
+    });
+    filtre.hidden = false;
+  })();
+
   // ---------- Page d'une police ----------
   var donneesPage = document.getElementById('donnees-police');
   if (!donneesPage) return;
@@ -526,7 +610,8 @@
     var exemples = tous('[data-exemple]', bloc);
     var cases = tous('[data-fonction]', bloc);
     var extraits = tous('[data-extrait]');
-    var texteParDefaut = champTexte.value;
+    // Champ vide : l'essai montre le texte du spécimen (celui du texte d'exemple)
+    var texteParDefaut = sortie.textContent;
 
     function bornee(valeur) {
       return Math.min(Number(curseur.max), Math.max(Number(curseur.min), Math.round(Number(valeur) || Number(curseur.value))));
@@ -637,11 +722,13 @@
       visibles = PREMIERS;
       cellules.slice(PREMIERS).forEach(function (cellule) { cellule.hidden = true; });
       un('[data-libelle]', plus).textContent = 'Afficher les ' + (cellules.length - PREMIERS) + ' autres glyphes';
+      un('[data-compte-glyphes]').textContent = PREMIERS + ' sur ' + cellules.length + ' affichés';
       plus.hidden = false;
       plus.addEventListener('click', function () {
         cellules.forEach(function (cellule) { cellule.hidden = false; });
         visibles = cellules.length;
         plus.hidden = true;
+        un('[data-compte-glyphes]').textContent = cellules.length + ' glyphes';
         selectionner(PREMIERS, true);
         annoncer(cellules.length + ' glyphes affichés.');
       });
