@@ -1,0 +1,12 @@
+.git
+.github
+.claude
+.venv
+venv
+__pycache__
+node_modules
+_site
+release
+npm
+fonts/*/dist
+*.log
