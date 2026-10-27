@@ -9,23 +9,23 @@ Police pixel « lombarde arrondie » pour les titres, en trois graisses (Regular
 redessinée. Couvre GF Latin Core. Voir README.md et documentation/.
 
 ## Historique
-2026-10-26 (Danaé Albrecht--Martin) Sorcelle 1.000
+2026-10-26 (Danaé ALBRECHT--MARTIN) Sorcelle 1.000
 - GF Latin Core entier dans le style Sorcelle : 143 lettres accentuées, accents seuls et combinants, 28 symboles, Λ
 - Plus aucun dessin de Jacquard 24, sauf le § gardé volontairement
 - Fonction mark regénérée, crénage de Jacquard 24 retiré, espace fine insécable ajoutée
 - Contrôle : Font Bakery 0 échec, OCR 99,6 % / 99,1 % / 99,1 % (documentation/controle.md)
 
-2026-10-25 (Danaé Albrecht--Martin) Sorcelle 0.6
+2026-10-25 (Danaé ALBRECHT--MARTIN) Sorcelle 0.6
 - λ ; pont en losange sur les jointures diagonales
 
-2026-10-25 (Danaé Albrecht--Martin) Sorcelle 0.5
+2026-10-25 (Danaé ALBRECHT--MARTIN) Sorcelle 0.5
 - Un seul contour par forme
 
-2026-10-24 (Danaé Albrecht--Martin) Sorcelle 0.1 à 0.4
+2026-10-24 (Danaé ALBRECHT--MARTIN) Sorcelle 0.1 à 0.4
 - Capitales « lombarde arrondie », minuscules rondes, chiffres et ponctuation, ✦, trois graisses
 
 ## Contributions
-N: Danaé Albrecht--Martin
+N: Danaé ALBRECHT--MARTIN
 W: https://danaedev.fr
 D: Dessin de Sorcelle
 

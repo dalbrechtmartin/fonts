@@ -2,10 +2,18 @@
 
 Usage (dans ce dossier) : python variants_minuscules.py
 """
-import os, sys
+import os
+import sys
+
 sys.path.insert(0, '.')
 from PIL import Image, ImageDraw, ImageFont
-import build, design_caps, design_lower, extract, legibility
+
+import build
+import design_caps
+import design_lower
+import extract
+import legibility
+
 ttf = 'sources/Jacquard24-Regular.ttf'
 out = 'variantes/minuscules'
 os.makedirs(out, exist_ok=True)

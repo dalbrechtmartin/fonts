@@ -200,7 +200,7 @@ def cap_glyphs():
     g.rect(8, 5, 11, TOP)
     g.hbar(4, 13, TOP - 1)
     g.octagon(0, 0, 11, 9, 4, open_right=None)
-    g.erase([(x, y) for x in range(0, 12) for y in range(5, 10) if x < 8])
+    g.erase([(x, y) for x in range(12) for y in range(5, 10) if x < 8])
     g.rect(0, 4, 3, 7)
     G["J"] = g
 
@@ -344,7 +344,7 @@ def cap_glyphs():
 
     g = Glyph()                                     # ✦ étoile à quatre branches, centrée sur les minuscules
     cx, cy = 8, 9
-    for r in range(0, 10):
+    for r in range(10):
         half = max(0, 2 - r // 4)
         for d in range(-half, half + 1):
             for x, y in ((cx + d, cy + r), (cx + d, cy - r), (cx + r, cy + d), (cx - r, cy + d)):

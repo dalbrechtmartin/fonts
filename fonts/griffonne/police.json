@@ -4,13 +4,23 @@
   "version": "1.0.1",
   "statut": "stable",
   "resume": "Pinceau irrégulier où chaque lettre cache un chat.",
-  "description": "Griffonne est une police au pinceau générée en code : des oreilles sur les hampes, des yeux dans les panses, des queues aux terminaisons. Trois tracés alternent pour que deux lettres voisines ne soient jamais identiques. Lisible dès 16 px, féline dès le premier regard, elle couvre GF Latin Core (8 langues).",
-  "dessin": "Danaé Albrecht--Martin",
+  "description": "Griffonne est une police au pinceau générée en code : des oreilles sur les hampes, des yeux dans les panses, des queues aux terminaisons. Trois tracés alternent pour que deux lettres voisines ne soient jamais identiques. Lisible dès 16 px, féline dès le premier regard.",
+  "dessin": "Danaé ALBRECHT--MARTIN",
   "licence": "OFL-1.1",
   "etiquettes": [
     "pinceau",
     "chat",
     "affiches"
+  ],
+  "langues": [
+    "français",
+    "anglais",
+    "allemand",
+    "espagnol",
+    "polonais",
+    "tchèque",
+    "roumain",
+    "turc"
   ],
   "graisses": [
     {
@@ -22,20 +32,28 @@
   "fonctions": [
     {
       "code": "calt",
-      "libelle": "Pinceau (3 tracés qui alternent)",
+      "libelle": "Pinceau vivant",
+      "description": "3 tracés alternent : deux lettres voisines ne sont jamais identiques.",
+      "exemple": "mammouth",
       "parDefaut": true
     },
     {
       "code": "ss01",
-      "libelle": "Chats complets (moustaches)"
+      "libelle": "Chats complets",
+      "description": "Des moustaches sur les lettres à visage, pour les titres dès 32 px.",
+      "exemple": "Bonbon"
     },
     {
       "code": "case",
-      "libelle": "Signes centrés sur les capitales"
+      "libelle": "Signes pour capitales",
+      "description": "Parenthèses, tirets et guillemets centrés sur les majuscules.",
+      "exemple": "(CHAT)"
     },
     {
       "code": "zero",
-      "libelle": "Zéro barré"
+      "libelle": "Zéro barré",
+      "description": "Distingue le chiffre 0 de la lettre O.",
+      "exemple": "O0 2026"
     }
   ],
   "specimen": {
@@ -46,5 +64,12 @@
     "tailleParDefaut": 72,
     "taillesNettes": []
   },
-  "usage": "Texte dès 16 px avec un interlignage d’au moins 1,5 ; chats complets (ss01) pour les titres dès 32 px."
+  "usage": "Texte dès 16 px avec un interlignage d’au moins 1,5 ; chats complets (ss01) pour les titres dès 32 px.",
+  "notes": {
+    "1.0.1": {
+      "Corrections": [
+        "Le nom « Griffonne » n’est plus réservé : une version modifiée peut le garder."
+      ]
+    }
+  }
 }

@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "statut": "stable",
   "resume": "Pixel « lombarde arrondie » pour les titres de mon portfolio.",
-  "description": "Sorcelle redessine Jacquard 24 dans un style lombarde arrondie : capitales romaines à fûts de 5 px, minuscules rondes, chiffres, ponctuation et symboles au même poids, et une étoile ✦ en ornement. Elle couvre GF Latin Core : les langues d’Europe de l’Ouest et centrale, dans les trois graisses. Elle est faite pour les titres, nette à 43 et 86 px.",
-  "dessin": "Danaé Albrecht--Martin",
+  "description": "Sorcelle redessine Jacquard 24 dans un style lombarde arrondie : capitales romaines à fûts de 5 px, minuscules rondes, chiffres, ponctuation et symboles au même poids, et une étoile ✦ en ornement. Elle est faite pour les titres, nette à 43 et 86 px, dans les trois graisses.",
+  "dessin": "Danaé ALBRECHT--MARTIN",
   "licence": "OFL-1.1",
   "origine": {
     "nom": "Jacquard 24",
@@ -15,6 +15,16 @@
     "pixel",
     "titres",
     "lombarde"
+  ],
+  "langues": [
+    "français",
+    "anglais",
+    "allemand",
+    "espagnol",
+    "polonais",
+    "tchèque",
+    "roumain",
+    "turc"
   ],
   "graisses": [
     {
@@ -49,5 +59,25 @@
       129
     ]
   },
-  "usage": "Titres uniquement, à partir de 32 px. Pour des pixels nets : 43 px ou 86 px."
+  "usage": "Titres uniquement, à partir de 32 px. Pour des pixels nets : 43 px ou 86 px.",
+  "notes": {
+    "1.0.0": {
+      "Nouveautés": [
+        "Tous les glyphes redessinés dans le style Sorcelle : 8 langues, dans les trois graisses."
+      ]
+    },
+    "0.6.0": {
+      "Nouveautés": [
+        "Nouveau glyphe λ, pour écrire « λLens »."
+      ],
+      "Corrections": [
+        "Plus de petits trous au zoom dans Æ, Ç et Œ, repérés lors d’un test de lecture avec 5 personnes (59 mots sur 60 lus justes)."
+      ]
+    },
+    "0.5.0": {
+      "Corrections": [
+        "Plus de fins traits clairs à petite taille ou au zoom ; dessin identique au pixel près à 43 et 86 px."
+      ]
+    }
+  }
 }

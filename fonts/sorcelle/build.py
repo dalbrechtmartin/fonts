@@ -42,37 +42,10 @@ def revision(version):
 BRIDGE = 0.3
 WEIGHTS = {400: ("Regular", 0), 600: ("SemiBold", 1), 700: ("Bold", 2)}
 COPYRIGHT = ("Copyright 2023 The Soft Type Project Authors (https://github.com/scfried/soft-type-jacquard). "
-             "Copyright 2026 Danaé Albrecht--Martin (https://danaedev.fr), modifications de Jacquard 24.")
-CREATRICE = "Danaé Albrecht--Martin"
+             "Copyright 2026 Danaé ALBRECHT--MARTIN (https://danaedev.fr), modifications de Jacquard 24.")
+CREATRICE = "Danaé ALBRECHT--MARTIN"
 CENTRE_ACCENT_COMBINANT = -8    # colonne du centre d'un accent combinant (chasse nulle, au-dessus de la lettre d'avant)
 ACCENTS_DESSOUS = {0x326, 0x327, 0x328}
-
-
-def rectangles(pixels):
-    """Fusionne les pixels en rectangles disjoints (lignes horizontales puis verticales)."""
-    runs = {}
-    for row in sorted({r for _, r in pixels}):
-        cols = sorted(c for c, r in pixels if r == row)
-        start = prev = cols[0]
-        for c in cols[1:] + [None]:
-            if c is not None and c == prev + 1:
-                prev = c
-                continue
-            runs.setdefault((start, prev), []).append(row)
-            if c is not None:
-                start = prev = c
-    rects = []
-    for (c0, c1), rows in runs.items():
-        rows.sort()
-        r0 = prev = rows[0]
-        for r in rows[1:] + [None]:
-            if r is not None and r == prev + 1:
-                prev = r
-                continue
-            rects.append((c0, r0, c1, prev))
-            if r is not None:
-                r0 = prev = r
-    return rects
 
 
 def outline(pixels):

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "_polices.html" import faces %}
+{% block titre %}Versions de {{ police.nom }} · Polices de Danaé{% endblock %}
+{% block description %}Toutes les versions de la police {{ police.nom }}, avec ce qui change à chaque fois.{% endblock %}
+{% block adresse %}{{ url_site }}{{ police.id }}/versions/{% endblock %}
+
+{% block contenu %}
+<div class="presentation">
+  <nav aria-label="Fil d’Ariane" class="gr-crumbs fil">
+    <ol>
+      <li><a href="{{ base }}">Toutes les polices</a></li>
+      <li><a href="{{ police.page }}">{{ police.nom }}</a></li>
+      <li aria-current="page">Versions</li>
+    </ol>
+  </nav>
+  <section class="intro" aria-labelledby="titre">
+    <h1 id="titre" tabindex="-1">Versions de {{ police.nom }}</h1>
+    <p class="intro__accroche">{{ police.historique | length }} version{{ "s" if police.historique | length > 1 }}, la plus récente en premier. Chaque version dit ce qui change pour toi.</p>
+    <p><a class="gr-btn gr-btn--primary btn-telecharger" href="{{ police.telechargement }}" download><span class="gr-btn__star" aria-hidden="true">✦</span>Télécharger la {{ police.version }}<span class="gr-btn__star" aria-hidden="true">✦</span></a></p>
+  </section>
+</div>
+
+{% for groupe in groupes %}
+{% set groupe_recent = loop.first %}
+<section class="section" aria-labelledby="majeure-{{ groupe.majeure }}">
+  <h2 id="majeure-{{ groupe.majeure }}">Version {{ groupe.majeure }}{% if groupe.majeure == "0" %} (versions de travail){% endif %} · {{ groupe.versions | length }} version{{ "s" if groupe.versions | length > 1 }}</h2>
+  <div class="gr-accordion historique" data-accordeon>
+    {% for version in groupe.versions %}
+    {% set premiere = groupe_recent and loop.first %}
+    {% include "_version.html" %}
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+
+<ul class="liens-utiles">
+  <li><a href="{{ depot }}/releases?q={{ police.id }}">Télécharger une ancienne version sur GitHub</a></li>
+  <li><a href="{{ depot }}/releases.atom">Suivre les nouvelles versions (flux Atom)</a></li>
+</ul>
+{% endblock %}

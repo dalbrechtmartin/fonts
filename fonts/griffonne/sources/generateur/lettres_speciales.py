@@ -6,7 +6,16 @@ sans le recopier. Retoucher le o retouche donc aussi le ø.
 
 from capitales import CAPITALE, HAUT, avec_chat, boucle, oreilles_capitale
 from glyphes import (
-    GLYPHES, METRIQUES, RAYON, Trait, felin, fut, glyphe, oreilles_panse, panse_ry, yeux,
+    GLYPHES,
+    METRIQUES,
+    RAYON,
+    Trait,
+    felin,
+    fut,
+    glyphe,
+    oreilles_panse,
+    panse_ry,
+    yeux,
 )
 from pinceau import ellipse, ligne, lisse, transformer
 

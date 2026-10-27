@@ -1,0 +1,23 @@
+{# Une version dans un accordéon : la plus récente ouverte (rendue ouverte, sans JavaScript aussi) #}
+{% set ident = police.id ~ "-v" ~ version.version | replace(".", "-") %}
+{% set ouverte = premiere %}
+<div class="gr-accordion__item">
+  <h3 class="gr-accordion__heading">
+    <button type="button" class="gr-accordion__trigger" id="{{ ident }}-declencheur" aria-controls="{{ ident }}-panneau" aria-expanded="{{ 'true' if ouverte else 'false' }}">
+      <span class="gr-accordion__star" aria-hidden="true">✦</span>
+      <span class="gr-accordion__label">Version {{ version.version }}{% if version.date %} · {{ version.date.split("-") | reverse | join("/") }}{% endif %}</span>
+      <svg class="gr-icon gr-accordion__caret" aria-hidden="true"><use href="{{ base }}icones.svg#chevron-bas"/></svg>
+    </button>
+  </h3>
+  <div class="gr-accordion__panel{{ ' is-open' if ouverte }}" id="{{ ident }}-panneau" role="region" aria-labelledby="{{ ident }}-declencheur"{% if not ouverte %} inert{% endif %}>
+    <div class="gr-accordion__inner changements">
+      {% for section in version.sections %}
+      <h4>{{ {"Features": "Nouveautés", "Bug Fixes": "Corrections", "Performance Improvements": "Performances"}.get(section.titre, section.titre) }}</h4>
+      <ul>
+        {% for entree in section.entrees %}<li>{{ entree | safe }}</li>{% endfor %}
+      </ul>
+      {% endfor %}
+      {% if version.url %}<p class="gr-meta"><a href="{{ version.url }}">Détail technique : comparer avec la version précédente</a></p>{% endif %}
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@
 
 Les polices d'écriture que je dessine : sources, versions, changelog et spécimens.
 
-**Site : <https://dalbrechtmartin.github.io/fonts/>** (essai en ligne, glyphes, CSS à copier, téléchargement, historique).
+**Site : <https://polices.danaedev.fr/>** (essai en ligne, glyphes, CSS à copier, téléchargement, historique).
 
 | Police | Style | Licence |
 | --- | --- | --- |
@@ -26,10 +26,10 @@ Chaque version publiée a son zip (TTF, WOFF2, OTF quand la police en a un, lice
 
 Chaque police a un `index.css` (toutes les graisses) et une feuille par graisse (`400.css`, `700.css`…).
 
-- Sans rien installer, depuis GitHub Pages :
+- Sans rien installer, depuis le site :
 
   ```css
-  @import url("https://dalbrechtmartin.github.io/fonts/fonts/sorcelle/index.css");
+  @import url("https://polices.danaedev.fr/fonts/sorcelle/index.css");
   ```
 
 - Avec npm (paquets `@danaedev/<id>`) :
@@ -50,12 +50,20 @@ python -m venv .venv
 source .venv/Scripts/activate            # PowerShell : .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python tools/polices.py construire       # compile chaque police dans fonts/<id>/dist/
-python tools/polices.py site             # génère _site/ (polices.json, polices, feuilles CSS, zips)
+python tools/polices.py site             # génère _site/ : pages, polices.json, polices, CSS, zips, image de partage, sitemap
 python tools/polices.py npm sorcelle     # prépare le paquet npm dans npm/sorcelle/
 python -m http.server 8000 --directory _site
 ```
 
-Puis ouvrir <http://localhost:8000>.
+Puis ouvrir <http://localhost:8000/> : les liens du site partent du chemin de `URL_SITE` (`tools/polices.py`), ici la
+racine du domaine.
+
+Tester l'image servie en production (nginx, port 8080) :
+
+```bash
+docker build -t polices .
+docker run --rm -p 8080:8080 polices
+```
 
 ## Vérifier
 
@@ -66,9 +74,32 @@ python tools/polices.py verifier         # toutes les polices, ou : verifier sor
 Contrôle les clés de `police.json`, la licence, le changelog, la famille et la graisse de chaque fichier, les glyphes du
 spécimen, la révision écrite dans la police et l'accord avec `.release-please-manifest.json`. Code de sortie 1 en cas d'erreur.
 
+### Hooks Git
+
+Une fois par poste, depuis la racine (Node 20 ou plus) :
+
+```bash
+npm install                              # lefthook et commitlint, puis installe les hooks
+pip install -r requirements-dev.txt      # ruff
+winget install Gitleaks.Gitleaks         # macOS : brew install gitleaks
+```
+
+À chaque commit : `ruff check` sur les fichiers Python indexés et `gitleaks` (secrets) ; le message doit suivre
+Conventional Commits (`commitlint`). Lint de tout le dépôt : `ruff check .`.
+
 ## Déploiement
 
-Tout passe par GitHub Actions, sans variable ni secret :
+Le site est servi par une image Docker (`Dockerfile` : construction Python, puis nginx non root sur le port 8080,
+`nginx/`) que Dokploy reconstruit à chaque push :
+
+| Environnement | Branche   | Particularité                  |
+| ------------- | --------- | ------------------------------ |
+| Recette       | `develop` | Protégée par mot de passe      |
+| Production    | `main`    | `polices.danaedev.fr`         |
+
+nginx ajoute les en-têtes de sécurité et autorise les autres sites à charger `/fonts/` (CORS), pour les `@import`.
+
+Versions et paquets passent par GitHub Actions, sans variable ni secret :
 
 - [`ci.yml`](.github/workflows/ci.yml) : `construire`, `verifier` et `site` à chaque push et PR vers `main` et `develop`.
 - [`pages.yml`](.github/workflows/pages.yml) : publie le site sur GitHub Pages à chaque push sur `main`.
@@ -96,9 +127,12 @@ Chaque police a sa propre version (semver), son `CHANGELOG.md` et ses tags (`gri
 3. release-please ouvre une PR par police modifiée (version dans `police.json`, manifeste, `CHANGELOG.md`).
    Elle n'a pas de CI : GitHub ne lance pas les workflows sur une PR créée par GitHub Actions.
 4. La fusionner : tag, release et zip, puis le site se met à jour.
+5. Facultatif : décrire la version en français pour le site dans `police.json`, clé `notes`
+   (`{"1.2.0": {"Nouveautés": ["…"], "Corrections": ["…"]}}`). Sans note, le site affiche les messages de commit ;
+   `verifier` refuse une note pour une version absente du CHANGELOG.
 
-La version écrite dans les fichiers de police vient de `police.json` (Sorcelle) ou se reconstruit à la main (Griffonne,
-voir son README).
+La version écrite dans les fichiers de police vient toujours de `police.json` : `construire` l'écrit aussi dans les
+polices fournies compilées (Griffonne), et `verifier` refuse un écart.
 
 ### Ajouter une police
 
@@ -107,7 +141,9 @@ python tools/polices.py nouvelle <id> "<Nom>"
 ```
 
 Crée `fonts/<id>/` (police.json, CHANGELOG, README, OFL.txt) et la déclare à release-please en `0.0.0` : non publiée,
-absente du site. La commande affiche ensuite les étapes : compléter `police.json`, ajouter les fichiers compilés
+absente du site. La commande affiche ensuite les étapes : compléter `police.json` (dont `langues`, affichées sur le site
+avec une phrase par langue tirée de `PHRASES_LANGUES`, et pour chaque fonction OpenType `libelle`, `description` et un
+`exemple` court : le site y marque les signes qui changent, calculés avec HarfBuzz), ajouter les fichiers compilés
 dans `compilees/` (ou une commande `construction`), vérifier, puis committer `feat(<id>): première version`.
 
 ### Publier une police sur npm pour la première fois
@@ -143,7 +179,10 @@ Dependabot propose chaque semaine, sur `develop`, les mises à jour pip et GitHu
 ```
 fonts/<id>/        une police : police.json, CHANGELOG.md, OFL.txt, README.md, sources et scripts
 tools/polices.py   construire, vérifier, empaqueter, site, paquet npm, aperçus, nouvelle police
-site/              page de présentation (lit polices.json), habillée avec le design system Grimoire
+site/modeles/      pages du site (Jinja) : accueil, une page par police, ses versions, 404 ; rendues par la commande site
+site/              CSS, interactions (site.js) et copie du design system Grimoire
+Dockerfile         image du site : construction des polices et du site, puis nginx
+nginx/             configuration nginx : cache, CORS de /fonts/, en-têtes de sécurité
 ```
 
 ## Licences

@@ -13,6 +13,7 @@ Usage (depuis la racine du dépôt) :
   python tools/polices.py nouvelle <id> "<Nom>"
 """
 import argparse
+import datetime
 import html
 import json
 import re
@@ -22,8 +23,11 @@ import sys
 import unicodedata
 import zipfile
 from pathlib import Path
+from urllib.parse import urlparse
 
+import uharfbuzz
 from fontTools.ttLib import TTFont
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from PIL import Image, ImageDraw, ImageFont
 
 RACINE = Path(__file__).resolve().parent.parent
@@ -32,9 +36,9 @@ SITE = RACINE / "site"
 CONFIG_RELEASE = RACINE / "release-please-config.json"
 MANIFESTE_RELEASE = RACINE / ".release-please-manifest.json"
 URL_DEPOT = "https://github.com/dalbrechtmartin/fonts"
-URL_SITE = "https://dalbrechtmartin.github.io/fonts/"
+URL_SITE = "https://polices.danaedev.fr/"
 PORTEE_NPM = "@danaedev"
-AUTRICE = "Danaé Albrecht--Martin (https://danaedev.fr)"
+AUTRICE = "Danaé ALBRECHT--MARTIN (https://danaedev.fr)"
 WORKFLOW_PUBLICATION = "release-please.yml"
 NON_PUBLIEE = "0.0.0"
 CLES_OBLIGATOIRES = ("id", "nom", "version", "resume", "dessin", "licence", "graisses", "specimen")
@@ -42,6 +46,25 @@ EXTENSIONS = ("otf", "ttf", "woff2")
 DOCUMENTS = ("OFL.txt", "OFL-FAQ.txt", "FONTLOG.txt", "AUTHORS.txt", "README.md", "CHANGELOG.md")
 # Couleurs des thèmes Parchemin et Crypte de Grimoire (fond, encre, texte secondaire)
 THEMES_APERCU = {"clair": ("#f1e9d8", "#1d1822", "#5a4f5f"), "sombre": ("#17141c", "#ece4d8", "#b3a9b8")}
+DORURE = "#d4a03a"  # gilding de Grimoire : filets décoratifs
+POLICE_DES_TITRES = "sorcelle"  # titres du site (Grimoire)
+MODELES = SITE / "modeles"  # pages du site (Jinja), rendues par la commande site
+# Une phrase par langue, qui utilise ses lettres propres : essai et section Langues du site.
+# Une langue listée dans police.json doit être ici, et sa phrase entièrement couverte (verifier).
+PHRASES_LANGUES = {
+    "français": ("fr", "Portez ce vieux whisky au juge blond qui fume\u202f!"),
+    "anglais": ("en", "The quick brown fox jumps over the lazy dog."),
+    "allemand": ("de", "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich."),
+    "espagnol": ("es", "El veloz murciélago hindú comía feliz cardillo y kiwi."),
+    "polonais": ("pl", "Zażółć gęślą jaźń."),
+    "tchèque": ("cs", "Příliš žluťoučký kůň úpěl ďábelské ódy."),
+    "roumain": ("ro", "Muzicologă în bej vând whisky și tequila, preț fix."),
+    "turc": ("tr", "Pijamalı hasta yağız şoföre çabucak güvendi."),
+}
+PHRASES_SIGNES = {
+    "Alphabet": "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz",
+    "Chiffres et signes": "0123456789 · 12,50 € · «\u202fOui\u202f!\u202f» — @ & ? (…)",
+}
 
 
 # --- Lecture -------------------------------------------------------------------------------------
@@ -117,13 +140,26 @@ def construire(police):
         for fichier in compilees.rglob("*"):
             if fichier.suffix.lstrip(".") in EXTENSIONS:
                 shutil.copy2(fichier, sortie / fichier.name)
-        print(f"[{police['id']}] fichiers copiés depuis {compilees.relative_to(RACINE)}")
+                ecrire_revision(sortie / fichier.name, police["version"])
+        print(f"[{police['id']}] fichiers copiés depuis {compilees.relative_to(RACINE)}, "
+              f"révision {revision_opentype(police['version'])}")
+
+
+def ecrire_revision(fichier, version):
+    """Écrit la version de police.json dans une police fournie compilée : head.fontRevision, noms 3 et 5."""
+    fonte = TTFont(fichier)
+    revision = revision_opentype(version)
+    fonte["head"].fontRevision = float(revision)
+    for nom in fonte["name"].names:
+        if nom.nameID in (3, 5):
+            nom.string = re.sub(r"\d+\.\d{3}", revision, nom.toUnicode(), count=1)
+    fonte.save(fichier)
 
 
 # --- verifier ------------------------------------------------------------------------------------
 
 def verifier(police):
-    erreurs, alertes = [], []
+    erreurs = []
     id_police = police["id"]
     for cle in CLES_OBLIGATOIRES:
         if cle not in police:
@@ -135,6 +171,11 @@ def verifier(police):
     for document in ("OFL.txt", "CHANGELOG.md", "README.md"):
         if not (police["_dossier"] / document).exists():
             erreurs.append(f"{document} manquant")
+    if (police["_dossier"] / "CHANGELOG.md").exists():
+        publiees = {version["version"] for version in historique(police)}
+        for version in police.get("notes", {}):
+            if version not in publiees:
+                erreurs.append(f"police.json : notes pour la version {version}, absente du CHANGELOG")
 
     chemin = f"fonts/{id_police}"
     config = json.loads(CONFIG_RELEASE.read_text(encoding="utf-8"))
@@ -145,6 +186,16 @@ def verifier(police):
         erreurs.append(f"{MANIFESTE_RELEASE.name} dit {manifeste.get(chemin)}, police.json dit {police.get('version')}")
 
     texte_specimen = police["specimen"].get("titre", "") + police["specimen"].get("texte", "")
+    for langue in police.get("langues", []):
+        if langue in PHRASES_LANGUES:
+            texte_specimen += PHRASES_LANGUES[langue][1]
+        else:
+            erreurs.append(f"police.json : langue « {langue} » sans phrase d'exemple dans PHRASES_LANGUES")
+    for fonction in police.get("fonctions", []):
+        for cle in ("libelle", "description", "exemple"):
+            if cle not in fonction:
+                erreurs.append(f"police.json : fonction {fonction.get('code')} sans « {cle} »")
+        texte_specimen += fonction.get("exemple", "")
     for graisse in police.get("graisses", []):
         for extension in ("ttf", "woff2"):
             fichier = fichier_graisse(police, graisse, extension)
@@ -162,15 +213,11 @@ def verifier(police):
             absents = sorted({car for car in texte_specimen if not car.isspace() and ord(car) not in fonte.getBestCmap()})
             if absents:
                 erreurs.append(f"{fichier.name} : glyphes absents du spécimen : {' '.join(absents)}")
-            # Une police construite ici lit sa version dans police.json : un écart est une erreur.
-            # Une police fournie compilée garde la sienne jusqu'à sa reconstruction.
+            # construire écrit la version de police.json dans chaque police : un écart est une erreur
             attendue = revision_opentype(police["version"])
             if f"{fonte['head'].fontRevision:.3f}" != f"{float(attendue):.3f}":
-                (erreurs if "construction" in police else alertes).append(
-                    f"{fichier.name} : révision {fonte['head'].fontRevision:.3f} ≠ {attendue}"
-                    f" (version {police['version']}), à reconstruire")
-    for alerte in alertes:
-        print(f"[{id_police}] attention : {alerte}")
+                erreurs.append(f"{fichier.name} : révision {fonte['head'].fontRevision:.3f} ≠ {attendue}"
+                               f" (version {police['version']}), à reconstruire")
     for erreur in erreurs:
         print(f"[{id_police}] ERREUR : {erreur}")
     if not erreurs:
@@ -219,6 +266,12 @@ def historique(police):
             versions[-1]["sections"].append({"titre": section[1].strip(), "entrees": []})
         elif (entree := re.match(r"^\*\s+(.+)", ligne)) and versions and versions[-1]["sections"]:
             versions[-1]["sections"][-1]["entrees"].append(markdown_en_ligne(entree[1]))
+    # Notes en français de police.json (facultatives) : remplacent les messages de commit d'une version
+    notes = police.get("notes", {})
+    for version in versions:
+        if version["version"] in notes:
+            version["sections"] = [{"titre": titre, "entrees": [markdown_en_ligne(entree) for entree in entrees]}
+                                   for titre, entrees in notes[version["version"]].items()]
     return versions
 
 
@@ -229,37 +282,194 @@ def glyphes(police):
                    if unicodedata.category(chr(code))[0] not in "CZ")
 
 
+def differences_opentype(police, code):
+    """Positions des caractères de l'exemple dont le dessin change avec la fonction (les autres à leur défaut)."""
+    fichier = fichier_graisse(police, police["graisses"][0], "ttf")
+    fonte = uharfbuzz.Font(uharfbuzz.Face(uharfbuzz.Blob.from_file_path(str(fichier))))
+    exemple = next(fonction for fonction in police["fonctions"] if fonction["code"] == code)["exemple"]
+
+    def dessins(actif):
+        reglage = {fonction["code"]: bool(fonction.get("parDefaut")) for fonction in police["fonctions"]}
+        reglage[code] = actif
+        tampon = uharfbuzz.Buffer()
+        tampon.add_codepoints([ord(caractere) for caractere in exemple])
+        tampon.guess_segment_properties()
+        uharfbuzz.shape(fonte, tampon, reglage)
+        # Grappe = rang du caractère (add_codepoints) ; une grappe peut porter plusieurs glyphes
+        par_grappe = {}
+        for info in tampon.glyph_infos:
+            par_grappe.setdefault(info.cluster, []).append(info.codepoint)
+        return par_grappe
+
+    sans, avec = dessins(False), dessins(True)
+    return sorted(rang for rang in set(sans) | set(avec) if sans.get(rang) != avec.get(rang))
+
+
+def nom_unicode(caractere):
+    return unicodedata.name(caractere, "").capitalize() or point_de_code(caractere)
+
+
+def point_de_code(caractere):
+    return f"U+{ord(caractere):04X}"
+
+
+def kilo_octets(chemin):
+    return max(1, round(chemin.stat().st_size / 1024))
+
+
+def date_courte(iso):
+    annee, mois, jour = iso.split("-")
+    return f"{jour}/{mois}/{annee}"
+
+
+def fiche_du_site(police, sortie, base):
+    """Ce que les pages et le JavaScript du site savent d'une police (copie les webfonts et le zip dans sortie)."""
+    id_police = police["id"]
+    dossier_web = sortie / "fonts" / id_police
+    dossier_web.mkdir(parents=True)
+    ecrire_webfonts(police, dossier_web)
+    archive = empaqueter(police, sortie / "downloads")
+    graisses = [{**graisse, "woff2": f"{base}fonts/{id_police}/{fichier_graisse(police, graisse, 'woff2').name}",
+                 "ko": kilo_octets(fichier_graisse(police, graisse, "woff2"))}
+                for graisse in police["graisses"]]
+    fonctions = [{"parDefaut": False, **fonction, "differences": differences_opentype(police, fonction["code"])}
+                 for fonction in police.get("fonctions", [])]
+    versions = historique(police)
+    fiche = {cle: valeur for cle, valeur in police.items()
+             if not cle.startswith("_") and cle not in ("construction", "compilees", "notes")}
+    # Clés facultatives de police.json : présentes pour les modèles (StrictUndefined signale les fautes de frappe)
+    for cle in ("statut", "description", "origine", "nomReserve", "usage"):
+        fiche.setdefault(cle, None)
+    fiche.setdefault("langues", [])
+    fiche["specimen"] = {"titre": None, "texte": None, "tailleMin": None, "tailleMax": None,
+                         "tailleParDefaut": None, "taillesNettes": [], **police["specimen"]}
+    fiche.update({
+        "graisses": graisses,
+        "fonctions": fonctions,
+        "glyphes": [{"caractere": car, "nom": nom_unicode(car), "code": point_de_code(car)} for car in glyphes(police)],
+        "historique": versions,
+        "date": date_courte(versions[0]["date"]) if versions else "",
+        "telechargement": f"{base}downloads/{archive.name}",
+        "ko_zip": kilo_octets(archive),
+        "css": f"{URL_SITE}fonts/{id_police}/index.css",
+        "npm": nom_npm(police),
+        "sources": f"{URL_DEPOT}/tree/main/fonts/{id_police}",
+        "page": f"{base}{id_police}/",
+        "phrases": [{"langue": langue, "lang": PHRASES_LANGUES[langue][0], "texte": PHRASES_LANGUES[langue][1]}
+                    for langue in police.get("langues", []) if langue in PHRASES_LANGUES],
+        "signes": [{"libelle": libelle, "texte": texte} for libelle, texte in PHRASES_SIGNES.items()],
+    })
+    return fiche
+
+
+def groupes_de_versions(versions):
+    """Versions regroupées par version majeure, la plus récente d'abord."""
+    groupes = []
+    for version in versions:
+        majeure = version["version"].split(".")[0]
+        if not groupes or groupes[-1]["majeure"] != majeure:
+            groupes.append({"majeure": majeure, "versions": []})
+        groupes[-1]["versions"].append(version)
+    return groupes
+
+
+def json_dans_page(donnees):
+    # Dans <script type="application/json"> : « </ » fermerait la balise
+    return json.dumps(donnees, ensure_ascii=False).replace("</", "<\\/")
+
+
 def site(sortie):
     if sortie.exists():
         shutil.rmtree(sortie)
-    shutil.copytree(SITE, sortie)
+    shutil.copytree(SITE, sortie, ignore=shutil.ignore_patterns(MODELES.name))
+    base = urlparse(URL_SITE).path
     catalogue = []
     for id_police in tous_les_id():
         police = charger(id_police)
         if police["version"] == NON_PUBLIEE:
             print(f"[{id_police}] pas encore publiée : absente du site")
             continue
-        dossier_web = sortie / "fonts" / id_police
-        dossier_web.mkdir(parents=True)
-        ecrire_webfonts(police, dossier_web)
-        graisses = [{**graisse, "woff2": f"fonts/{id_police}/{fichier_graisse(police, graisse, 'woff2').name}"}
-                    for graisse in police["graisses"]]
-        archive = empaqueter(police, sortie / "downloads")
-        fiche = {cle: valeur for cle, valeur in police.items()
-                 if not cle.startswith("_") and cle not in ("construction", "compilees")}
-        fiche.update({
-            "graisses": graisses,
-            "glyphes": glyphes(police),
-            "historique": historique(police),
-            "telechargement": f"downloads/{archive.name}",
-            "css": f"fonts/{id_police}/index.css",
-            "npm": nom_npm(police),
-            "sources": f"{URL_DEPOT}/tree/main/fonts/{id_police}",
-        })
-        catalogue.append(fiche)
+        catalogue.append(fiche_du_site(police, sortie, base))
+
+    modeles = Environment(loader=FileSystemLoader(MODELES), autoescape=True, undefined=StrictUndefined,
+                          trim_blocks=True, lstrip_blocks=True)
+    modeles.filters["json"] = json_dans_page
+    commun = {"base": base, "url_site": URL_SITE, "depot": URL_DEPOT, "catalogue": catalogue}
+
+    def rendre(modele, chemin, **valeurs):
+        chemin.parent.mkdir(parents=True, exist_ok=True)
+        chemin.write_text(modeles.get_template(modele).render(**commun, **valeurs), encoding="utf-8")
+
+    rendre("accueil.html", sortie / "index.html",
+           nombre_glyphes=sum(len(police["glyphes"]) for police in catalogue))
+    for police in catalogue:
+        rendre("police.html", sortie / police["id"] / "index.html", police=police)
+        rendre("versions.html", sortie / police["id"] / "versions" / "index.html", police=police,
+               groupes=groupes_de_versions(police["historique"]))
+    rendre("404.html", sortie / "404.html")
+    image_partage(sortie / "partage.png", catalogue)
+    plan_du_site(sortie / "sitemap.xml", catalogue)
+    if base == "/":
+        fichiers_de_racine(sortie)
     (sortie / "polices.json").write_text(json.dumps({"depot": URL_DEPOT, "polices": catalogue},
                                                     ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"-> {sortie} ({len(catalogue)} police(s))")
+
+
+def image_partage(chemin, catalogue):
+    """Aperçu des liens partagés (Open Graph, 1200 × 630) : titre du site, puis le nom de chaque police dans sa police."""
+    fond, encre, discret = THEMES_APERCU["clair"]
+    image = Image.new("RGB", (1200, 630), fond)
+    dessin = ImageDraw.Draw(image)
+    # Double filet doré des cadres de Grimoire
+    for retrait, epaisseur in ((24, 4), (36, 2)):
+        dessin.rectangle((retrait, retrait, 1199 - retrait, 629 - retrait), outline=DORURE, width=epaisseur)
+    def fichier_regular(fiche):
+        police = charger(fiche["id"])
+        return str(fichier_graisse(police, police["graisses"][0], "ttf"))
+
+    titres = next((fiche for fiche in catalogue if fiche["id"] == POLICE_DES_TITRES), catalogue[0])
+    fichier_titres = fichier_regular(titres)
+    dessin.text((600, 230), "Mes polices", font=ImageFont.truetype(fichier_titres, 129), fill=encre, anchor="mm")
+    # Au plus trois noms, chacun dans sa police, séparés par une étoile
+    noms = [(fiche["nom"], ImageFont.truetype(fichier_regular(fiche), 64)) for fiche in catalogue[:3]]
+    separateur = ("  ✦  ", ImageFont.truetype(fichier_titres, 43))
+    morceaux = [morceau for nom in noms for morceau in (nom, separateur)][:-1]
+    largeurs = [dessin.textlength(texte, font=fonte) for texte, fonte in morceaux]
+    x = 600 - sum(largeurs) / 2
+    for (texte, fonte), largeur in zip(morceaux, largeurs, strict=True):
+        dessin.text((x, 400), texte, font=fonte, fill=DORURE if fonte is separateur[1] else encre, anchor="lm")
+        x += largeur
+    total = f"{len(catalogue)} police{'s' if len(catalogue) > 1 else ''} libre{'s' if len(catalogue) > 1 else ''} · licence OFL"
+    dessin.text((600, 520), total, font=ImageFont.truetype(fichier_titres, 43), fill=discret, anchor="mm")
+    image.save(chemin, optimize=True)
+
+
+def fichiers_de_racine(sortie):
+    """robots.txt et security.txt : seulement quand le site est à la racine de son domaine."""
+    (sortie / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {URL_SITE}sitemap.xml\n", encoding="utf-8")
+    # Expire un an après la publication : chaque mise en ligne le renouvelle
+    expiration = (datetime.date.today() + datetime.timedelta(days=365)).isoformat()
+    (sortie / ".well-known").mkdir(exist_ok=True)
+    (sortie / ".well-known" / "security.txt").write_text(
+        f"Contact: mailto:contact@danaedev.fr\nExpires: {expiration}T00:00:00.000Z\nPreferred-Languages: fr, en\n"
+        f"Canonical: {URL_SITE}.well-known/security.txt\n", encoding="utf-8")
+
+
+def plan_du_site(chemin, catalogue):
+    """sitemap.xml : l'accueil, puis la page et les versions de chaque police, datées de leur dernière version."""
+    def entree(adresse, date):
+        return f"  <url>\n    <loc>{adresse}</loc>" + (f"\n    <lastmod>{date}</lastmod>" if date else "") + "\n  </url>\n"
+
+    dates = {police["id"]: next((version["date"] for version in police["historique"] if version["date"]), "")
+             for police in catalogue}
+    entrees = entree(URL_SITE, max(dates.values(), default=""))
+    for police in catalogue:
+        entrees += entree(f"{URL_SITE}{police['id']}/", dates[police["id"]])
+        entrees += entree(f"{URL_SITE}{police['id']}/versions/", dates[police["id"]])
+    chemin.write_text('<?xml version="1.0" encoding="UTF-8"?>\n'
+                      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                      f"{entrees}</urlset>\n", encoding="utf-8")
 
 
 # --- npm -----------------------------------------------------------------------------------------
@@ -381,7 +591,7 @@ def nouvelle(id_police, nom):
         "statut": "brouillon",
         "resume": "",
         "description": "",
-        "dessin": "Danaé Albrecht--Martin",
+        "dessin": "Danaé ALBRECHT--MARTIN",
         "licence": "OFL-1.1",
         "etiquettes": [],
         "graisses": [{"nom": "Regular", "poids": 400}],
@@ -395,7 +605,7 @@ def nouvelle(id_police, nom):
     (dossier / "README.md").write_text(f"# {nom}\n\nÀ décrire.\n", encoding="utf-8")
     # Texte de l'OFL repris de Jacquard 24, avec ma ligne de copyright à la place de la sienne
     licence = (POLICES / "sorcelle" / "sources" / "OFL.txt").read_text(encoding="utf-8").split("\n", 1)[1]
-    (dossier / "OFL.txt").write_text(f"Copyright 2026 Danaé Albrecht--Martin (https://danaedev.fr)\n{licence}",
+    (dossier / "OFL.txt").write_text(f"Copyright 2026 Danaé ALBRECHT--MARTIN (https://danaedev.fr)\n{licence}",
                                      encoding="utf-8")
     config = json.loads(CONFIG_RELEASE.read_text(encoding="utf-8"))
     config["packages"][f"fonts/{id_police}"] = {

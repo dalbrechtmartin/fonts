@@ -1,0 +1,10 @@
+# Lint des outils et scripts Python : règles par défaut de ruff
+line-length = 120
+target-version = "py312"
+# Dossiers dont les modules s'importent entre eux : rangés comme modules du projet, après les bibliothèques
+src = ["tools", "fonts/sorcelle", "fonts/griffonne/scripts", "fonts/griffonne/sources/generateur"]
+
+[lint.per-file-ignores]
+# Polices ufoLib2 et tables fontTools : parcourir l'objet ne donne pas les noms de glyphes, .keys() est nécessaire
+"fonts/griffonne/scripts/fonctions_opentype.py" = ["SIM118", "SIM401"]
+"fonts/sorcelle/build.py" = ["SIM118"]

@@ -1,0 +1,16 @@
+{# Déclare chaque police sous un nom interne (« essai-<id> ») : elle ne se mélange pas avec les polices de l'interface #}
+{% macro faces(polices) %}
+<style>
+{% for fiche in polices %}
+{% for graisse in fiche.graisses %}
+@font-face { font-family: "essai-{{ fiche.id }}"; src: url("{{ graisse.woff2 }}") format("woff2"); font-weight: {{ graisse.poids }}; font-display: swap; }
+{% endfor %}
+{% endfor %}
+</style>
+{% endmacro %}
+
+{% macro bouton_telecharger(fiche, libelle) %}
+<a class="gr-btn gr-btn--primary btn-telecharger" href="{{ fiche.telechargement }}" download><span class="gr-btn__star" aria-hidden="true">✦</span>{{ libelle }}<span class="gr-btn__star" aria-hidden="true">✦</span></a>
+{% endmacro %}
+
+{% macro icone(base, nom) %}<svg class="gr-icon" aria-hidden="true"><use href="{{ base }}icones.svg#{{ nom }}"/></svg>{% endmacro %}

@@ -6,7 +6,17 @@
 """
 
 from glyphes import (
-    METRIQUES, RAYON, Trait, ancres_sur, felin, fut, glyphe, oreilles, oreilles_panse, ronde, yeux,
+    METRIQUES,
+    RAYON,
+    Trait,
+    ancres_sur,
+    felin,
+    fut,
+    glyphe,
+    oreilles,
+    oreilles_panse,
+    ronde,
+    yeux,
 )
 from pinceau import arc, courbe, ellipse, ligne, lisse
 
