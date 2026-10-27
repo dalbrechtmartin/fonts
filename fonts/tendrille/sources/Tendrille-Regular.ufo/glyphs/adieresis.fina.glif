@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="adieresis.fina" format="2">
+  <advance width="878"/>
+  <outline>
+    <component base="a.fina"/>
+    <component base="dieresiscomb" xOffset="472"/>
+  </outline>
+</glyph>

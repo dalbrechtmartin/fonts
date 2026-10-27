@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="zcaron.fina" format="2">
+  <advance width="707"/>
+  <outline>
+    <component base="z.fina"/>
+    <component base="caroncomb" xOffset="413"/>
+  </outline>
+</glyph>

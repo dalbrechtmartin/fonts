@@ -1,0 +1,175 @@
+# Généré par fonctions_opentype.py : ne pas modifier à la main.
+languagesystem DFLT dflt;
+languagesystem latn dflt;
+
+
+@DANS_LE_MOT = [A AE Aacute Abreve Acircumflex Adieresis Adieresis.ss02 Agrave Amacron Aogonek Aring Atilde B B.ss04 C Cacute Ccaron Ccedilla Cdotaccent Cdotaccent.ss02 D D.ss04 Dcaron Dcroat E E.ss04 Eacute Ecaron Ecircumflex Edieresis Edieresis.ss02 Edotaccent Edotaccent.ss02 Egrave Emacron Eogonek Eth F F.ss04 G Gbreve Gdotaccent Gdotaccent.ss02 H H.ss04 Hbar I Iacute Icircumflex Idieresis Idieresis.ss02 Idotaccent Idotaccent.ss02 Igrave Imacron Iogonek J J.ss04 K K.ss04 L L.ss04 Lacute Lcaron Lslash M M.ss04 N N.ss04 Nacute Ncaron Ntilde O OE Oacute Ocircumflex Odieresis Odieresis.ss02 Ograve Ohungarumlaut Oslash Otilde P P.ss04 Q R R.ss04 Racute Rcaron S Sacute Scaron Scedilla T Tcaron Thorn U U.ss04 Uacute Ucircumflex Udieresis Udieresis.ss02 Ugrave Uhungarumlaut Umacron Uogonek Uring V V.ss04 W W.ss04 Wacute Wcircumflex Wdieresis Wdieresis.ss02 Wgrave X Y Y.ss04 Yacute Ycircumflex Ydieresis Ydieresis.ss02 Ygrave Z Zacute Zcaron Zdotaccent Zdotaccent.ss02 a a.fina a.fina.ss01 a.ss01 aacute aacute.fina aacute.fina.ss01 aacute.ss01 abreve abreve.fina abreve.fina.ss01 abreve.ss01 acircumflex acircumflex.fina acircumflex.fina.ss01 acircumflex.ss01 adieresis adieresis.fina adieresis.fina.ss01 adieresis.fina.ss01.ss02 adieresis.fina.ss02 adieresis.ss01 adieresis.ss01.ss02 adieresis.ss02 ae agrave agrave.fina agrave.fina.ss01 agrave.ss01 amacron amacron.fina amacron.fina.ss01 amacron.ss01 aogonek aogonek.fina aogonek.fina.ss01 aogonek.ss01 aring aring.fina aring.fina.ss01 aring.ss01 atilde atilde.fina atilde.fina.ss01 atilde.ss01 b c c.fina cacute cacute.fina caron ccaron ccaron.fina ccedilla ccedilla.fina cdotaccent cdotaccent.fina cdotaccent.fina.ss02 cdotaccent.ss02 circumflex d d.fina dcaron dcaron.fina dcroat dotlessi dotlessi.fina e e.fina eacute eacute.fina ecaron ecaron.fina ecircumflex ecircumflex.fina edieresis edieresis.fina edieresis.fina.ss02 edieresis.ss02 edotaccent edotaccent.fina edotaccent.fina.ss02 edotaccent.ss02 egrave egrave.fina emacron emacron.fina eogonek eogonek.fina eth f g gbreve gdotaccent gdotaccent.ss02 germandbls h h.fina hbar i i.fina i.fina.ss02 i.ss02 iacute iacute.fina icircumflex icircumflex.fina idieresis idieresis.fina idieresis.fina.ss02 idieresis.ss02 igrave igrave.fina imacron imacron.fina iogonek iogonek.fina iogonek.fina.ss02 iogonek.ss02 j j.ss02 k k.fina l l.fina lacute lacute.fina lcaron lcaron.fina lslash m m.fina n n.fina nacute nacute.fina ncaron ncaron.fina ntilde ntilde.fina o oacute ocircumflex odieresis odieresis.ss02 oe ograve ohungarumlaut ordfeminine ordmasculine oslash otilde p q r r.fina racute racute.fina rcaron rcaron.fina s sacute scaron scedilla t t.fina tcaron tcaron.fina thorn u u.fina uacute uacute.fina ucircumflex ucircumflex.fina udieresis udieresis.fina udieresis.fina.ss02 udieresis.ss02 ugrave ugrave.fina uhungarumlaut uhungarumlaut.fina umacron umacron.fina uni0122 uni0123 uni0136 uni0137 uni0137.fina uni013B uni013C uni013C.fina uni0145 uni0146 uni0146.fina uni0218 uni0219 uni021A uni021B uni021B.fina uni0237 uni1E9E uogonek uogonek.fina uring uring.fina v w wacute wcircumflex wdieresis wdieresis.ss02 wgrave x y yacute ycircumflex ydieresis ydieresis.ss02 ygrave z z.fina zacute zacute.fina zcaron zcaron.fina zdotaccent zdotaccent.fina zdotaccent.fina.ss02 zdotaccent.ss02 quoteright quotesingle hyphen periodcentered];
+@INSECABLES = [uni00A0 uni202F];
+@FIN_BASE = [a aacute abreve acircumflex adieresis agrave amacron aogonek aring atilde c cacute ccaron ccedilla cdotaccent d dcaron dotlessi e eacute ecaron ecircumflex edieresis edotaccent egrave emacron eogonek h i iacute icircumflex idieresis igrave imacron iogonek k l lacute lcaron m n nacute ncaron ntilde r racute rcaron t tcaron u uacute ucircumflex udieresis ugrave uhungarumlaut umacron uni0137 uni013C uni0146 uni021B uogonek uring z zacute zcaron zdotaccent];
+@FIN_FINA = [a.fina aacute.fina abreve.fina acircumflex.fina adieresis.fina agrave.fina amacron.fina aogonek.fina aring.fina atilde.fina c.fina cacute.fina ccaron.fina ccedilla.fina cdotaccent.fina d.fina dcaron.fina dotlessi.fina e.fina eacute.fina ecaron.fina ecircumflex.fina edieresis.fina edotaccent.fina egrave.fina emacron.fina eogonek.fina h.fina i.fina iacute.fina icircumflex.fina idieresis.fina igrave.fina imacron.fina iogonek.fina k.fina l.fina lacute.fina lcaron.fina m.fina n.fina nacute.fina ncaron.fina ntilde.fina r.fina racute.fina rcaron.fina t.fina tcaron.fina u.fina uacute.fina ucircumflex.fina udieresis.fina ugrave.fina uhungarumlaut.fina umacron.fina uni0137.fina uni013C.fina uni0146.fina uni021B.fina uogonek.fina uring.fina z.fina zacute.fina zcaron.fina zdotaccent.fina];
+
+# Fins de mots d'abord : un mot d'une seule lettre garde sa forme de fin
+feature calt {
+    lookup fins_de_mots {
+        ignore sub @FIN_BASE' @DANS_LE_MOT;
+        ignore sub @FIN_BASE' @INSECABLES;
+        sub @FIN_BASE' by @FIN_FINA;
+    } fins_de_mots;
+} calt;
+
+feature ss05 {
+    featureNames {
+        name "Sans rubans de fin de mot";
+    };
+    sub @FIN_FINA by @FIN_BASE;
+} ss05;
+
+feature case {
+    sub braceleft by braceleft.case;
+    sub braceright by braceright.case;
+    sub bracketleft by bracketleft.case;
+    sub bracketright by bracketright.case;
+    sub bullet by bullet.case;
+    sub emdash by emdash.case;
+    sub endash by endash.case;
+    sub exclamdown by exclamdown.case;
+    sub guillemetleft by guillemetleft.case;
+    sub guillemetright by guillemetright.case;
+    sub guilsinglleft by guilsinglleft.case;
+    sub guilsinglright by guilsinglright.case;
+    sub hyphen by hyphen.case;
+    sub parenleft by parenleft.case;
+    sub parenright by parenright.case;
+    sub periodcentered by periodcentered.case;
+    sub questiondown by questiondown.case;
+    sub uni2212 by uni2212.case;
+} case;
+
+feature zero {
+    sub zero by zero.zero;
+} zero;
+
+feature tnum {
+    sub eight by eight.tf;
+    sub five by five.tf;
+    sub four by four.tf;
+    sub nine by nine.tf;
+    sub one by one.tf;
+    sub seven by seven.tf;
+    sub six by six.tf;
+    sub three by three.tf;
+    sub two by two.tf;
+    sub zero by zero.tf;
+} tnum;
+
+feature ss01 {
+    featureNames {
+        name "a d'école";
+    };
+    sub a.fina by a.fina.ss01;
+    sub a by a.ss01;
+    sub aacute.fina by aacute.fina.ss01;
+    sub aacute by aacute.ss01;
+    sub abreve.fina by abreve.fina.ss01;
+    sub abreve by abreve.ss01;
+    sub acircumflex.fina by acircumflex.fina.ss01;
+    sub acircumflex by acircumflex.ss01;
+    sub adieresis.fina by adieresis.fina.ss01;
+    sub adieresis by adieresis.ss01;
+    sub agrave.fina by agrave.fina.ss01;
+    sub agrave by agrave.ss01;
+    sub amacron.fina by amacron.fina.ss01;
+    sub amacron by amacron.ss01;
+    sub aogonek.fina by aogonek.fina.ss01;
+    sub aogonek by aogonek.ss01;
+    sub aring.fina by aring.fina.ss01;
+    sub aring by aring.ss01;
+    sub atilde.fina by atilde.fina.ss01;
+    sub atilde by atilde.ss01;
+} ss01;
+
+feature ss02 {
+    featureNames {
+        name "Points ronds";
+    };
+    sub Adieresis by Adieresis.ss02;
+    sub Cdotaccent by Cdotaccent.ss02;
+    sub Edieresis by Edieresis.ss02;
+    sub Edotaccent by Edotaccent.ss02;
+    sub Gdotaccent by Gdotaccent.ss02;
+    sub Idieresis by Idieresis.ss02;
+    sub Idotaccent by Idotaccent.ss02;
+    sub Odieresis by Odieresis.ss02;
+    sub Udieresis by Udieresis.ss02;
+    sub Wdieresis by Wdieresis.ss02;
+    sub Ydieresis by Ydieresis.ss02;
+    sub Zdotaccent by Zdotaccent.ss02;
+    sub adieresis.fina.ss01 by adieresis.fina.ss01.ss02;
+    sub adieresis.fina by adieresis.fina.ss02;
+    sub adieresis.ss01 by adieresis.ss01.ss02;
+    sub adieresis by adieresis.ss02;
+    sub bullet.case by bullet.case.ss02;
+    sub bullet by bullet.ss02;
+    sub cdotaccent.fina by cdotaccent.fina.ss02;
+    sub cdotaccent by cdotaccent.ss02;
+    sub colon by colon.ss02;
+    sub dieresis by dieresis.ss02;
+    sub dieresiscomb.case by dieresiscomb.case.ss02;
+    sub dieresiscomb by dieresiscomb.ss02;
+    sub divide by divide.ss02;
+    sub dotaccent by dotaccent.ss02;
+    sub dotaccentcomb.case by dotaccentcomb.case.ss02;
+    sub dotaccentcomb by dotaccentcomb.ss02;
+    sub edieresis.fina by edieresis.fina.ss02;
+    sub edieresis by edieresis.ss02;
+    sub edotaccent.fina by edotaccent.fina.ss02;
+    sub edotaccent by edotaccent.ss02;
+    sub ellipsis by ellipsis.ss02;
+    sub exclam by exclam.ss02;
+    sub exclamdown.case by exclamdown.case.ss02;
+    sub exclamdown by exclamdown.ss02;
+    sub gdotaccent by gdotaccent.ss02;
+    sub i.fina by i.fina.ss02;
+    sub i by i.ss02;
+    sub idieresis.fina by idieresis.fina.ss02;
+    sub idieresis by idieresis.ss02;
+    sub iogonek.fina by iogonek.fina.ss02;
+    sub iogonek by iogonek.ss02;
+    sub j by j.ss02;
+    sub odieresis by odieresis.ss02;
+    sub period by period.ss02;
+    sub periodcentered.case by periodcentered.case.ss02;
+    sub periodcentered by periodcentered.ss02;
+    sub question by question.ss02;
+    sub questiondown.case by questiondown.case.ss02;
+    sub questiondown by questiondown.ss02;
+    sub semicolon by semicolon.ss02;
+    sub udieresis.fina by udieresis.fina.ss02;
+    sub udieresis by udieresis.ss02;
+    sub wdieresis by wdieresis.ss02;
+    sub ydieresis by ydieresis.ss02;
+    sub zdotaccent.fina by zdotaccent.fina.ss02;
+    sub zdotaccent by zdotaccent.ss02;
+} ss02;
+
+feature ss04 {
+    featureNames {
+        name "Capitales à cœur";
+    };
+    sub B by B.ss04;
+    sub D by D.ss04;
+    sub E by E.ss04;
+    sub F by F.ss04;
+    sub H by H.ss04;
+    sub J by J.ss04;
+    sub K by K.ss04;
+    sub L by L.ss04;
+    sub M by M.ss04;
+    sub N by N.ss04;
+    sub P by P.ss04;
+    sub R by R.ss04;
+    sub U by U.ss04;
+    sub V by V.ss04;
+    sub W by W.ss04;
+    sub Y by Y.ss04;
+} ss04;

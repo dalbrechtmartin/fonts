@@ -1,0 +1,5 @@
+# Généré par generer.sh, jamais versionné (le dépôt fonts ignore déjà dist/)
+build/
+specimen/
+master_ufo/
+instance_ufo/
