@@ -2,7 +2,7 @@
 
 Les polices d'écriture que je dessine : sources, versions, changelog et spécimens.
 
-**Site : <https://dalbrechtmartin.github.io/fonts/>** (essai en ligne, glyphes, CSS à copier, téléchargement, historique).
+**Site : <https://polices.danaedev.fr/>** (essai en ligne, glyphes, CSS à copier, téléchargement, historique).
 
 | Police | Style | Licence |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Chaque police a un `index.css` (toutes les graisses) et une feuille par graisse 
 - Sans rien installer, depuis GitHub Pages :
 
   ```css
-  @import url("https://dalbrechtmartin.github.io/fonts/fonts/sorcelle/index.css");
+  @import url("https://polices.danaedev.fr/fonts/sorcelle/index.css");
   ```
 
 - Avec npm (paquets `@danaedev/<id>`) :
@@ -50,13 +50,14 @@ python -m venv .venv
 source .venv/Scripts/activate            # PowerShell : .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python tools/polices.py construire       # compile chaque police dans fonts/<id>/dist/
-python tools/polices.py site --sortie _site/fonts   # génère les pages, polices.json, polices, CSS, zips, image de partage, sitemap
+python tools/polices.py site             # génère _site/ : pages, polices.json, polices, CSS, zips, image de partage, sitemap
 python tools/polices.py npm sorcelle     # prépare le paquet npm dans npm/sorcelle/
 python -m http.server 8000 --directory _site
 ```
 
-Puis ouvrir <http://localhost:8000/fonts/> : les liens du site partent de la racine de son adresse (`/fonts/`, tiré de
-`URL_SITE` dans `tools/polices.py`), il faut donc le servir au même chemin.
+Puis ouvrir <http://localhost:8000/> : les liens du site partent du chemin de `URL_SITE` (`tools/polices.py`), ici la
+racine du domaine. Le site est publié par GitHub Pages sur le domaine `polices.danaedev.fr` (réglage du dépôt, DNS chez
+l'hébergeur du domaine) ; les anciennes adresses `dalbrechtmartin.github.io/fonts/…` y sont redirigées par GitHub.
 
 ## Vérifier
 
