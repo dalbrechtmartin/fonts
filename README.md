@@ -102,13 +102,11 @@ nginx ajoute les en-têtes de sécurité et autorise les autres sites à charger
 Versions et paquets passent par GitHub Actions, sans variable ni secret :
 
 - [`ci.yml`](.github/workflows/ci.yml) : `construire`, `verifier` et `site` à chaque push et PR vers `main` et `develop`.
-- [`pages.yml`](.github/workflows/pages.yml) : publie le site sur GitHub Pages à chaque push sur `main`.
 - [`release-please.yml`](.github/workflows/release-please.yml) : ouvre la PR de version, crée la release, y joint le zip et publie le paquet npm (trusted publishing, sans secret).
 
 Réglages du dépôt en place :
 
 - `main` protégée : PR obligatoire, ni push forcé ni suppression, règle appliquée aussi aux admins ;
-- Pages en source « GitHub Actions » ;
 - Actions avec les droits en écriture et l'autorisation de créer des PR (nécessaire à release-please).
 
 ## Maintenance
