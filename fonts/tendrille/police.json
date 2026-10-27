@@ -90,5 +90,14 @@
     "tailleParDefaut": 72,
     "taillesNettes": []
   },
-  "usage": "Texte à partir de 18 px avec un interlignage d'au moins 1,5 ; titres, citations, invitations. Capitales à cœur (ss04) pour les titres. Pour les petites tailles et la malvoyance : Tendrille Texte."
+  "usage": "Texte à partir de 18 px avec un interlignage d'au moins 1,5 ; titres, citations, invitations. Capitales à cœur (ss04) pour les titres. Pour les petites tailles et la malvoyance : Tendrille Texte.",
+  "notes": {
+    "0.2.0": {
+      "Nouveautés": [
+        "Première version publique : une semi-manuscrite de lecture dessinée à la plume, aux points en cœur ; la dernière lettre de chaque mot s’envole en un ruban qui s’enroule en cœur.",
+        "Fonctions OpenType : capitales à cœur pour les titres (ss04), a d’école (ss01), points ronds (ss02), version calme sans rubans (ss05), chiffres tabulaires (tnum), zéro barré (zero) et ponctuation centrée sur les capitales (case).",
+        "Pensée pour être lue par le plus grand nombre : b d p q jamais en miroir, I l 1 et 0 O différenciés, grande hauteur d’x ; 8 langues à alphabet latin."
+      ]
+    }
+  }
 }
