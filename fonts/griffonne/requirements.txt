@@ -1,6 +1,6 @@
 # Versions de la chaîne de build de Griffonne (Python 3.12)
 # Mettre à jour volontairement, puis rebâtir et revérifier (verifier.py --fontbakery).
-fonttools[ufo,woff,unicode]==4.62.1
+fonttools[ufo,woff,unicode]==4.67.0
 fontmake==3.12.2
 ufoLib2==0.19.1
 skia-pathops==0.9.2
