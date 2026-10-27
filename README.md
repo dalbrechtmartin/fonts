@@ -50,12 +50,13 @@ python -m venv .venv
 source .venv/Scripts/activate            # PowerShell : .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python tools/polices.py construire       # compile chaque police dans fonts/<id>/dist/
-python tools/polices.py site             # génère _site/ (page pré-remplie, polices.json, polices, CSS, zips, image de partage, sitemap)
+python tools/polices.py site --sortie _site/fonts   # génère les pages, polices.json, polices, CSS, zips, image de partage, sitemap
 python tools/polices.py npm sorcelle     # prépare le paquet npm dans npm/sorcelle/
 python -m http.server 8000 --directory _site
 ```
 
-Puis ouvrir <http://localhost:8000>.
+Puis ouvrir <http://localhost:8000/fonts/> : les liens du site partent de la racine de son adresse (`/fonts/`, tiré de
+`URL_SITE` dans `tools/polices.py`), il faut donc le servir au même chemin.
 
 ## Vérifier
 
@@ -123,7 +124,9 @@ python tools/polices.py nouvelle <id> "<Nom>"
 ```
 
 Crée `fonts/<id>/` (police.json, CHANGELOG, README, OFL.txt) et la déclare à release-please en `0.0.0` : non publiée,
-absente du site. La commande affiche ensuite les étapes : compléter `police.json` (dont `langues`, affichées sur le site), ajouter les fichiers compilés
+absente du site. La commande affiche ensuite les étapes : compléter `police.json` (dont `langues`, affichées sur le site
+avec une phrase par langue tirée de `PHRASES_LANGUES`, et pour chaque fonction OpenType `libelle`, `description` et un
+`exemple` court : le site y marque les signes qui changent, calculés avec HarfBuzz), ajouter les fichiers compilés
 dans `compilees/` (ou une commande `construction`), vérifier, puis committer `feat(<id>): première version`.
 
 ### Publier une police sur npm pour la première fois
@@ -159,7 +162,8 @@ Dependabot propose chaque semaine, sur `develop`, les mises à jour pip et GitHu
 ```
 fonts/<id>/        une police : police.json, CHANGELOG.md, OFL.txt, README.md, sources et scripts
 tools/polices.py   construire, vérifier, empaqueter, site, paquet npm, aperçus, nouvelle police
-site/              page de présentation (lit polices.json), habillée avec le design system Grimoire
+site/modeles/      pages du site (Jinja) : accueil, une page par police, ses versions, 404 ; rendues par la commande site
+site/              CSS, interactions (site.js) et copie du design system Grimoire
 ```
 
 ## Licences

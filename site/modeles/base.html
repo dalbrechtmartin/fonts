@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titre %}{% endblock %}</title>
+  <meta name="description" content="{% block description %}{% endblock %}">
+  {% if self.adresse() %}
+  <link rel="canonical" href="{% block adresse %}{% endblock %}">
+  <meta property="og:url" content="{{ self.adresse() }}">
+  {% endif %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ self.titre() }}">
+  <meta property="og:description" content="{{ self.description() }}">
+  <meta property="og:image" content="{{ url_site }}partage.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="« Mes polices » en lettres pixel sur parchemin, dans un double cadre doré, suivi du nom de chaque police écrit dans sa propre police.">
+  <meta property="og:locale" content="fr_FR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f1e9d8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#17141c" media="(prefers-color-scheme: dark)">
+  <script src="{{ base }}reglages.js"></script>
+  <link rel="icon" href="{{ base }}favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;1,400&family=Alegreya+Sans+SC:wght@500;700&family=Atkinson+Hyperlegible+Next:wght@400;700&family=Atkinson+Hyperlegible+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="{{ base }}grimoire/tokens.css">
+  <link rel="stylesheet" href="{{ base }}grimoire/bundle.css">
+  <link rel="stylesheet" href="{{ base }}site.css">
+  {# Sorcelle : titres de toutes les pages, chargée tôt pour ne pas retarder le plus grand texte affiché #}
+  <link rel="preload" href="{{ base }}fonts/sorcelle/Sorcelle-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  {% block tete %}{% endblock %}
+</head>
+<body>
+  <a class="gr-btn gr-skip" href="#contenu">Aller au contenu</a>
+
+  <header class="gr-header">
+    <a class="gr-brand" href="{{ base }}">Polices<span class="marque-etoile" aria-hidden="true">✦</span></a>
+    <nav class="gr-nav" aria-label="Polices">
+      <ul>
+        {% for fiche in catalogue %}
+        <li><a href="{{ fiche.page }}"{% if police is defined and police.id == fiche.id %} aria-current="page"{% endif %}>{{ fiche.nom }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+    <button type="button" class="gr-btn gr-btn--ghost" id="ouvrir-options" aria-haspopup="dialog" aria-expanded="false">
+      <svg class="gr-icon" aria-hidden="true"><use href="{{ base }}icones.svg#engrenage"/></svg>Options
+    </button>
+  </header>
+
+  <main class="gr-main" id="contenu">
+    {% block contenu %}{% endblock %}
+  </main>
+
+  <footer class="gr-footer">
+    <p class="ornement" aria-hidden="true">✦</p>
+    <p>Polices sous licence <a href="https://openfontlicense.org">SIL Open Font License 1.1</a>. Code du site sous licence BSD 3-Clause.</p>
+    <p><a href="{{ depot }}">Voir les sources et les versions sur GitHub</a> · <a href="https://danaedev.fr">danaedev.fr</a></p>
+  </footer>
+
+  {# Bouton « Haut » : composant BackToTop de Grimoire, comme sur danaedev.fr #}
+  <div class="gr-top" id="haut-de-page">
+    <button type="button" class="gr-top__btn" aria-label="Revenir en haut de la page">
+      <svg class="gr-top__ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="gr-top__rail" cx="18" cy="18" r="15.9" pathLength="100"></circle><circle class="gr-top__fill" cx="18" cy="18" r="15.9" pathLength="100"></circle></svg>
+      <span class="gr-top__inner" aria-hidden="true"><svg class="gr-icon" viewBox="0 0 256 256" fill="currentColor"><path d="M204.24,116.24a6,6,0,0,1-8.48,0L134,54.49V216a6,6,0,0,1-12,0V54.49L60.24,116.24a6,6,0,0,1-8.48-8.48l72-72a6,6,0,0,1,8.48,0l72,72A6,6,0,0,1,204.24,116.24Z"/></svg>Haut</span>
+    </button>
+  </div>
+
+  <p class="gr-sr" role="status" id="annonce"></p>
+
+  <dialog class="gr-options-dialog" id="options" aria-labelledby="options-titre">
+    <form class="gr-options gr-frame gr-frame--raised" method="dialog">
+      <div class="gr-options__head">
+        <h2 id="options-titre">Options</h2>
+        <button type="button" class="gr-btn gr-btn--ghost" aria-label="Fermer les options" title="Fermer les options" data-fermer>
+          <svg class="gr-icon" aria-hidden="true"><use href="{{ base }}icones.svg#croix"/></svg>
+        </button>
+      </div>
+      <fieldset>
+        <legend>Thème</legend>
+        <div class="gr-seg">
+          <input type="radio" name="theme" id="theme-clair" value="light"><label for="theme-clair">Parchemin</label>
+          <input type="radio" name="theme" id="theme-sombre" value="dark"><label for="theme-sombre">Crypte</label>
+          <input type="radio" name="theme" id="theme-systeme" value="" checked><label for="theme-systeme">Système</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Taille du texte</legend>
+        <div class="gr-seg">
+          <input type="radio" name="text" id="texte-normal" value="m" checked><label for="texte-normal">Normale</label>
+          <input type="radio" name="text" id="texte-grand" value="l"><label for="texte-grand">Grande</label>
+          <input type="radio" name="text" id="texte-tres-grand" value="xl"><label for="texte-tres-grand">Très grande</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Animations</legend>
+        <div class="gr-seg">
+          <input type="radio" name="motion" id="animations-completes" value="full"><label for="animations-completes">Complètes</label>
+          <input type="radio" name="motion" id="animations-reduites" value="reduced"><label for="animations-reduites">Réduites</label>
+          <input type="radio" name="motion" id="animations-aucune" value="none"><label for="animations-aucune">Aucune</label>
+        </div>
+      </fieldset>
+      <div class="gr-switch">
+        <span><span class="gr-switch__label" id="police-lisible">Police lisible</span><span class="gr-switch__hint">Remplace les polices de l'interface par Atkinson Hyperlegible. Les essais gardent leur police.</span></span>
+        <span class="gr-row interrupteur"><span class="gr-switch__state" aria-hidden="true">Non</span><button type="button" role="switch" aria-checked="false" aria-labelledby="police-lisible" data-police-lisible></button></span>
+      </div>
+      <div class="gr-options__foot">
+        <button type="button" class="gr-btn gr-btn--ghost" data-reinitialiser>Réinitialiser les options</button>
+        <button type="button" class="gr-btn gr-btn--primary" data-fermer><span class="gr-btn__star" aria-hidden="true">✦</span>Terminé<span class="gr-btn__star" aria-hidden="true">✦</span></button>
+      </div>
+    </form>
+  </dialog>
+
+  {% block donnees %}{% endblock %}
+  <script src="{{ base }}site.js"></script>
+</body>
+</html>

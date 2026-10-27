@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_polices.html" import faces, bouton_telecharger, icone %}
+{% block titre %}Polices de Danaé{% endblock %}
+{% block description %}Les polices d'écriture que je dessine, libres sous licence OFL : essai en ligne, glyphes, installation et historique des versions.{% endblock %}
+{% block adresse %}{{ url_site }}{% endblock %}
+{% block tete %}{{ faces(catalogue) }}{% endblock %}
+
+{% block contenu %}
+<section class="intro" aria-labelledby="titre">
+  <h1 id="titre" tabindex="-1">Mes polices</h1>
+  <p class="intro__accroche">Les polices d'écriture que je dessine. Essaie-les ici, puis télécharge-les et utilise-les librement : elles sont sous licence OFL, même pour un usage commercial.</p>
+  <p class="gr-meta">{{ catalogue | length }} police{{ "s" if catalogue | length > 1 }} · {{ nombre_glyphes }} glyphes au total</p>
+</section>
+
+<section class="catalogue" aria-labelledby="titre-catalogue">
+  <h2 id="titre-catalogue" class="gr-sr">Toutes les polices</h2>
+  <div class="gr-field gr-field--wide catalogue__essai">
+    <label for="texte-catalogue">Écris ton texte pour le voir dans chaque police</label>
+    <input id="texte-catalogue" type="text" autocomplete="off" spellcheck="false" placeholder="Ex. : Joyeux anniversaire Lou&#8239;!" data-texte-catalogue>
+  </div>
+  <ul class="catalogue__liste">
+    {% for fiche in catalogue %}
+    <li class="carte-police">
+      <div class="carte-police__tete">
+        <h3 class="carte-police__nom"><a href="{{ fiche.page }}">{{ fiche.nom }}</a></h3>
+        {% if fiche.statut %}<span class="gr-badge {{ {'bêta': 'gr-badge--beta', 'stable': 'gr-badge--done', 'retirée': 'gr-badge--retired'}.get(fiche.statut, '') }}">{{ fiche.statut | capitalize }}</span>{% endif %}
+      </div>
+      <p class="carte-police__exemple" lang="fr" style="font-family: &quot;essai-{{ fiche.id }}&quot;, var(--font-body)" data-exemple-catalogue="{{ fiche.specimen.texte or fiche.specimen.titre }}">{{ fiche.specimen.texte or fiche.specimen.titre }}</p>
+      <p class="carte-police__resume">{{ fiche.resume }}</p>
+      <p class="gr-meta">Version {{ fiche.version }}{% if fiche.date %} du {{ fiche.date }}{% endif %} · {{ fiche.graisses | length }} graisse{{ "s" if fiche.graisses | length > 1 }} · {{ fiche.glyphes | length }} glyphes{% if fiche.langues %} · {{ fiche.langues | length }} langues{% endif %}</p>
+      <div class="gr-row carte-police__actions">
+        {{ bouton_telecharger(fiche, "Télécharger " ~ fiche.nom) }}
+        <a class="gr-btn" href="{{ fiche.page }}">Essayer et installer {{ fiche.nom }}</a>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

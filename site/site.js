@@ -1,29 +1,20 @@
-// Présentation des polices : lit polices.json (généré par tools/polices.py site) et construit une section
-// par police à partir des modèles de index.html. Chaque police est chargée sous un nom interne
-// (« essai-<id> ») pour ne pas se mélanger avec les polices de l'interface.
+// Interactions du site des polices. Les pages sont déjà complètes en HTML (générées par tools/polices.py site) :
+// ce script ajoute seulement les options, les onglets, l'essai, la grille des glyphes, le vérificateur de langue,
+// les copies, le menu des sections et le bouton « Haut ». Chaque partie ne s'active que si sa page la contient.
 (function () {
   'use strict';
 
   var racine = document.documentElement;
   var annonce = document.getElementById('annonce');
-  var BADGES_STATUT = { 'bêta': 'gr-badge--beta', 'stable': 'gr-badge--done', 'retirée': 'gr-badge--retired' };
-  var LICENCES = { 'OFL-1.1': 'SIL Open Font License 1.1' };
-  var SECTIONS_CHANGELOG = { 'Features': 'Nouveautés', 'Bug Fixes': 'Corrections', 'Performance Improvements': 'Performances' };
+  racine.classList.add('js');
 
   // ---------- Outils ----------
-  function creer(balise, attributs, texte) {
-    var element = document.createElement(balise);
-    Object.keys(attributs || {}).forEach(function (nom) { element.setAttribute(nom, attributs[nom]); });
-    if (texte !== undefined) element.textContent = texte;
-    return element;
-  }
-  function trouver(conteneur, selecteur) { return conteneur.querySelector(selecteur); }
-  function cloner(idModele) { return document.getElementById(idModele).content.firstElementChild.cloneNode(true); }
-  function famille(police) { return '"essai-' + police.id + '"'; }
-  function pointDeCode(caractere) { return 'U+' + caractere.codePointAt(0).toString(16).toUpperCase().padStart(4, '0'); }
-  function dateLisible(iso) {
-    var date = new Date(iso + 'T12:00:00');
-    return isNaN(date) ? iso : date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  function tous(selecteur, conteneur) { return Array.prototype.slice.call((conteneur || document).querySelectorAll(selecteur)); }
+  function un(selecteur, conteneur) { return (conteneur || document).querySelector(selecteur); }
+  function animationsReduites() {
+    var reglage = racine.getAttribute('data-motion');
+    if (reglage) return reglage !== 'full';
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
   function annoncer(texte) {
     annonce.textContent = texte;
@@ -35,27 +26,24 @@
   function enregistrerReglages(reglages) {
     try { localStorage.setItem('reglages', JSON.stringify(reglages)); } catch (erreur) {}
   }
-
-  // ---------- Accordéon (motif WAI-ARIA, comme le composant Accordion de Grimoire) ----------
-  function ouvrir(declencheur, ouvert) {
-    var panneau = document.getElementById(declencheur.getAttribute('aria-controls'));
-    declencheur.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
-    panneau.classList.toggle('is-open', ouvert);
-    panneau.inert = !ouvert;
-  }
-  function activerAccordeon(conteneur) {
-    conteneur.querySelectorAll('.gr-accordion__trigger').forEach(function (declencheur) {
-      declencheur.addEventListener('click', function () {
-        ouvrir(declencheur, declencheur.getAttribute('aria-expanded') !== 'true');
-      });
+  // Copie dans le presse-papiers : le libellé du bouton dit le résultat pendant 2 s, et il est annoncé
+  function copier(bouton, texte, reussite) {
+    var libelle = un('[data-libelle]', bouton) || bouton;
+    var initial = libelle.textContent;
+    navigator.clipboard.writeText(texte).then(function () {
+      libelle.textContent = reussite + ' ✓';
+      annoncer(reussite + '.');
+    }, function () {
+      annoncer('Copie impossible : sélectionne le texte à la main.');
     });
+    setTimeout(function () { libelle.textContent = initial; }, 2000);
   }
 
   // ---------- Options : thème, taille du texte, animations, police lisible ----------
   (function options() {
     var fenetre = document.getElementById('options');
     var bouton = document.getElementById('ouvrir-options');
-    var interrupteur = trouver(fenetre, '[data-police-lisible]');
+    var interrupteur = un('[data-police-lisible]', fenetre);
     var systemeSombre = window.matchMedia('(prefers-color-scheme: dark)');
     var mouvementReduit = window.matchMedia('(prefers-reduced-motion: reduce)');
     var reglages = lireReglages();
@@ -77,7 +65,7 @@
         motion: reglages.motion || (mouvementReduit.matches ? 'reduced' : 'full')
       };
       Object.keys(valeurs).forEach(function (nom) {
-        trouver(fenetre, 'input[name="' + nom + '"][value="' + valeurs[nom] + '"]').checked = true;
+        un('input[name="' + nom + '"][value="' + valeurs[nom] + '"]', fenetre).checked = true;
       });
       interrupteur.setAttribute('aria-checked', reglages.font ? 'true' : 'false');
       interrupteur.previousElementSibling.textContent = reglages.font ? 'Oui' : 'Non';
@@ -89,11 +77,11 @@
       afficher();
     }
 
-    fenetre.querySelectorAll('input[type=radio]').forEach(function (choix) {
+    tous('input[type=radio]', fenetre).forEach(function (choix) {
       choix.addEventListener('change', function () { changer(choix.name, choix.value); });
     });
     interrupteur.addEventListener('click', function () { changer('font', !reglages.font); });
-    trouver(fenetre, '[data-reinitialiser]').addEventListener('click', function () {
+    un('[data-reinitialiser]', fenetre).addEventListener('click', function () {
       reglages = {};
       enregistrerReglages(reglages);
       appliquer();
@@ -108,7 +96,7 @@
       fenetre.showModal();
       bouton.setAttribute('aria-expanded', 'true');
     });
-    fenetre.querySelectorAll('[data-fermer]').forEach(function (fermer) {
+    tous('[data-fermer]', fenetre).forEach(function (fermer) {
       fermer.addEventListener('click', function () { fenetre.close(); });
     });
     fenetre.addEventListener('close', function () {
@@ -119,173 +107,239 @@
     fenetre.addEventListener('click', function (evenement) { if (evenement.target === fenetre) fenetre.close(); });
   })();
 
-  activerAccordeon(document.querySelector('[data-accordeon]'));
+  // ---------- Accordéons (motif WAI-ARIA, comme le composant Accordion de Grimoire) ----------
+  tous('[data-accordeon] .gr-accordion__trigger').forEach(function (declencheur) {
+    declencheur.addEventListener('click', function () {
+      var ouvert = declencheur.getAttribute('aria-expanded') !== 'true';
+      var panneau = document.getElementById(declencheur.getAttribute('aria-controls'));
+      declencheur.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+      panneau.classList.toggle('is-open', ouvert);
+      panneau.inert = !ouvert;
+    });
+  });
 
-  // ---------- Polices ----------
-  function chargerPolice(police) {
-    return Promise.all(police.graisses.map(function (graisse) {
-      var fonte = new FontFace('essai-' + police.id, 'url("' + graisse.woff2 + '") format("woff2")',
-        { weight: String(graisse.poids), display: 'swap' });
-      document.fonts.add(fonte);
-      return fonte.load().catch(function () {});
-    }));
+  // ---------- Bouton « Haut » (BackToTop de Grimoire) et menu des sections ----------
+  (function defilement() {
+    var haut = document.getElementById('haut-de-page');
+    var menu = un('[data-menu-sections]');
+    var liens = menu ? tous('a[href^="#"]', menu) : [];
+    var liste = menu ? un('ul', menu) : null;
+    var actuel = null;
+    var enAttente = false;
+
+    function mettreAJour() {
+      enAttente = false;
+      var page = document.documentElement;
+      var max = page.scrollHeight - page.clientHeight;
+      haut.classList.toggle('is-shown', page.scrollTop > 400);
+      haut.style.setProperty('--progress', String(max > 0 ? page.scrollTop / max : 0));
+      if (!menu) return;
+      // Section en cours : la dernière dont le haut est passé sous le menu
+      var limite = menu.getBoundingClientRect().bottom + 48;
+      var trouve = null;
+      liens.forEach(function (lien) {
+        var section = document.getElementById(lien.hash.slice(1));
+        if (section && section.getBoundingClientRect().top <= limite) trouve = lien;
+      });
+      if (trouve === actuel) return;
+      if (actuel) actuel.removeAttribute('aria-current');
+      actuel = trouve;
+      if (!actuel) return;
+      actuel.setAttribute('aria-current', 'location');
+      // Mobile : le menu défile de côté pour montrer la section en cours (sans faire défiler la page)
+      if (liste.scrollWidth > liste.clientWidth) liste.scrollLeft = actuel.parentNode.offsetLeft - liste.offsetLeft - 16;
+    }
+    window.addEventListener('scroll', function () {
+      if (!enAttente) { enAttente = true; requestAnimationFrame(mettreAJour); }
+    }, { passive: true });
+    mettreAJour();
+
+    un('button', haut).addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: animationsReduites() ? 'auto' : 'smooth' });
+      var titre = document.getElementById('titre');
+      if (titre) titre.focus({ preventScroll: true });
+    });
+  })();
+
+  // ---------- Onglets en boutons segmentés (système d'exploitation, façon d'utiliser sur un site) ----------
+  function systemeProbable() {
+    var plateforme = ((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '') + ' ' + navigator.userAgent;
+    if (/Mac|iPhone|iPad/i.test(plateforme)) return 'macOS';
+    if (/Linux/i.test(plateforme) && !/Android/i.test(plateforme)) return 'Linux';
+    if (/Win/i.test(plateforme)) return 'Windows';
+    return null;
   }
-
-  function remplirTete(article, police, depot) {
-    var nom = trouver(article, '[data-nom]');
-    nom.id = police.id + '-titre';
-    nom.textContent = police.nom;
-    nom.style.fontFamily = famille(police) + ', var(--font-display)';
-
-    var etiquettes = trouver(article, '[data-etiquettes]');
-    var version = creer('span', { 'class': 'gr-badge gr-badge--new' });
-    version.append(creer('span', { 'class': 'gr-badge__mark', 'aria-hidden': 'true' }, '✦'), 'Version ' + police.version);
-    etiquettes.appendChild(creer('li')).appendChild(version);
-    if (police.statut) {
-      etiquettes.appendChild(creer('li')).appendChild(
-        creer('span', { 'class': 'gr-badge ' + (BADGES_STATUT[police.statut] || '') }, police.statut));
+  tous('[data-onglets]').forEach(function (groupe) {
+    var boutons = tous('[data-onglet]', groupe);
+    var panneaux = boutons.map(function (bouton) { return document.getElementById(bouton.getAttribute('aria-controls')); });
+    function choisir(valeur) {
+      boutons.forEach(function (bouton, rang) {
+        var choisi = bouton.getAttribute('data-onglet') === valeur;
+        bouton.setAttribute('aria-pressed', choisi ? 'true' : 'false');
+        panneaux[rang].hidden = !choisi;
+      });
     }
-    (police.etiquettes || []).forEach(function (etiquette) {
-      etiquettes.appendChild(creer('li')).appendChild(creer('span', { 'class': 'gr-chip' }, etiquette));
+    boutons.forEach(function (bouton) {
+      bouton.addEventListener('click', function () { choisir(bouton.getAttribute('data-onglet')); });
     });
-
-    trouver(article, '[data-resume]').textContent = police.resume;
-    var description = trouver(article, '[data-description]');
-    if (police.description) description.textContent = police.description; else description.remove();
-
-    var fiche = trouver(article, '[data-fiche]');
-    function ajouterLigne(libelle, valeur) {
-      fiche.appendChild(creer('dt', {}, libelle));
-      var cellule = fiche.appendChild(creer('dd'));
-      if (typeof valeur === 'string') cellule.textContent = valeur; else cellule.appendChild(valeur);
+    groupe.hidden = false;
+    var defaut = boutons[0].getAttribute('data-onglet');
+    if (groupe.getAttribute('data-onglets') === 'systeme') {
+      var detecte = systemeProbable();
+      if (detecte) {
+        defaut = detecte;
+        un('[data-systeme-auto]').hidden = false;
+      }
     }
-    ajouterLigne('Dessin', police.dessin);
-    if (police.origine) {
-      var origine = creer('span');
-      origine.append('Dérivée de ', creer('a', { href: police.origine.url }, police.origine.nom));
-      ajouterLigne('Origine', origine);
-    }
-    ajouterLigne('Graisses', police.graisses.map(function (graisse) { return graisse.nom + ' (' + graisse.poids + ')'; }).join(', '));
-    ajouterLigne('Glyphes', String(Array.from(police.glyphes).length));
-    if (police.langues) ajouterLigne('Langues', police.langues.join(', '));
-    ajouterLigne('Licence', LICENCES[police.licence] || police.licence);
-    if (police.nomReserve) ajouterLigne('Nom réservé', '« ' + police.nomReserve + ' » : une version modifiée doit changer de nom');
-    if (police.historique.length) ajouterLigne('Mise à jour', dateLisible(police.historique[0].date));
-    if (police.usage) ajouterLigne('Usage', police.usage);
+    choisir(defaut);
+  });
 
-    var actions = trouver(article, '[data-actions]');
-    var telecharger = creer('a', { 'class': 'gr-btn gr-btn--primary', href: police.telechargement, download: '' });
-    telecharger.append(creer('span', { 'class': 'gr-btn__star', 'aria-hidden': 'true' }, '✦'),
-      'Télécharger la ' + police.version + ' (zip)',
-      creer('span', { 'class': 'gr-btn__star', 'aria-hidden': 'true' }, '✦'));
-    actions.append(telecharger,
-      creer('a', { 'class': 'gr-btn', href: police.sources }, 'Voir les sources'),
-      creer('a', { 'class': 'gr-btn gr-btn--ghost', href: depot + '/releases?q=' + encodeURIComponent(police.id) }, 'Voir toutes les versions'));
-  }
-
-  function remplirEssai(article, police) {
-    var essai = trouver(article, '[data-essai]');
-    var specimen = police.specimen;
-    var taillesNettes = (specimen.taillesNettes || []).map(String);
-    var sortie = trouver(essai, '[data-sortie]');
-    var legende = trouver(essai, '[data-legende]');
-    var champTexte = trouver(essai, '[data-champ="texte"]');
-    var curseur = trouver(essai, '[data-champ="curseur"]');
-    var champTaille = trouver(essai, '[data-champ="taille"]');
-    var indicateurNet = trouver(essai, '[data-net]');
-    var choixGraisse = trouver(essai, '[data-choix-graisse]');
-
-    ['texte', 'taille'].forEach(function (nom) {
-      var id = police.id + '-essai-' + nom;
-      trouver(essai, '[data-champ="' + nom + '"]').id = id;
-      trouver(essai, '[data-pour="' + nom + '"]').setAttribute('for', id);
-    });
-    champTexte.value = specimen.texte || specimen.titre || police.nom;
-    [curseur, champTaille].forEach(function (champ) {
-      champ.min = specimen.tailleMin || 16;
-      champ.max = specimen.tailleMax || 128;
-    });
-    // Sur un écran étroit, on part de la plus petite taille nette (ou de la moitié) pour garder des mots entiers
-    var tailleDepart = specimen.tailleParDefaut || 64;
-    if (window.matchMedia('(max-width: 40rem)').matches) tailleDepart = Number(taillesNettes[0]) || Math.max(curseur.min, Math.round(tailleDepart / 2));
-    curseur.value = champTaille.value = tailleDepart;
-
-    // Graisses en boutons segmentés ; le choix n'apparaît que s'il y en a plusieurs
-    police.graisses.forEach(function (graisse, rang) {
-      var id = police.id + '-graisse-' + graisse.poids;
-      var bouton = creer('input', { type: 'radio', name: police.id + '-graisse', id: id, value: graisse.poids });
-      bouton.checked = rang === 0;
-      choixGraisse.append(bouton, creer('label', { 'for': id }, graisse.nom));
-      bouton.addEventListener('change', afficherEssai);
-    });
-    if (police.graisses.length < 2) trouver(essai, '[data-graisses-essai]').remove();
-
-    var casesFonctions = (police.fonctions || []).map(function (fonction) {
-      var choix = cloner('modele-fonction');
-      var caseFonction = trouver(choix, 'input');
-      caseFonction.value = fonction.code;
-      caseFonction.checked = !!fonction.parDefaut;
-      trouver(choix, '.gr-check__label').textContent = fonction.libelle + ' (' + fonction.code + ')';
-      trouver(essai, '[data-fonctions]').appendChild(choix);
-      caseFonction.addEventListener('change', afficherEssai);
-      return caseFonction;
-    });
-    if (casesFonctions.length) trouver(essai, '[data-fonctions]').hidden = false;
-
-    function graisseChoisie() {
-      var choisie = trouver(essai, 'input[name="' + police.id + '-graisse"]:checked');
-      return choisie ? police.graisses.find(function (graisse) { return String(graisse.poids) === choisie.value; }) : police.graisses[0];
-    }
-    function afficherEssai() {
-      var taille = Math.min(Number(curseur.max), Math.max(Number(curseur.min), Number(champTaille.value) || Number(curseur.value)));
-      var nette = taillesNettes.indexOf(String(taille)) !== -1;
-      var graisse = graisseChoisie();
-      sortie.textContent = champTexte.value.trim() || 'Tape un texte';
-      sortie.style.fontFamily = famille(police);
-      sortie.style.fontWeight = graisse.poids;
-      sortie.style.fontSize = taille + 'px';
-      // Chaque fonction est écrite explicitement : décocher calt doit bien le couper
-      sortie.style.fontFeatureSettings = casesFonctions.map(function (caseFonction) {
-        return '"' + caseFonction.value + '" ' + (caseFonction.checked ? 1 : 0);
-      }).join(', ') || 'normal';
-      indicateurNet.textContent = nette ? '✦ net' : '';
-      legende.textContent = police.nom + ' · ' + graisse.nom + ' · ' + taille + ' px' + (nette ? ' ✦ net' : '');
-    }
-    curseur.addEventListener('input', function () { champTaille.value = curseur.value; afficherEssai(); });
-    champTaille.addEventListener('input', function () { curseur.value = champTaille.value; afficherEssai(); });
-    champTaille.addEventListener('change', function () { champTaille.value = curseur.value; afficherEssai(); });
-    champTexte.addEventListener('input', afficherEssai);
-    afficherEssai();
-  }
-
-  function remplirGraisses(article, police) {
-    if (police.graisses.length < 2) { trouver(article, '[data-section-graisses]').remove(); return; }
-    var liste = trouver(article, '[data-graisses]');
-    police.graisses.forEach(function (graisse) {
-      var ligne = liste.appendChild(creer('li'));
-      var exemple = creer('span', { 'class': 'graisses__exemple' }, police.specimen.titre || police.nom);
-      exemple.style.fontFamily = famille(police);
-      exemple.style.fontWeight = graisse.poids;
-      ligne.append(creer('span', { 'class': 'gr-meta' }, graisse.nom + ' · ' + graisse.poids), exemple);
+  // ---------- Accueil : un texte pour toutes les polices ----------
+  var texteCatalogue = un('[data-texte-catalogue]');
+  if (texteCatalogue) {
+    texteCatalogue.addEventListener('input', function () {
+      tous('[data-exemple-catalogue]').forEach(function (exemple) {
+        exemple.textContent = texteCatalogue.value.trim() || exemple.getAttribute('data-exemple-catalogue');
+      });
     });
   }
 
-  function remplirGlyphes(article, police) {
-    var caracteres = Array.from(police.glyphes);
-    var grille = trouver(article, '[data-grille]');
-    var loupe = trouver(article, '[data-loupe]');
-    var codePoint = trouver(article, '[data-code-point]');
-    trouver(article, '[data-titre-glyphes]').textContent = 'Glyphes (' + caracteres.length + ')';
-    grille.setAttribute('aria-label', 'Glyphes de ' + police.nom);
-    grille.style.fontFamily = loupe.style.fontFamily = famille(police);
-    var cellules = caracteres.map(function (caractere, rang) {
-      var cellule = creer('button', { type: 'button', 'class': 'glyphe', role: 'option', 'aria-selected': 'false',
-        'aria-label': caractere + ' (' + pointDeCode(caractere) + ')', tabindex: rang === 0 ? '0' : '-1' }, caractere);
-      cellule.addEventListener('click', function () { selectionner(rang, false); });
-      grille.appendChild(cellule);
-      return cellule;
+  // ---------- Page d'une police ----------
+  var donneesPage = document.getElementById('donnees-police');
+  if (!donneesPage) return;
+  var police = JSON.parse(donneesPage.textContent);
+  var jeuGlyphes = new Set(Array.from(police.glyphes));
+
+  // Essai : texte, taille, graisse, exemples par langue, fonctions OpenType, lien à partager
+  (function essai() {
+    var bloc = un('[data-essai]');
+    var sortie = un('[data-sortie]', bloc);
+    var champTexte = un('[data-texte]', bloc);
+    var curseur = un('[data-curseur]', bloc);
+    var champTaille = un('[data-taille]', bloc);
+    var exemples = tous('[data-exemple]', bloc);
+    var cases = tous('[data-fonction]', bloc);
+    var extraits = tous('[data-extrait]');
+    var texteParDefaut = champTexte.value;
+
+    function bornee(valeur) {
+      return Math.min(Number(curseur.max), Math.max(Number(curseur.min), Math.round(Number(valeur) || Number(curseur.value))));
+    }
+    // Chaque fonction est écrite explicitement : décocher calt doit bien le couper
+    function reglageOpenType() {
+      return cases.map(function (caseFonction) { return '"' + caseFonction.value + '" ' + (caseFonction.checked ? 1 : 0); }).join(', ');
+    }
+    // Pour le CSS à copier : seulement ce qui diffère du réglage par défaut de la police
+    function ecartsOpenType() {
+      return cases.filter(function (caseFonction) {
+        return caseFonction.checked !== (police.parDefaut.indexOf(caseFonction.value) !== -1);
+      }).map(function (caseFonction) { return '"' + caseFonction.value + '" ' + (caseFonction.checked ? 1 : 0); });
+    }
+    function afficher() {
+      var exemple = exemples.filter(function (bouton) { return bouton.getAttribute('data-exemple') === champTexte.value; })[0];
+      var graisse = un('[data-graisse]:checked', bloc);
+      sortie.textContent = champTexte.value.trim() ? champTexte.value : texteParDefaut;
+      sortie.lang = exemple ? exemple.getAttribute('data-lang') : 'fr';
+      sortie.style.fontSize = bornee(champTaille.value) + 'px';
+      sortie.style.fontWeight = graisse ? graisse.value : '';
+      if (cases.length) sortie.style.fontFeatureSettings = reglageOpenType();
+      exemples.forEach(function (bouton) { bouton.setAttribute('aria-pressed', bouton === exemple ? 'true' : 'false'); });
+      cases.forEach(function (caseFonction) {
+        un('[data-etat-fonction]', caseFonction.closest('li')).textContent = caseFonction.checked ? 'activée' : 'désactivée';
+      });
+      var ecarts = ecartsOpenType();
+      extraits.forEach(function (code) {
+        var modele = code.getAttribute('data-extrait');
+        var ligne = modele.slice(modele.lastIndexOf('\n', modele.indexOf('<FSS>')) + 1);
+        var retrait = /^\s*/.exec(ligne)[0];
+        code.textContent = modele.replace('<FSS>', ecarts.length ? '\n' + retrait + 'font-feature-settings: ' + ecarts.join(', ') + ';' : '');
+      });
+    }
+
+    curseur.addEventListener('input', function () { champTaille.value = curseur.value; afficher(); });
+    champTaille.addEventListener('input', function () { curseur.value = bornee(champTaille.value); afficher(); });
+    champTaille.addEventListener('change', function () { champTaille.value = bornee(champTaille.value); afficher(); });
+    champTexte.addEventListener('input', afficher);
+    tous('[data-graisse]', bloc).forEach(function (choix) { choix.addEventListener('change', afficher); });
+    cases.forEach(function (caseFonction) { caseFonction.addEventListener('change', afficher); });
+    exemples.forEach(function (bouton) {
+      bouton.addEventListener('click', function () {
+        champTexte.value = bouton.getAttribute('data-exemple');
+        afficher();
+        // Fondu court quand le texte change d'un coup (aucun avec les animations réduites)
+        sortie.classList.remove('est-nouveau');
+        if (!animationsReduites()) { void sortie.offsetWidth; sortie.classList.add('est-nouveau'); }
+      });
     });
+
+    // Le lien garde l'essai : texte, taille et fonctions dans l'adresse
+    // Écran étroit : on part de la moitié de la taille par défaut, pour garder des mots entiers
+    if (window.matchMedia('(max-width: 40rem)').matches) champTaille.value = curseur.value = bornee(Number(curseur.value) / 2);
+    var parametres = new URLSearchParams(location.search);
+    if (parametres.has('texte')) champTexte.value = parametres.get('texte');
+    if (parametres.has('taille')) champTaille.value = curseur.value = bornee(parametres.get('taille'));
+    if (parametres.has('fonctions')) {
+      var actives = parametres.get('fonctions').split(',');
+      cases.forEach(function (caseFonction) { caseFonction.checked = actives.indexOf(caseFonction.value) !== -1; });
+    }
+    var partager = un('[data-partager]', bloc);
+    partager.addEventListener('click', function () {
+      var adresse = new URL(location.href);
+      adresse.hash = 'essayer';
+      adresse.search = new URLSearchParams({
+        texte: champTexte.value,
+        taille: String(bornee(champTaille.value)),
+        fonctions: cases.filter(function (caseFonction) { return caseFonction.checked; }).map(function (caseFonction) { return caseFonction.value; }).join(',')
+      }).toString();
+      copier(partager, adresse.href, 'Lien copié');
+    });
+    afficher();
+  })();
+
+  // Aide « Qu'est-ce qu'une fonction OpenType ? » : reste ouverte jusqu'à fermeture, Échap la ferme
+  (function aideOpenType() {
+    var bouton = un('[data-aide-ot]');
+    if (!bouton) return;
+    var aide = document.getElementById(bouton.getAttribute('aria-controls'));
+    function ouvrir(ouverte, rendreFocus) {
+      aide.hidden = !ouverte;
+      bouton.setAttribute('aria-expanded', ouverte ? 'true' : 'false');
+      if (rendreFocus) bouton.focus();
+    }
+    bouton.addEventListener('click', function () { ouvrir(aide.hidden, false); });
+    un('[data-fermer-aide-ot]', aide).addEventListener('click', function () { ouvrir(false, true); });
+    [bouton, aide].forEach(function (element) {
+      element.addEventListener('keydown', function (evenement) {
+        if (evenement.key === 'Escape' && !aide.hidden) { evenement.preventDefault(); ouvrir(false, true); }
+      });
+    });
+  })();
+
+  // Glyphes : grille parcourable au clavier (flèches, Début, Fin), loupe et copie
+  (function glyphes() {
+    var grille = un('[data-grille]');
+    var cellules = tous('.glyphe', grille);
+    var loupe = un('[data-loupe]');
+    var nom = un('[data-loupe-nom]');
+    var code = un('[data-loupe-code]');
     var actuel = 0;
+    // Beaucoup de glyphes : les premiers seulement, le reste derrière « Afficher les N autres glyphes »
+    var PREMIERS = 65;
+    var visibles = cellules.length;
+    var plus = un('[data-plus-glyphes]');
+    if (cellules.length > PREMIERS + 13) {
+      visibles = PREMIERS;
+      cellules.slice(PREMIERS).forEach(function (cellule) { cellule.hidden = true; });
+      un('[data-libelle]', plus).textContent = 'Afficher les ' + (cellules.length - PREMIERS) + ' autres glyphes';
+      plus.hidden = false;
+      plus.addEventListener('click', function () {
+        cellules.forEach(function (cellule) { cellule.hidden = false; });
+        visibles = cellules.length;
+        plus.hidden = true;
+        selectionner(PREMIERS, true);
+        annoncer(cellules.length + ' glyphes affichés.');
+      });
+    }
     function selectionner(rang, donnerFocus) {
       cellules[actuel].setAttribute('aria-selected', 'false');
       cellules[actuel].tabIndex = -1;
@@ -293,100 +347,65 @@
       cellules[rang].setAttribute('aria-selected', 'true');
       cellules[rang].tabIndex = 0;
       if (donnerFocus) cellules[rang].focus();
-      loupe.textContent = caracteres[rang];
-      codePoint.textContent = pointDeCode(caracteres[rang]);
+      loupe.textContent = cellules[rang].textContent;
+      nom.textContent = cellules[rang].getAttribute('data-nom');
+      code.textContent = cellules[rang].getAttribute('data-code');
     }
-    // Flèches, Début et Fin pour parcourir la grille
+    cellules.forEach(function (cellule, rang) {
+      cellule.addEventListener('click', function () { selectionner(rang, false); });
+    });
     grille.addEventListener('keydown', function (evenement) {
       var colonnes = Math.max(1, Math.round(grille.clientWidth / cellules[0].offsetWidth));
       var cible = { ArrowRight: actuel + 1, ArrowLeft: actuel - 1, ArrowDown: actuel + colonnes, ArrowUp: actuel - colonnes,
-        Home: 0, End: cellules.length - 1 }[evenement.key];
+        Home: 0, End: visibles - 1 }[evenement.key];
       if (cible === undefined) return;
       evenement.preventDefault();
-      selectionner(Math.min(cellules.length - 1, Math.max(0, cible)), true);
+      selectionner(Math.min(visibles - 1, Math.max(0, cible)), true);
     });
-    if (cellules.length) selectionner(Math.max(0, caracteres.indexOf('A')), false);
-  }
+    var depart = cellules.map(function (cellule) { return cellule.textContent; }).indexOf('A');
+    selectionner(Math.max(0, depart), false);
+    var bouton = un('[data-copier-glyphe]');
+    bouton.addEventListener('click', function () { copier(bouton, cellules[actuel].textContent, 'Caractère copié'); });
+  })();
 
-  function remplirCss(article, police) {
-    var feuille = new URL(police.css, location.href).href;
-    var feuilles = police.graisses.map(function (graisse) { return graisse.poids + '.css'; });
-    var css = (feuilles.length > 1 ? '/* Une seule graisse : remplacer index.css par ' +
-      feuilles.slice(0, -1).join(', ') + ' ou ' + feuilles[feuilles.length - 1] + ' */\n' : '') +
-      '@import url("' + feuille + '");\n\nh1, h2, h3 {\n  font-family: "' + police.nom + '", Georgia, serif;\n}';
-    trouver(article, '[data-npm]').textContent = 'npm i ' + police.npm;
-    trouver(article, '[data-css]').textContent = css;
-    var copier = trouver(article, '[data-copier]');
-    var libelle = trouver(copier, '.gr-code__action-text');
-    copier.addEventListener('click', function () {
-      navigator.clipboard.writeText(css).then(function () {
-        libelle.textContent = 'Copié';
-        annoncer('CSS de ' + police.nom + ' copié.');
-      }, function () {
-        annoncer('Copie impossible : sélectionne le texte à la main.');
-      });
-      setTimeout(function () { libelle.textContent = 'Copier le CSS'; }, 2000);
+  // Vérifier un mot : chaque lettre existe-t-elle dans la police ?
+  (function verificateur() {
+    var bloc = un('[data-verificateur]');
+    if (!bloc) return;
+    var champ = un('[data-verif-texte]', bloc);
+    var resultat = un('[data-verif-resultat]', bloc);
+    var apercu = un('[data-verif-apercu]', bloc);
+    var exempleApercu = apercu.textContent;
+    var messageVide = resultat.textContent;
+    var ICONES = {
+      complet: '<svg class="gr-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>',
+      incomplet: '<svg class="gr-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>'
+    };
+    champ.addEventListener('input', function () {
+      var texte = champ.value.normalize('NFC');
+      var manquants = Array.from(new Set(Array.from(texte).filter(function (caractere) {
+        return !/\s/.test(caractere) && !jeuGlyphes.has(caractere);
+      })));
+      apercu.textContent = texte.trim() ? texte : exempleApercu;
+      resultat.classList.toggle('est-complet', !!texte.trim() && !manquants.length);
+      resultat.classList.toggle('est-incomplet', manquants.length > 0);
+      if (!texte.trim()) { resultat.textContent = messageVide; return; }
+      var message = manquants.length
+        ? (manquants.length > 1 ? 'Il manque ' + manquants.length + ' caractères : ' : 'Il manque 1 caractère : ') + manquants.join(' ') + '. Ils s’afficheront dans une police de secours.'
+        : 'Toutes les lettres sont disponibles.';
+      resultat.innerHTML = ICONES[manquants.length ? 'incomplet' : 'complet'];
+      resultat.appendChild(document.createElement('span')).textContent = message;
     });
-  }
+  })();
 
-  function remplirHistorique(article, police) {
-    var accordeon = trouver(article, '[data-historique]');
-    police.historique.forEach(function (version, rang) {
-      var id = police.id + '-v' + version.version.replace(/\./g, '-');
-      var element = cloner('modele-version');
-      var declencheur = trouver(element, '.gr-accordion__trigger');
-      var panneau = trouver(element, '.gr-accordion__panel');
-      var contenu = trouver(element, '.changements');
-      declencheur.id = id + '-declencheur';
-      declencheur.setAttribute('aria-controls', id + '-panneau');
-      panneau.id = id + '-panneau';
-      panneau.setAttribute('aria-labelledby', declencheur.id);
-      trouver(element, '.gr-accordion__label').textContent = 'Version ' + version.version + ' · ' + dateLisible(version.date);
-      version.sections.forEach(function (section) {
-        contenu.appendChild(creer('h5', {}, SECTIONS_CHANGELOG[section.titre] || section.titre));
-        var liste = contenu.appendChild(creer('ul'));
-        // Entrées déjà échappées par tools/polices.py (Markdown limité : code, gras, liens)
-        section.entrees.forEach(function (entree) { liste.appendChild(creer('li')).innerHTML = entree; });
-      });
-      if (version.url) {
-        contenu.appendChild(creer('p', { 'class': 'gr-meta' })).appendChild(
-          creer('a', { href: version.url }, 'Comparer avec la version précédente'));
-      }
-      accordeon.appendChild(element);
-      if (rang === 0) ouvrir(declencheur, true);
+  // Copies : code pour un site, mention de l'autrice
+  tous('[data-copier-code]').forEach(function (bouton) {
+    bouton.addEventListener('click', function () {
+      copier(bouton, un('code', bouton.closest('.gr-code')).textContent, 'Code copié');
     });
-    activerAccordeon(accordeon);
+  });
+  var boutonCredit = un('[data-copier-credit]');
+  if (boutonCredit) {
+    boutonCredit.addEventListener('click', function () { copier(boutonCredit, un('[data-credit]').textContent, 'Mention copiée'); });
   }
-
-  function construirePolice(police, depot) {
-    var article = cloner('modele-police');
-    article.id = police.id;
-    article.setAttribute('aria-labelledby', police.id + '-titre');
-    remplirTete(article, police, depot);
-    remplirEssai(article, police);
-    remplirGraisses(article, police);
-    remplirGlyphes(article, police);
-    remplirCss(article, police);
-    return article;
-  }
-
-  fetch('polices.json')
-    .then(function (reponse) { if (!reponse.ok) throw new Error(reponse.status); return reponse.json(); })
-    .then(function (donnees) {
-      // Navigation, sommaire et statistiques sont déjà dans index.html (pré-rendus par tools/polices.py site)
-      var conteneur = document.getElementById('polices');
-      donnees.polices.forEach(function (police) {
-        chargerPolice(police);
-        var article = conteneur.appendChild(construirePolice(police, donnees.depot));
-        // L'historique s'ajoute une fois l'article dans la page : ses panneaux se retrouvent par id
-        remplirHistorique(article, police);
-      });
-      if (location.hash) {
-        var cible = document.getElementById(location.hash.slice(1));
-        if (cible) cible.scrollIntoView();
-      }
-    })
-    .catch(function () {
-      document.getElementById('statistiques').textContent = 'Impossible de charger la liste des polices. Elles restent disponibles sur GitHub.';
-    });
 })();
