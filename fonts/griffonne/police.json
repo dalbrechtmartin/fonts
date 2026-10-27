@@ -66,6 +66,12 @@
   },
   "usage": "Texte dès 16 px avec un interlignage d’au moins 1,5 ; chats complets (ss01) pour les titres dès 32 px.",
   "notes": {
+    "1.0.2": {
+      "Corrections": [
+        "Les fichiers de la police portent maintenant leur vrai numéro de version, celui affiché sur ce site.",
+        "Nom de l’autrice écrit en capitales dans les informations de la police : Danaé ALBRECHT--MARTIN."
+      ]
+    },
     "1.0.1": {
       "Corrections": [
         "Le nom « Griffonne » n’est plus réservé : une version modifiée peut le garder."
