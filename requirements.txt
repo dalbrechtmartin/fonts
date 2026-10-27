@@ -1,3 +1,5 @@
 fonttools>=4.67.0
 brotli>=1.2.1
 pillow>=13.0.0
+jinja2>=3.1.6
+uharfbuzz>=0.57.0

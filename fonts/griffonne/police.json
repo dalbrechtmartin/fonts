@@ -32,20 +32,28 @@
   "fonctions": [
     {
       "code": "calt",
-      "libelle": "Pinceau (3 tracés qui alternent)",
+      "libelle": "Pinceau vivant",
+      "description": "3 tracés alternent : deux lettres voisines ne sont jamais identiques.",
+      "exemple": "mammouth",
       "parDefaut": true
     },
     {
       "code": "ss01",
-      "libelle": "Chats complets (moustaches)"
+      "libelle": "Chats complets",
+      "description": "Des moustaches sur les lettres à visage, pour les titres dès 32 px.",
+      "exemple": "Bonbon"
     },
     {
       "code": "case",
-      "libelle": "Signes centrés sur les capitales"
+      "libelle": "Signes pour capitales",
+      "description": "Parenthèses, tirets et guillemets centrés sur les majuscules.",
+      "exemple": "(CHAT)"
     },
     {
       "code": "zero",
-      "libelle": "Zéro barré"
+      "libelle": "Zéro barré",
+      "description": "Distingue le chiffre 0 de la lettre O.",
+      "exemple": "O0 2026"
     }
   ],
   "specimen": {

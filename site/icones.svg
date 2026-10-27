@@ -6,4 +6,9 @@
   <symbol id="copier" viewBox="0 0 256 256"><path d="M216,34H88a6,6,0,0,0-6,6V82H40a6,6,0,0,0-6,6V216a6,6,0,0,0,6,6H168a6,6,0,0,0,6-6V174h42a6,6,0,0,0,6-6V40A6,6,0,0,0,216,34ZM162,210H46V94H162Zm48-48H174V88a6,6,0,0,0-6-6H94V46H210Z"/></symbol>
   <symbol id="chevron-bas" viewBox="0 0 256 256"><path d="M212.24,100.24l-80,80a6,6,0,0,1-8.48,0l-80-80a6,6,0,0,1,8.48-8.48L128,167.51l75.76-75.75a6,6,0,0,1,8.48,8.48Z"/></symbol>
   <symbol id="coche" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <!-- Dessinées au même trait (12 sur 256, comme Phosphor light) -->
+  <symbol id="telecharger" viewBox="0 0 256 256"><g fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><path d="M128 40v112"/><path d="M80 104l48 48 48-48"/><path d="M40 152v56h176v-56"/></g></symbol>
+  <symbol id="ordinateur" viewBox="0 0 256 256"><g fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><rect x="32" y="48" width="192" height="128" rx="12"/><path d="M96 216h64M128 176v40"/></g></symbol>
+  <symbol id="lien" viewBox="0 0 256 256"><g fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><path d="M112 192l-8 8a44 44 0 0 1-62-62l30-30a44 44 0 0 1 62 0"/><path d="M144 64l8-8a44 44 0 0 1 62 62l-30 30a44 44 0 0 1-62 0"/></g></symbol>
+  <symbol id="info" viewBox="0 0 256 256"><g fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="96"/><path d="M128 120v56"/></g><circle cx="128" cy="84" r="10" fill="currentColor"/></symbol>
 </svg>

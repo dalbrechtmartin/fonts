@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titre %}Page introuvable · Polices de Danaé{% endblock %}
+{% block description %}Cette page n'existe pas, ou plus.{% endblock %}
+{% block adresse %}{% endblock %}
+
+{% block contenu %}
+<section class="intro" aria-labelledby="titre">
+  <h1 id="titre" tabindex="-1">Page introuvable</h1>
+  <p class="intro__accroche">Cette page n'existe pas, ou plus. La police que tu cherches a peut-être changé d'adresse.</p>
+  <ul class="liens-utiles">
+    <li><a href="{{ base }}">Voir toutes les polices</a></li>
+    {% for fiche in catalogue %}<li><a href="{{ fiche.page }}">{{ fiche.nom }} : essayer et installer</a></li>{% endfor %}
+    <li><a href="{{ depot }}/releases">Télécharger une police sur GitHub</a></li>
+  </ul>
+</section>
+{% endblock %}

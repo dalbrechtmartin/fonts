@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+{% from "_polices.html" import faces, bouton_telecharger, icone %}
+{% set famille = '"' ~ police.nom ~ '"' %}
+{% set fichier_otf = police.nom | replace(" ", "") ~ "-" ~ police.graisses[0].nom %}
+{% block titre %}{{ police.nom }} · Polices de Danaé{% endblock %}
+{% block description %}{{ police.resume }} Police libre (OFL) à essayer, installer sur l'ordinateur ou utiliser sur un site.{% endblock %}
+{% block adresse %}{{ url_site }}{{ police.id }}/{% endblock %}
+{% block tete %}
+<link rel="preload" href="{{ police.graisses[0].woff2 }}" as="font" type="font/woff2" crossorigin>
+{{ faces([police]) }}
+{% endblock %}
+
+{% block contenu %}
+<div class="presentation">
+  <nav aria-label="Fil d’Ariane" class="gr-crumbs fil">
+    <ol>
+      <li><a href="{{ base }}">Toutes les polices</a></li>
+      <li aria-current="page">{{ police.nom }}</li>
+    </ol>
+  </nav>
+
+  <div class="presentation__corps">
+    <section class="presentation__texte" aria-labelledby="titre">
+      <div class="presentation__titre">
+        <h1 id="titre" tabindex="-1">{{ police.nom }}</h1>
+        {% if police.statut %}<span class="gr-badge {{ {'bêta': 'gr-badge--beta', 'stable': 'gr-badge--done', 'retirée': 'gr-badge--retired'}.get(police.statut, '') }}">{{ police.statut | capitalize }}</span>{% endif %}
+      </div>
+      <p class="presentation__resume">{{ police.resume }}</p>
+      {% if police.description %}<p class="presentation__description">{{ police.description }}</p>{% endif %}
+      <div class="gr-row presentation__actions">
+        {{ bouton_telecharger(police, "Télécharger " ~ police.nom ~ " " ~ police.version) }}
+        <a class="gr-btn" href="#installer">{{ icone(base, "ordinateur") }}Installer en 4 étapes</a>
+      </div>
+      <p class="gr-meta">Zip de {{ police.ko_zip }} Ko · fichiers .otf, .ttf et .woff2 · licence OFL 1.1</p>
+      <p class="presentation__site">Pour un site : <a href="#site">copier le code CSS ou npm</a>, ou <a href="{{ police.graisses[0].woff2 }}" download>télécharger {{ fichier_otf }}.woff2 ({{ police.graisses[0].ko }} Ko)</a></p>
+    </section>
+
+    <aside class="gr-frame fiche" aria-labelledby="titre-fiche">
+      <h2 id="titre-fiche">Fiche</h2>
+      <dl>
+        <dt>Version</dt><dd><strong>{{ police.version }}</strong>{% if police.date %} du {{ police.date }}{% endif %}</dd>
+        <dt>Graisse{{ "s" if police.graisses | length > 1 }}</dt><dd>{% for graisse in police.graisses %}{{ graisse.nom }} ({{ graisse.poids }}){{ ", " if not loop.last }}{% endfor %}</dd>
+        <dt>Glyphes</dt><dd><a href="#glyphes">{{ police.glyphes | length }}</a></dd>
+        {% if police.langues %}<dt>Langues</dt><dd><a href="#langues">{{ police.langues | length }} langues</a></dd>{% endif %}
+        {% if police.fonctions %}<dt>Fonctions</dt><dd><a href="#essayer">{{ police.fonctions | length }} fonction{{ "s" if police.fonctions | length > 1 }} OpenType</a></dd>{% endif %}
+        <dt>Dessin</dt><dd>{{ police.dessin | replace("-", "\u2011") }}</dd>
+        {% if police.origine %}<dt>Origine</dt><dd>Dérivée de <a href="{{ police.origine.url }}">{{ police.origine.nom }}</a></dd>{% endif %}
+        <dt>Licence</dt><dd><a href="#licence">SIL OFL 1.1</a></dd>
+        {% if police.nomReserve %}<dt>Nom réservé</dt><dd>« {{ police.nomReserve }} » : une version modifiée doit changer de nom</dd>{% endif %}
+        <dt>Sources</dt><dd><a href="{{ police.sources }}">Voir sur GitHub</a></dd>
+      </dl>
+    </aside>
+  </div>
+</div>
+
+{% set sections = [("installer", "Installer"), ("essayer", "Essayer")] %}
+{% if police.graisses | length > 1 %}{% set sections = sections + [("graisses", "Graisses")] %}{% endif %}
+{% set sections = sections + [("glyphes", "Glyphes")] %}
+{% if police.phrases %}{% set sections = sections + [("langues", "Langues")] %}{% endif %}
+{% set sections = sections + [("site", "Sur un site"), ("licence", "Licence"), ("versions", "Versions")] %}
+<nav class="menu-sections" aria-label="Sur cette page" data-menu-sections>
+  <ul class="menu-sections__liste">
+    {% for ancre, libelle in sections %}
+    <li><a class="menu-sections__lien{{ ' menu-sections__lien--installer' if ancre == 'installer' }}" href="#{{ ancre }}"><span class="gr-star" aria-hidden="true">✦</span>{% if ancre == "installer" %}{{ icone(base, "telecharger") }}{% endif %}<span class="menu-sections__libelle">{{ libelle }}</span></a></li>
+    {% endfor %}
+  </ul>
+</nav>
+
+<section id="installer" class="section" aria-labelledby="titre-installer">
+  <div class="section__tete">
+    <h2 id="titre-installer">Installer sur l’ordinateur</h2>
+    <p>Télécharge le zip, puis suis les 4 étapes de ton système : {{ police.nom }} sera dans Word, LibreOffice, Affinity ou Photoshop.</p>
+  </div>
+  <div class="gr-frame gr-frame--raised installation">
+    <div class="gr-row installation__telecharger">
+      {{ bouton_telecharger(police, "Télécharger le zip") }}
+      <p class="gr-meta">{{ police.nom }} {{ police.version }} · {{ police.ko_zip }} Ko · .otf, .ttf et .woff2</p>
+    </div>
+    {% set systemes = {
+      "Windows": [
+        "Ouvre le zip : clic droit, puis « Extraire tout ».",
+        "Ouvre le dossier otf, puis fais un clic droit sur " ~ fichier_otf ~ ".otf. Pour de petites tailles à l’écran, prends plutôt ttf/" ~ fichier_otf ~ ".ttf.",
+        "Choisis « Installer » (ou « Installer pour tous les utilisateurs »).",
+        "Ferme et rouvre ton logiciel : " ~ police.nom ~ " apparaît dans la liste des polices."],
+      "macOS": [
+        "Double-clique sur le zip pour l’ouvrir.",
+        "Ouvre le dossier otf, puis double-clique sur " ~ fichier_otf ~ ".otf : le Livre des polices s’ouvre.",
+        "Clique sur « Installer ».",
+        "Ferme et rouvre ton logiciel : " ~ police.nom ~ " apparaît dans la liste des polices."],
+      "Linux": [
+        "Décompresse le zip.",
+        "Copie le dossier otf dans ~/.local/share/fonts.",
+        "Dans un terminal, lance la commande fc-cache -f.",
+        "Ferme et rouvre ton logiciel : " ~ police.nom ~ " apparaît dans la liste des polices."]
+    } %}
+    <div class="installation__systemes">
+      <div class="onglets-boutons" role="group" aria-label="Ton système" data-onglets="systeme" hidden>
+        {% for systeme in systemes %}
+        <button type="button" class="gr-btn bouton-choix" aria-pressed="false" aria-controls="etapes-{{ systeme | lower }}" data-onglet="{{ systeme }}"><span class="gr-star" aria-hidden="true">✦</span><span class="bouton-choix__libelle">{{ systeme }}</span></button>
+        {% endfor %}
+      </div>
+      <p class="gr-meta" data-systeme-auto hidden>Ton système est choisi automatiquement.</p>
+    </div>
+    {% for systeme, etapes in systemes.items() %}
+    <div class="etapes" id="etapes-{{ systeme | lower }}" data-panneau="{{ systeme }}">
+      <h3 class="etapes__titre" data-titre-panneau>{{ systeme }}</h3>
+      <ol class="etapes__liste">
+        {% for etape in etapes %}<li>{{ etape | replace("« ", "« ") | replace(" »", " »") }}</li>{% endfor %}
+      </ol>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="gr-frame aide-installation">
+    <h3>Ça ne marche pas&#8239;?</h3>
+    <dl class="questions">
+      <div><dt>La police n’apparaît pas dans mon logiciel</dt><dd>Ferme complètement le logiciel, puis rouvre-le. Certains logiciels ne lisent les polices qu’au démarrage.</dd></div>
+      <div><dt>L’ancienne version s’affiche encore</dt><dd>Désinstalle d’abord l’ancienne version de {{ police.nom }}, puis installe la nouvelle.</dd></div>
+    </dl>
+    <p>Le problème continue&#8239;? <a href="{{ depot }}/issues">Signale-le sur GitHub</a>.</p>
+  </div>
+
+  <div class="logiciels">
+    <h3>Dans tes logiciels</h3>
+    <dl class="questions questions--filets">
+      <div><dt>Word, LibreOffice, Affinity, Photoshop</dt><dd>{{ police.nom }} apparaît dans la liste des polices après l’installation et un redémarrage du logiciel.</dd></div>
+      <div><dt>Google Docs</dt><dd>Ne lit pas les polices installées sur l’ordinateur. Pour un titre, crée-le ailleurs et colle-le en image.</dd></div>
+      <div><dt>Canva</dt><dd>Importer une police demande un abonnement payant ou une offre Éducation ou Associations.</dd></div>
+      <div><dt>Figma dans le navigateur</dt><dd>Installe l’outil de polices de Figma (font installer) ou utilise l’application de bureau.</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section id="essayer" class="section" aria-labelledby="titre-essai">
+  <h2 id="titre-essai">Essayer</h2>
+  <div class="gr-frame essai" data-essai>
+    <div class="essai__scene">
+      <p class="essai__sortie" lang="fr" style="font-family: &quot;essai-{{ police.id }}&quot;, var(--font-body); font-size: {{ police.specimen.tailleParDefaut or 64 }}px" data-sortie>{{ police.specimen.texte or police.specimen.titre }}</p>
+    </div>
+    <div class="essai__reglages">
+      <div class="essai__champs">
+        <div class="gr-field gr-field--wide">
+          <label for="essai-texte">Ton texte</label>
+          <input id="essai-texte" type="text" value="{{ police.specimen.texte or police.specimen.titre }}" autocomplete="off" spellcheck="false" data-texte>
+        </div>
+        <div class="gr-field essai__taille">
+          <label for="essai-taille">Taille (px)</label>
+          <span class="gr-field__range">
+            <input type="range" min="{{ police.specimen.tailleMin or 16 }}" max="{{ police.specimen.tailleMax or 128 }}" step="1" value="{{ police.specimen.tailleParDefaut or 64 }}" aria-label="Taille en pixels, curseur" data-curseur>
+            <input id="essai-taille" type="number" min="{{ police.specimen.tailleMin or 16 }}" max="{{ police.specimen.tailleMax or 128 }}" step="1" inputmode="numeric" value="{{ police.specimen.tailleParDefaut or 64 }}" data-taille>
+          </span>
+          {% if police.specimen.taillesNettes %}<p class="gr-meta">Pixels nets à {{ police.specimen.taillesNettes | join(", ") }} px</p>{% endif %}
+        </div>
+      </div>
+
+      {% if police.graisses | length > 1 %}
+      <fieldset class="essai__groupe">
+        <legend>Graisse</legend>
+        <div class="gr-seg">
+          {% for graisse in police.graisses %}
+          <input type="radio" name="essai-graisse" id="essai-graisse-{{ graisse.poids }}" value="{{ graisse.poids }}"{% if loop.first %} checked{% endif %} data-graisse><label for="essai-graisse-{{ graisse.poids }}">{{ graisse.nom }}</label>
+          {% endfor %}
+        </div>
+      </fieldset>
+      {% endif %}
+
+      <div class="exemples">
+        <p class="exemples__titre" id="titre-exemples">Ou choisis un exemple</p>
+        <div class="exemples__groupes">
+          {% if police.phrases %}
+          <div class="exemples__groupe">
+            <p class="gr-meta" id="titre-exemples-langues">Une phrase par langue</p>
+            <div class="exemples__boutons" role="group" aria-labelledby="titre-exemples titre-exemples-langues">
+              {% for phrase in police.phrases %}
+              <button type="button" class="gr-btn bouton-choix" aria-pressed="false" data-exemple="{{ phrase.texte }}" data-lang="{{ phrase.lang }}"><span class="gr-star" aria-hidden="true">✦</span><span class="bouton-choix__libelle">{{ phrase.langue | capitalize }}</span></button>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          <div class="exemples__groupe">
+            <p class="gr-meta" id="titre-exemples-signes">Tous les signes</p>
+            <div class="exemples__boutons" role="group" aria-labelledby="titre-exemples titre-exemples-signes">
+              {% for signe in police.signes %}
+              <button type="button" class="gr-btn bouton-choix" aria-pressed="false" data-exemple="{{ signe.texte }}" data-lang="fr"><span class="gr-star" aria-hidden="true">✦</span><span class="bouton-choix__libelle">{{ signe.libelle }}</span></button>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if police.fonctions %}
+      <fieldset class="fonctions">
+        <legend class="fonctions__legende">
+          <span>Fonctions OpenType</span>
+          <button type="button" class="bouton-icone" id="bouton-aide-ot" aria-expanded="false" aria-controls="aide-ot" aria-label="Qu’est-ce qu’une fonction OpenType ?" title="Qu’est-ce qu’une fonction OpenType ?" data-aide-ot>
+            <svg class="gr-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/><path d="M12 17v.5"/></svg>
+          </button>
+        </legend>
+        <div class="gr-frame aide-ot" id="aide-ot" hidden>
+          <div class="aide-ot__texte">
+            <p><strong>Qu’est-ce qu’une fonction OpenType&#8239;?</strong></p>
+            <p>Des variantes rangées dans la police, que tu actives au besoin. Le texte ne change pas, seulement le dessin des lettres.</p>
+            <p><strong>Exemple&#8239;:</strong> le zéro barré évite de confondre 0 et O dans un code.</p>
+            <p><strong>Où l’activer&#8239;:</strong> dans InDesign, Affinity ou Word (menu OpenType), ou en CSS&#8239;: <code>font-feature-settings: "zero" 1;</code></p>
+          </div>
+          <button type="button" class="bouton-icone" aria-label="Fermer l’aide" title="Fermer l’aide" data-fermer-aide-ot>{{ icone(base, "croix") }}</button>
+        </div>
+        <p class="gr-meta">Coche une fonction : l’essai et le CSS à copier se mettent à jour. Dans les aperçus, les signes qui changent sont sur fond foncé.</p>
+        <ul class="fonctions__cartes">
+          {% for fonction in police.fonctions %}
+          <li class="carte-fonction">
+            <label class="carte-fonction__choix">
+              <input type="checkbox" value="{{ fonction.code }}"{% if fonction.parDefaut %} checked{% endif %} aria-describedby="ot-{{ fonction.code }}" data-fonction>
+              <span><span class="carte-fonction__nom">{{ fonction.libelle }}</span><span class="carte-fonction__desc" id="ot-{{ fonction.code }}">{{ fonction.description }}</span></span>
+            </label>
+            {% set reglage_sans = [] %}{% set reglage_avec = [] %}
+            {% for autre in police.fonctions %}
+            {% set defaut = 1 if autre.parDefaut else 0 %}
+            {% set _ = reglage_sans.append("'" ~ autre.code ~ "' " ~ (0 if autre.code == fonction.code else defaut)) %}
+            {% set _ = reglage_avec.append("'" ~ autre.code ~ "' " ~ (1 if autre.code == fonction.code else defaut)) %}
+            {% endfor %}
+            <div class="carte-fonction__apercu" aria-hidden="true" style="font-family: &quot;essai-{{ police.id }}&quot;, var(--font-body)">
+              {% for etiquette, reglage in [("Sans", reglage_sans), ("Avec", reglage_avec)] %}
+              <span class="carte-fonction__etat">{{ etiquette }}</span><span class="carte-fonction__exemple" style="font-feature-settings: {{ reglage | join(', ') }}">{% for caractere in fonction.exemple %}{% if loop.index0 in fonction.differences %}<span class="difference">{{ caractere }}</span>{% else %}{{ caractere }}{% endif %}{% endfor %}</span>
+              {% endfor %}
+            </div>
+            <p class="carte-fonction__pied"><code>{{ fonction.code }}</code> · <span data-etat-fonction>{{ "activée" if fonction.parDefaut else "désactivée" }}</span> · {{ fonction.differences | length }} signe{{ "s changent" if fonction.differences | length > 1 else " change" }} (sur fond foncé)</p>
+          </li>
+          {% endfor %}
+        </ul>
+      </fieldset>
+      {% endif %}
+
+      <div class="gr-row essai__partage">
+        <button type="button" class="gr-btn" data-partager>{{ icone(base, "lien") }}<span data-libelle>Copier le lien de cet essai</span></button>
+        <p class="gr-meta">Le lien garde ton texte, la taille{{ " et les fonctions choisies" if police.fonctions }}.</p>
+      </div>
+      {% if police.usage %}<p class="conseil">{{ icone(base, "info") }}<span><strong>Bien l’utiliser&#8239;:</strong> {{ police.usage }}</span></p>{% endif %}
+    </div>
+  </div>
+</section>
+
+{% if police.graisses | length > 1 %}
+<section id="graisses" class="section" aria-labelledby="titre-graisses">
+  <h2 id="titre-graisses">Graisses</h2>
+  <ul class="graisses">
+    {% for graisse in police.graisses %}
+    <li><span class="gr-meta">{{ graisse.nom }} · {{ graisse.poids }}</span><span class="graisses__exemple" style="font-family: &quot;essai-{{ police.id }}&quot;, var(--font-body); font-weight: {{ graisse.poids }}">{{ police.specimen.titre or police.nom }}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<section id="glyphes" class="section" aria-labelledby="titre-glyphes">
+  <h2 id="titre-glyphes">Glyphes ({{ police.glyphes | length }})</h2>
+  <div class="glyphes">
+    <div class="glyphes__grille" role="listbox" aria-label="Glyphes de {{ police.nom }}" style="font-family: &quot;essai-{{ police.id }}&quot;, var(--font-body)" data-grille>
+      {% for glyphe in police.glyphes %}
+      <button type="button" class="glyphe" role="option" aria-selected="false" tabindex="-1" aria-label="{{ glyphe.caractere }}, {{ glyphe.nom }}" data-nom="{{ glyphe.nom }}" data-code="{{ glyphe.code }}">{{ glyphe.caractere }}</button>
+      {% endfor %}
+    </div>
+    <figure class="gr-frame glyphes__loupe">
+      <span class="glyphes__grand" style="font-family: &quot;essai-{{ police.id }}&quot;, var(--font-body)" aria-hidden="true" data-loupe></span>
+      <figcaption aria-live="polite"><strong data-loupe-nom></strong><code data-loupe-code></code></figcaption>
+      <button type="button" class="gr-btn" data-copier-glyphe>{{ icone(base, "copier") }}<span data-libelle>Copier le caractère</span></button>
+    </figure>
+  </div>
+  <button type="button" class="gr-btn glyphes__plus" hidden data-plus-glyphes>{{ icone(base, "chevron-bas") }}<span data-libelle></span></button>
+  <p class="gr-meta">Flèches, Début et Fin pour parcourir la grille au clavier.</p>
+</section>
+
+{% if police.phrases %}
+<section id="langues" class="section" aria-labelledby="titre-langues">
+  <h2 id="titre-langues">Langues</h2>
+  <p>{{ police.nom }} couvre {{ police.phrases | length }} langues : {% for phrase in police.phrases %}{{ phrase.langue }}{{ " et " if loop.revindex == 2 else (", " if not loop.last) }}{% endfor %}.</p>
+  <ul class="langues">
+    {% for phrase in police.phrases %}
+    <li><span class="langues__nom">{{ phrase.langue | capitalize }}</span><span class="langues__phrase" lang="{{ phrase.lang }}" style="font-family: &quot;essai-{{ police.id }}&quot;, var(--font-body)">{{ phrase.texte }}</span></li>
+    {% endfor %}
+  </ul>
+  <div class="gr-frame verificateur" data-verificateur>
+    <div class="gr-field gr-field--wide">
+      <label for="verif-langue">Vérifier un mot ou une phrase</label>
+      <input id="verif-langue" type="text" autocomplete="off" spellcheck="false" placeholder="Ex. : Œuvre, Straße, Łódź, ğüşı" aria-describedby="verif-resultat" data-verif-texte>
+    </div>
+    <p class="verificateur__resultat" id="verif-resultat" aria-live="polite" data-verif-resultat>Écris un mot pour voir si toutes ses lettres existent dans {{ police.nom }}.</p>
+    <p class="verificateur__apercu" style="font-family: &quot;essai-{{ police.id }}&quot;, var(--font-body)" data-verif-apercu>Œuvre, Straße, Łódź, ğüşı</p>
+  </div>
+</section>
+{% endif %}
+
+<section id="site" class="section" aria-labelledby="titre-site">
+  <h2 id="titre-site">Utiliser sur un site</h2>
+  {% set web = [
+    ("css", "Lien CSS", "styles.css · sans rien héberger", "Le plus simple : colle ce CSS, la police est servie depuis mon site.",
+     "@import url(\"" ~ police.css ~ "\");\n\nh1 {\n  font-family: " ~ famille ~ ", cursive;<FSS>\n}"),
+    ("npm", "npm (Vite, Nuxt…)", "terminal puis main.js", "Installe le paquet, puis importe-le une fois dans ton point d’entrée : il charge sa feuille CSS.",
+     "npm install " ~ police.npm ~ "\n\n// main.js\nimport '" ~ police.npm ~ "';\n\n/* styles.css */\nh1 {\n  font-family: " ~ famille ~ ", cursive;<FSS>\n}"),
+    ("tailwind", "Tailwind 4", "app.css", "Après npm install " ~ police.npm ~ ", déclare la police dans @theme : la classe font-" ~ police.id ~ " devient disponible.",
+     "@import \"tailwindcss\";\n@import \"" ~ police.npm ~ "\";\n\n@theme {\n  --font-" ~ police.id ~ ": " ~ famille ~ ", cursive;\n}\n\n/* Dans le HTML : <h1 class=\"font-" ~ police.id ~ "\">…</h1> */"),
+    ("local", "Héberger moi-même", "index.html", "Copie le dossier woff2 du zip dans ton site : il contient la police et sa feuille CSS.",
+     "<link rel=\"preload\" href=\"/woff2/" ~ fichier_otf ~ ".woff2\" as=\"font\" type=\"font/woff2\" crossorigin>\n<link rel=\"stylesheet\" href=\"/woff2/index.css\">\n\n<style>\n  h1 {\n    font-family: " ~ famille ~ ", cursive;<FSS>\n  }\n</style>")
+  ] %}
+  <div class="onglets-boutons" role="group" aria-label="Façon d’utiliser la police" data-onglets="web" hidden>
+    {% for code, libelle, fichier, intro, extrait in web %}
+    <button type="button" class="gr-btn bouton-choix" aria-pressed="false" aria-controls="web-{{ code }}" data-onglet="{{ code }}"><span class="gr-star" aria-hidden="true">✦</span><span class="bouton-choix__libelle">{{ libelle }}</span></button>
+    {% endfor %}
+  </div>
+  {% for code, libelle, fichier, intro, extrait in web %}
+  <div class="web" id="web-{{ code }}" data-panneau="{{ code }}">
+    <h3 class="web__titre" data-titre-panneau>{{ libelle }}</h3>
+    <p>{{ intro }}</p>
+    <figure class="gr-code">
+      <figcaption class="gr-code__head">
+        <span class="gr-code__title">{{ icone(base, "fichier-code") }}<span class="gr-code__name">{{ fichier }}</span></span>
+        <span class="gr-code__actions"><button type="button" class="gr-code__action" data-copier-code>{{ icone(base, "copier") }}<span class="gr-code__action-text" data-libelle>Copier le code</span></button></span>
+      </figcaption>
+      <pre class="gr-code__pre" tabindex="0" dir="ltr"><code data-extrait="{{ extrait }}">{{ extrait | replace("<FSS>", "") }}</code></pre>
+    </figure>
+  </div>
+  {% endfor %}
+</section>
+
+<section id="licence" class="section" aria-labelledby="titre-licence">
+  <h2 id="titre-licence">Ce que la licence permet</h2>
+  <p>{{ police.nom }} est sous <a href="https://openfontlicense.org">licence SIL Open Font License 1.1</a>.</p>
+  <div class="licence">
+    <div>
+      <h3><svg class="gr-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Tu peux</h3>
+      <ul>
+        <li>l’utiliser gratuitement, même pour un projet commercial (logo, affiche, livre, site, appli) ;</li>
+        <li>l’intégrer à un site, une appli ou un document PDF ;</li>
+        <li>la modifier et partager ta version{% if police.nomReserve %}, sous un autre nom que « {{ police.nomReserve }} »{% endif %}.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>{{ icone(base, "croix") }}Tu ne peux pas</h3>
+      <ul>
+        <li>vendre la police seule, telle quelle ;</li>
+        <li>retirer la licence ou les crédits des fichiers.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="credit">
+    <p>Mentionner l’autrice n’est pas obligatoire, mais fait plaisir. Par exemple :</p>
+    <p class="credit__texte" data-credit>Police {{ police.nom }} par {{ police.dessin }} (danaedev.fr), licence SIL OFL 1.1</p>
+    <button type="button" class="gr-btn" data-copier-credit>{{ icone(base, "copier") }}<span data-libelle>Copier la mention</span></button>
+  </div>
+</section>
+
+<section id="versions" class="section" aria-labelledby="titre-versions">
+  <h2 id="titre-versions">Historique des versions</h2>
+  {% set dernieres = police.historique[:3] %}
+  <div class="gr-accordion historique" data-accordeon>
+    {% for version in dernieres %}
+    {% set premiere = loop.first %}
+    {% include "_version.html" %}
+    {% endfor %}
+  </div>
+  <ul class="liens-utiles">
+    {% if police.historique | length > 3 %}<li><a href="{{ police.page }}versions/">Voir les {{ police.historique | length }} versions</a></li>{% else %}<li><a href="{{ police.page }}versions/">Voir la page des versions</a></li>{% endif %}
+    <li><a href="{{ depot }}/releases?q={{ police.id }}">Télécharger une ancienne version sur GitHub</a></li>
+    <li><a href="{{ depot }}/releases.atom">Suivre les nouvelles versions (flux Atom)</a></li>
+  </ul>
+</section>
+{% endblock %}
+
+{% block donnees %}
+<script type="application/json" id="donnees-police">{{ {"id": police.id, "nom": police.nom, "glyphes": police.glyphes | map(attribute="caractere") | join, "fonctions": police.fonctions | map(attribute="code") | list, "parDefaut": police.fonctions | selectattr("parDefaut") | map(attribute="code") | list} | json | safe }}</script>
+{% endblock %}

@@ -9,7 +9,7 @@ Une police au pinceau où chaque lettre cache un chat : des oreilles sur les ham
 
 - **Version** : voir le [CHANGELOG](CHANGELOG.md) · **Licence** [SIL Open Font License 1.1](OFL.txt) · **Autrice** Danaé ALBRECHT--MARTIN
 - **8 langues** (jeu GF Latin Core, 317 glyphes visibles) : français, anglais, allemand, espagnol, polonais, tchèque, roumain, turc
-- **Spécimen** : [en ligne](https://dalbrechtmartin.github.io/fonts/#griffonne), ou `specimen/index.html` (thèmes clair et sombre, fonctions à essayer)
+- **Spécimen** : [en ligne](https://polices.danaedev.fr/griffonne/), ou `specimen/index.html` (thèmes clair et sombre, fonctions à essayer)
 
 ## Ce qu’elle sait faire
 
