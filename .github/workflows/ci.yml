@@ -5,6 +5,11 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
+    # PR de version (release-please) : leur CI attendrait une approbation puis échouerait ; vérifiées au push
+    paths-ignore:
+      - .release-please-manifest.json
+      - fonts/*/CHANGELOG.md
+      - fonts/*/police.json
 
 jobs:
   fonts:
