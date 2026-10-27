@@ -1,7 +1,7 @@
 {
   "id": "tendrille-texte",
   "nom": "Tendrille Texte",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "statut": "stable",
   "resume": "La sobre de Tendrille : même écriture, contraste faible, pour les petites tailles.",
   "description": "Tendrille Texte reprend l'écriture de Tendrille dans une version sobre : contraste faible, points ronds, sans geste d'entrée ni ruban. Elle est faite pour les petites tailles, les interfaces et les personnes malvoyantes, avec les mêmes garanties de lisibilité : b d p q jamais en miroir, I l 1 et 0 O différenciés, grande hauteur d'x. Ses sources sont celles de Tendrille.",
