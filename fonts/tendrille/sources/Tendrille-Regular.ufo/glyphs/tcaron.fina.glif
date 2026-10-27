@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="tcaron.fina" format="2">
+  <advance width="495"/>
+  <outline>
+    <component base="t.fina"/>
+    <component base="caroncomb.alt" xOffset="521" yOffset="640"/>
+  </outline>
+</glyph>

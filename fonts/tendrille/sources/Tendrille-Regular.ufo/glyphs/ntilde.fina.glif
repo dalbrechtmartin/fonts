@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="ntilde.fina" format="2">
+  <advance width="995"/>
+  <outline>
+    <component base="n.fina"/>
+    <component base="tildecomb" xOffset="535"/>
+  </outline>
+</glyph>

@@ -1,0 +1,43 @@
+FONTLOG pour Tendrille
+=====================
+
+Ce fichier décrit la police et l'historique de ses versions, comme le recommande l'OFL.
+
+## Description
+
+Tendrille est une semi-manuscrite de lecture, romantique et élégante, dessinée à la plume
+(angle 30°, contraste 1,7), en deux familles :
+
+- Tendrille : pour le texte à partir de 18 px, les titres et les citations ; les points
+  (i, j, ponctuation, trémas) sont des cœurs, et la dernière lettre d'un mot s'envole en
+  ruban qui s'enroule en cœur (fonction calt).
+- Tendrille Texte : la même écriture, sobre, pour les petites tailles et la malvoyance ;
+  contraste faible, points ronds, sans geste d'entrée ni de sortie.
+
+Pensée pour un public large : lecteurs dyslexiques (b d p q jamais en miroir, I l 1 et 0 O
+différenciés), personnes âgées ou malvoyantes (grande hauteur d'x, espacement aéré), enfants
+qui apprennent à lire (a d'école en ss01).
+
+Fonctions : calt (rubans de fin de mot), case, tnum, zero, ss01 (a d'école),
+ss02 (points ronds / en cœur), ss04 (capitales à cœur), ss05 (sans rubans de fin de mot).
+Ornements : ❦ ❧ ♡.
+
+Couverture : GF_Latin_Core (français et langues européennes à alphabet latin).
+
+## Historique
+
+2026-10-27 (Danaé ALBRECHT--MARTIN) Tendrille 0.2
+- Regular complet pour GF_Latin_Core dans les deux familles : 26 + 26 lettres, chiffres,
+  ponctuation, espaces françaises, accents, symboles, ornements
+- Rubans à cœur en fin de mot, points en cœur, capitales à cœur
+- Fonctions OpenType, espacement optique et crénage mesurés
+- Contrôle : verifier.py sans erreur, Font Bakery sans échec, axe-core sans violation
+  sur le spécimen (voir documentation/controle.md)
+
+2026-10-26 (Danaé ALBRECHT--MARTIN) Tendrille 0.1
+- Création du projet
+
+## Contributions
+N: Danaé ALBRECHT--MARTIN
+W: https://danaedev.fr
+D: Dessin original

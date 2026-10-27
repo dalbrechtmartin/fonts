@@ -1,0 +1,112 @@
+# Généré par fonctions_opentype.py : ne pas modifier à la main.
+languagesystem DFLT dflt;
+languagesystem latn dflt;
+
+
+feature case {
+    sub braceleft by braceleft.case;
+    sub braceright by braceright.case;
+    sub bracketleft by bracketleft.case;
+    sub bracketright by bracketright.case;
+    sub bullet by bullet.case;
+    sub emdash by emdash.case;
+    sub endash by endash.case;
+    sub exclamdown by exclamdown.case;
+    sub guillemetleft by guillemetleft.case;
+    sub guillemetright by guillemetright.case;
+    sub guilsinglleft by guilsinglleft.case;
+    sub guilsinglright by guilsinglright.case;
+    sub hyphen by hyphen.case;
+    sub parenleft by parenleft.case;
+    sub parenright by parenright.case;
+    sub periodcentered by periodcentered.case;
+    sub questiondown by questiondown.case;
+    sub uni2212 by uni2212.case;
+} case;
+
+feature zero {
+    sub zero by zero.zero;
+} zero;
+
+feature tnum {
+    sub eight by eight.tf;
+    sub five by five.tf;
+    sub four by four.tf;
+    sub nine by nine.tf;
+    sub one by one.tf;
+    sub seven by seven.tf;
+    sub six by six.tf;
+    sub three by three.tf;
+    sub two by two.tf;
+    sub zero by zero.tf;
+} tnum;
+
+feature ss01 {
+    featureNames {
+        name "a d'école";
+    };
+    sub a by a.ss01;
+    sub aacute by aacute.ss01;
+    sub abreve by abreve.ss01;
+    sub acircumflex by acircumflex.ss01;
+    sub adieresis by adieresis.ss01;
+    sub agrave by agrave.ss01;
+    sub amacron by amacron.ss01;
+    sub aogonek by aogonek.ss01;
+    sub aring by aring.ss01;
+    sub atilde by atilde.ss01;
+} ss01;
+
+feature ss02 {
+    featureNames {
+        name "Points en cœur";
+    };
+    sub Adieresis by Adieresis.ss02;
+    sub Cdotaccent by Cdotaccent.ss02;
+    sub Edieresis by Edieresis.ss02;
+    sub Edotaccent by Edotaccent.ss02;
+    sub Gdotaccent by Gdotaccent.ss02;
+    sub Idieresis by Idieresis.ss02;
+    sub Idotaccent by Idotaccent.ss02;
+    sub Odieresis by Odieresis.ss02;
+    sub Udieresis by Udieresis.ss02;
+    sub Wdieresis by Wdieresis.ss02;
+    sub Ydieresis by Ydieresis.ss02;
+    sub Zdotaccent by Zdotaccent.ss02;
+    sub adieresis.ss01 by adieresis.ss01.ss02;
+    sub adieresis by adieresis.ss02;
+    sub bullet.case by bullet.case.ss02;
+    sub bullet by bullet.ss02;
+    sub cdotaccent by cdotaccent.ss02;
+    sub colon by colon.ss02;
+    sub dieresis by dieresis.ss02;
+    sub dieresiscomb.case by dieresiscomb.case.ss02;
+    sub dieresiscomb by dieresiscomb.ss02;
+    sub divide by divide.ss02;
+    sub dotaccent by dotaccent.ss02;
+    sub dotaccentcomb.case by dotaccentcomb.case.ss02;
+    sub dotaccentcomb by dotaccentcomb.ss02;
+    sub edieresis by edieresis.ss02;
+    sub edotaccent by edotaccent.ss02;
+    sub ellipsis by ellipsis.ss02;
+    sub exclam by exclam.ss02;
+    sub exclamdown.case by exclamdown.case.ss02;
+    sub exclamdown by exclamdown.ss02;
+    sub gdotaccent by gdotaccent.ss02;
+    sub i by i.ss02;
+    sub idieresis by idieresis.ss02;
+    sub iogonek by iogonek.ss02;
+    sub j by j.ss02;
+    sub odieresis by odieresis.ss02;
+    sub period by period.ss02;
+    sub periodcentered.case by periodcentered.case.ss02;
+    sub periodcentered by periodcentered.ss02;
+    sub question by question.ss02;
+    sub questiondown.case by questiondown.case.ss02;
+    sub questiondown by questiondown.ss02;
+    sub semicolon by semicolon.ss02;
+    sub udieresis by udieresis.ss02;
+    sub wdieresis by wdieresis.ss02;
+    sub ydieresis by ydieresis.ss02;
+    sub zdotaccent by zdotaccent.ss02;
+} ss02;

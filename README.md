@@ -8,6 +8,8 @@ Les polices d'écriture que je dessine : sources, versions, changelog et spécim
 | --- | --- | --- |
 | [Griffonne](fonts/griffonne/) | Pinceau irrégulier où chaque lettre cache un chat ; GF Latin Core, `calt` `ss01` `case` `zero` | OFL 1.1 |
 | [Sorcelle](fonts/sorcelle/) | Pixel « lombarde arrondie », 3 graisses, GF Latin Core, pour les titres | OFL 1.1 |
+| [Tendrille](fonts/tendrille/) | Semi-manuscrite romantique à la plume, points et fins de mots en cœur ; GF Latin Core, `calt` `case` `tnum` `zero` `ss01` `ss02` `ss04` `ss05` | OFL 1.1 |
+| [Tendrille Texte](fonts/tendrille-texte/) | La sobre de Tendrille, pour les petites tailles et la malvoyance ; GF Latin Core | OFL 1.1 |
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="fonts/griffonne/images/apercu-sombre.png">
@@ -17,6 +19,11 @@ Les polices d'écriture que je dessine : sources, versions, changelog et spécim
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="fonts/sorcelle/images/apercu-sombre.png">
   <img src="fonts/sorcelle/images/apercu-clair.png" alt="Le mot Sorcelle en lettres pixel de style lombarde, suivi de la ligne « Danaé Albrecht--Martin ✦ Projets · Créations · Réseaux ».">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="fonts/tendrille/images/apercu-sombre.png">
+  <img src="fonts/tendrille/images/apercu-clair.png" alt="Le mot Tendrille en écriture manuscrite à la plume, suivi de la phrase « Mon cœur, l’été à Noël » dit Yvon à Paul, où les points des i et la fin des mots dessinent de petits cœurs.">
 </picture>
 
 Chaque version publiée a son zip (TTF, WOFF2, OTF quand la police en a un, licence, changelog) dans les
