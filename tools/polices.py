@@ -660,7 +660,7 @@ def nouvelle(id_police, nom):
     manifeste[f"fonts/{id_police}"] = NON_PUBLIEE
     MANIFESTE_RELEASE.write_text(json.dumps(manifeste, indent=2) + "\n", encoding="utf-8")
     print(f"-> {dossier.relative_to(RACINE)} créé. À faire :\n"
-          f"   1. remplir police.json et la ligne Copyright de OFL.txt ;\n"
+          f"   1. remplir police.json (dont usages et styles) et la ligne Copyright de OFL.txt ;\n"
           f"   2. mettre les .ttf/.woff2 dans compilees/ (ou une commande \"construction\") ;\n"
           f"   3. python tools/polices.py construire {id_police} && python tools/polices.py verifier {id_police}\n"
           f"   Le site l'affichera après sa première version (commit « feat({id_police}): … », puis release PR).")
