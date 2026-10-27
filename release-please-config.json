@@ -26,6 +26,17 @@
           "jsonpath": "$.version"
         }
       ]
+    },
+    "fonts/tendrille": {
+      "component": "tendrille",
+      "package-name": "tendrille",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "police.json",
+          "jsonpath": "$.version"
+        }
+      ]
     }
   }
 }

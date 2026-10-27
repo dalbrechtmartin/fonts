@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="ringcomb" format="2">
+  <unicode hex="030A"/>
+  <anchor x="0" y="520" name="_top"/>
+  <outline>
+    <contour>
+      <point x="45" y="745" type="curve" smooth="yes"/>
+      <point x="24" y="756"/>
+      <point x="0" y="759"/>
+      <point x="-23" y="752" type="curve" smooth="yes"/>
+      <point x="-46" y="746"/>
+      <point x="-66" y="731"/>
+      <point x="-78" y="711" type="curve" smooth="yes"/>
+      <point x="-91" y="690"/>
+      <point x="-95" y="665"/>
+      <point x="-89" y="641" type="curve" smooth="yes"/>
+      <point x="-83" y="617"/>
+      <point x="-67" y="596"/>
+      <point x="-45" y="585" type="curve" smooth="yes"/>
+      <point x="-25" y="574"/>
+      <point x="0" y="571"/>
+      <point x="23" y="578" type="curve" smooth="yes"/>
+      <point x="45" y="585"/>
+      <point x="64" y="600"/>
+      <point x="76" y="620" type="curve" smooth="yes"/>
+      <point x="88" y="641"/>
+      <point x="91" y="665"/>
+      <point x="86" y="689" type="curve" smooth="yes"/>
+      <point x="80" y="712"/>
+      <point x="66" y="733"/>
+    </contour>
+    <contour>
+      <point x="13" y="693" type="curve"/>
+      <point x="19" y="688"/>
+      <point x="24" y="681"/>
+      <point x="26" y="674" type="curve" smooth="yes"/>
+      <point x="29" y="665"/>
+      <point x="28" y="656"/>
+      <point x="24" y="648" type="curve"/>
+      <point x="21" y="641"/>
+      <point x="15" y="634"/>
+      <point x="7" y="632" type="curve" smooth="yes"/>
+      <point x="0" y="630"/>
+      <point x="-7" y="633"/>
+      <point x="-13" y="638" type="curve"/>
+      <point x="-18" y="643"/>
+      <point x="-21" y="650"/>
+      <point x="-23" y="657" type="curve" smooth="yes"/>
+      <point x="-25" y="665"/>
+      <point x="-25" y="673"/>
+      <point x="-22" y="681" type="curve"/>
+      <point x="-20" y="688"/>
+      <point x="-15" y="695"/>
+      <point x="-7" y="697" type="curve"/>
+      <point x="0" y="700"/>
+      <point x="7" y="697"/>
+    </contour>
+  </outline>
+</glyph>

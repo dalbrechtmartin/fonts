@@ -1,0 +1,94 @@
+{
+  "id": "tendrille",
+  "nom": "Tendrille",
+  "version": "0.0.0",
+  "statut": "stable",
+  "resume": "Semi-manuscrite romantique à la plume : points en cœur, rubans à cœur en fin de mot.",
+  "description": "Tendrille est une semi-manuscrite de lecture, dessinée à la plume en code : ses points sont des cœurs, et la dernière lettre de chaque mot s'envole en un ruban qui s'enroule en cœur. Pensée pour le plus grand nombre : b d p q jamais en miroir, I l 1 et 0 O différenciés, grande hauteur d'x. Pour les petites tailles, voir Tendrille Texte.",
+  "dessin": "Danaé ALBRECHT--MARTIN",
+  "licence": "OFL-1.1",
+  "etiquettes": [
+    "manuscrite",
+    "plume",
+    "cœurs",
+    "romance",
+    "accessibilité"
+  ],
+  "langues": [
+    "français",
+    "anglais",
+    "allemand",
+    "espagnol",
+    "polonais",
+    "tchèque",
+    "roumain",
+    "turc"
+  ],
+  "graisses": [
+    {
+      "nom": "Regular",
+      "poids": 400
+    }
+  ],
+  "compilees": "fonts",
+  "fonctions": [
+    {
+      "code": "calt",
+      "libelle": "Rubans à cœur",
+      "description": "La dernière lettre de chaque mot s'envole en un ruban qui s'enroule en cœur.",
+      "exemple": "une belle humeur",
+      "parDefaut": true
+    },
+    {
+      "code": "case",
+      "libelle": "Formes pour capitales",
+      "description": "Tirets, parenthèses et guillemets centrés sur les majuscules.",
+      "exemple": "(PARIS)"
+    },
+    {
+      "code": "tnum",
+      "libelle": "Chiffres tabulaires",
+      "description": "Chiffres de même largeur, pour les tableaux et les prix.",
+      "exemple": "1 111,10 €"
+    },
+    {
+      "code": "zero",
+      "libelle": "Zéro barré",
+      "description": "Distingue le chiffre 0 de la lettre O.",
+      "exemple": "O0 2026"
+    },
+    {
+      "code": "ss01",
+      "libelle": "a d'école",
+      "description": "Le a à un étage, comme à l'école, pour les enfants qui apprennent à lire.",
+      "exemple": "la balade à papa"
+    },
+    {
+      "code": "ss02",
+      "libelle": "Points ronds",
+      "description": "Des points ronds à la place des cœurs (i, j, ponctuation, trémas).",
+      "exemple": "Oui ! ïle, ici…"
+    },
+    {
+      "code": "ss04",
+      "libelle": "Capitales à cœur",
+      "description": "Un cœur suspendu au sommet des capitales, pour les titres.",
+      "exemple": "Lovely Valentine"
+    },
+    {
+      "code": "ss05",
+      "libelle": "Sans rubans de fin de mot",
+      "description": "Une Tendrille plus calme, sans ruban à la fin des mots.",
+      "exemple": "la balade du jour"
+    }
+  ],
+  "specimen": {
+    "titre": "Tendrille",
+    "texte": "« Mon cœur, l’été à Noël » dit Yvon à Paul.",
+    "tailleMin": 18,
+    "tailleMax": 160,
+    "tailleParDefaut": 72,
+    "taillesNettes": []
+  },
+  "usage": "Texte à partir de 18 px avec un interlignage d'au moins 1,5 ; titres, citations, invitations. Capitales à cœur (ss04) pour les titres. Pour les petites tailles et la malvoyance : Tendrille Texte."
+}

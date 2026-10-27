@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="racute.fina" format="2">
+  <advance width="574"/>
+  <outline>
+    <component base="r.fina"/>
+    <component base="acutecomb" xOffset="122"/>
+  </outline>
+</glyph>
