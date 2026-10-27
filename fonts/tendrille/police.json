@@ -14,6 +14,8 @@
     "romance",
     "accessibilité"
   ],
+  "usages": ["Titres", "Texte courant"],
+  "styles": ["Manuscrite"],
   "langues": [
     "français",
     "anglais",
