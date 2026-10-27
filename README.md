@@ -108,7 +108,8 @@ nginx ajoute les en-têtes de sécurité et autorise les autres sites à charger
 
 Versions et paquets passent par GitHub Actions, sans variable ni secret :
 
-- [`ci.yml`](.github/workflows/ci.yml) : `construire`, `verifier` et `site` à chaque push et PR vers `main` et `develop`.
+- [`ci.yml`](.github/workflows/ci.yml) : `construire`, `verifier` et `site` à chaque push et PR vers `main` et `develop`
+  (sauf les PR de version, vérifiées au push).
 - [`release-please.yml`](.github/workflows/release-please.yml) : ouvre la PR de version, crée la release, y joint le zip et publie le paquet npm (trusted publishing, sans secret).
 
 Réglages du dépôt en place :
@@ -128,13 +129,15 @@ Chaque police a sa propre version (semver), son `CHANGELOG.md` et ses tags (`gri
    - `fix(sorcelle): …` → correctif (0.6.0 → 0.6.1) ;
    - `feat(sorcelle)!: …` → majeure (mineure tant qu'on est en 0.x) ;
    - `refactor`, `docs`, `chore`, `ci` → pas de version.
-2. Ouvrir une PR `develop` → `main` et la fusionner une fois la CI verte.
+2. Ouvrir une PR `develop` → `main`, avec un titre libre (un titre `feat(…)` serait compté comme un commit de plus
+   dans le CHANGELOG), et la fusionner une fois la CI verte.
 3. release-please ouvre une PR par police modifiée (version dans `police.json`, manifeste, `CHANGELOG.md`).
-   Elle n'a pas de CI : GitHub ne lance pas les workflows sur une PR créée par GitHub Actions.
-4. La fusionner : tag, release et zip, puis le site se met à jour.
-5. Facultatif : décrire la version en français pour le site dans `police.json`, clé `notes`
+   Sa CI n'est pas lancée (`paths-ignore` de `ci.yml`) : lancer `construire` et `verifier` sur sa branche.
+4. Avant de la fusionner, décrire la version en français pour le site dans `police.json` de sa branche, clé `notes`
    (`{"1.2.0": {"Nouveautés": ["…"], "Corrections": ["…"]}}`). Sans note, le site affiche les messages de commit ;
    `verifier` refuse une note pour une version absente du CHANGELOG.
+5. La fusionner : tag, release et zip, puis le site se met à jour. Deux PR de version ouvertes ensemble entrent en
+   conflit sur le manifeste après la première fusion : intégrer `main` dans la seconde et garder les deux versions.
 
 La version écrite dans les fichiers de police vient toujours de `police.json` : `construire` l'écrit aussi dans les
 polices fournies compilées (Griffonne), et `verifier` refuse un écart.
