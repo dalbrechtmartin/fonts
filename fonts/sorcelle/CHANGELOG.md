@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/dalbrechtmartin/fonts/compare/sorcelle-v1.0.0...sorcelle-v1.0.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* write the author name in capitals ([7eb0c35](https://github.com/dalbrechtmartin/fonts/commit/7eb0c353bebf495db4ff2df013d1ca9b40c4fe30))
+
 ## [1.0.0](https://github.com/dalbrechtmartin/fonts/compare/sorcelle-v0.6.0...sorcelle-v1.0.0) (2026-10-26)
 
 
