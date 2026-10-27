@@ -61,6 +61,11 @@
   },
   "usage": "Titres uniquement, à partir de 32 px. Pour des pixels nets : 43 px ou 86 px.",
   "notes": {
+    "1.0.1": {
+      "Corrections": [
+        "Nom de l’autrice écrit en capitales dans les informations de la police : Danaé ALBRECHT--MARTIN."
+      ]
+    },
     "1.0.0": {
       "Nouveautés": [
         "Tous les glyphes redessinés dans le style Sorcelle : 8 langues, dans les trois graisses."
