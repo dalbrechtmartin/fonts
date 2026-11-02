@@ -2,7 +2,7 @@
 # Installation : pip install -r requirements.txt
 fonttools[ufo,woff,unicode]==4.67.0
 fontmake==3.12.2
-ufo2ft==3.9.1
+ufo2ft==3.10.0
 ufoLib2==0.19.1
 skia-pathops==0.9.2
 ttfautohint-py==0.6.1
