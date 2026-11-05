@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<designspace format="5.0">
+  <axes>
+    <axis tag="wght" name="Weight" minimum="300" maximum="900" default="400">
+      <labels>
+        <label uservalue="300" name="Light"/>
+        <label uservalue="400" name="Regular"/>
+        <label uservalue="500" name="Medium"/>
+        <label uservalue="700" name="Bold"/>
+        <label uservalue="900" name="Black"/>
+      </labels>
+    </axis>
+  </axes>
+  <sources>
+    <source filename="Thornveil-Light.ufo" familyname="Thornveil" stylename="Light">
+      <location>
+        <dimension name="Weight" xvalue="300"/>
+      </location>
+    </source>
+    <source filename="Thornveil-Regular.ufo" familyname="Thornveil" stylename="Regular">
+      <location>
+        <dimension name="Weight" xvalue="400"/>
+      </location>
+    </source>
+    <source filename="Thornveil-Black.ufo" familyname="Thornveil" stylename="Black">
+      <location>
+        <dimension name="Weight" xvalue="900"/>
+      </location>
+    </source>
+  </sources>
+  <instances>
+    <instance familyname="Thornveil" stylename="Light" filename="instances/Thornveil-Light.ufo" postscriptfontname="Thornveil-Light" stylemapfamilyname="Thornveil Light" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="300"/>
+      </location>
+    </instance>
+    <instance familyname="Thornveil" stylename="Regular" filename="instances/Thornveil-Regular.ufo" postscriptfontname="Thornveil-Regular" stylemapfamilyname="Thornveil" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="400"/>
+      </location>
+    </instance>
+    <instance familyname="Thornveil" stylename="Medium" filename="instances/Thornveil-Medium.ufo" postscriptfontname="Thornveil-Medium" stylemapfamilyname="Thornveil Medium" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="500"/>
+      </location>
+    </instance>
+    <instance familyname="Thornveil" stylename="Bold" filename="instances/Thornveil-Bold.ufo" postscriptfontname="Thornveil-Bold" stylemapfamilyname="Thornveil" stylemapstylename="bold">
+      <location>
+        <dimension name="Weight" xvalue="700"/>
+      </location>
+    </instance>
+    <instance familyname="Thornveil" stylename="Black" filename="instances/Thornveil-Black.ufo" postscriptfontname="Thornveil-Black" stylemapfamilyname="Thornveil Black" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="900"/>
+      </location>
+    </instance>
+  </instances>
+</designspace>

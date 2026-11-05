@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="t" format="2">
+  <advance width="291"/>
+  <unicode hex="0074"/>
+  <anchor x="154" y="520" name="top"/>
+  <anchor x="154" y="0" name="bottom"/>
+  <anchor x="244" y="602" name="caronalt"/>
+  <outline>
+    <contour>
+      <point x="95" y="60" type="line"/>
+      <point x="147" y="-12" type="line"/>
+      <point x="175" y="13" type="line"/>
+      <point x="175" y="530" type="line"/>
+      <point x="123" y="602" type="line"/>
+      <point x="95" y="577" type="line"/>
+    </contour>
+    <contour>
+      <point x="71" y="520" type="line"/>
+      <point x="71" y="478" type="line"/>
+      <point x="238" y="500" type="line"/>
+      <point x="238" y="542" type="line"/>
+    </contour>
+    <contour>
+      <point x="151" y="24" type="line"/>
+      <point x="151" y="-21" type="line"/>
+      <point x="262" y="22" type="line"/>
+      <point x="262" y="67" type="line"/>
+    </contour>
+    <contour>
+      <point x="119" y="208" type="curve"/>
+      <point x="119" y="260" type="line"/>
+      <point x="77" y="260"/>
+      <point x="41" y="282"/>
+      <point x="29" y="336" type="curve"/>
+      <point x="29" y="288"/>
+      <point x="41" y="214"/>
+    </contour>
+  </outline>
+</glyph>
