@@ -154,7 +154,12 @@ absente du site. La commande affiche ensuite les étapes : compléter `police.js
 alimentent les filtres de l'accueil, `langues`, affichées sur le site avec une phrase par langue tirée de
 `PHRASES_LANGUES`, et pour chaque fonction OpenType `libelle`, `description` et un `exemple` court : le site y marque
 les signes qui changent, calculés avec HarfBuzz), ajouter les fichiers compilés dans `compilees/` (ou une commande
-`construction`), vérifier, puis committer `feat(<id>): première version`.
+`construction`), vérifier, puis committer `feat(<id>): add <Nom>` (messages de commit en anglais).
+
+Sans version publiée, release-please sort la première en `1.0.0`. Pour une autre, la fixer avant la PR `develop` →
+`main` : `"initial-version": "0.1.0"` sur le paquet dans `release-please-config.json` (comme Thornveil), ou pied
+`Release-As: 0.1.0` dans le commit (comme Tendrille). Le `statut` de `police.json` reste `"bêta"` en 0.x (`verifier`
+refuse `"stable"` avant la 1.0.0) : le passer à `"stable"` dans la PR de version 1.0.0.
 
 ### Publier une police sur npm pour la première fois
 
