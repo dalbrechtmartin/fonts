@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="endash" format="2">
+  <advance width="410"/>
+  <unicode hex="2013"/>
+  <anchor x="205" y="520" name="top"/>
+  <anchor x="205" y="0" name="bottom"/>
+  <outline>
+    <contour>
+      <point x="45" y="293" type="line"/>
+      <point x="45" y="218" type="line"/>
+      <point x="365" y="242" type="line"/>
+      <point x="365" y="317" type="line"/>
+    </contour>
+  </outline>
+</glyph>

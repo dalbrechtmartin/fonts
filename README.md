@@ -78,8 +78,9 @@ docker run --rm -p 8080:8080 polices
 python tools/polices.py verifier         # toutes les polices, ou : verifier sorcelle
 ```
 
-Contrôle les clés de `police.json`, la licence, le changelog, la famille et la graisse de chaque fichier, les glyphes du
-spécimen, la révision écrite dans la police et l'accord avec `.release-please-manifest.json`. Code de sortie 1 en cas d'erreur.
+Contrôle les clés de `police.json` (dont `usages` et `styles`, parmi les listes `USAGES` et `STYLES`), la licence, le
+changelog, la famille et la graisse de chaque fichier, les glyphes du spécimen, la révision écrite dans la police et
+l'accord avec `.release-please-manifest.json`. Code de sortie 1 en cas d'erreur.
 
 ### Hooks Git
 
@@ -149,10 +150,11 @@ python tools/polices.py nouvelle <id> "<Nom>"
 ```
 
 Crée `fonts/<id>/` (police.json, CHANGELOG, README, OFL.txt) et la déclare à release-please en `0.0.0` : non publiée,
-absente du site. La commande affiche ensuite les étapes : compléter `police.json` (dont `langues`, affichées sur le site
-avec une phrase par langue tirée de `PHRASES_LANGUES`, et pour chaque fonction OpenType `libelle`, `description` et un
-`exemple` court : le site y marque les signes qui changent, calculés avec HarfBuzz), ajouter les fichiers compilés
-dans `compilees/` (ou une commande `construction`), vérifier, puis committer `feat(<id>): première version`.
+absente du site. La commande affiche ensuite les étapes : compléter `police.json` (dont `usages` et `styles`, qui
+alimentent les filtres de l'accueil, `langues`, affichées sur le site avec une phrase par langue tirée de
+`PHRASES_LANGUES`, et pour chaque fonction OpenType `libelle`, `description` et un `exemple` court : le site y marque
+les signes qui changent, calculés avec HarfBuzz), ajouter les fichiers compilés dans `compilees/` (ou une commande
+`construction`), vérifier, puis committer `feat(<id>): première version`.
 
 ### Publier une police sur npm pour la première fois
 

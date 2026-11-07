@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="guillemotright" format="2">
+  <advance width="376"/>
+  <unicode hex="00BB"/>
+  <anchor x="188" y="520" name="top"/>
+  <anchor x="188" y="0" name="bottom"/>
+  <outline>
+    <contour>
+      <point x="331" y="234" type="line"/>
+      <point x="211" y="364" type="line"/>
+      <point x="141" y="364" type="line"/>
+      <point x="261" y="234" type="line"/>
+      <point x="141" y="104" type="line"/>
+      <point x="211" y="104" type="line"/>
+    </contour>
+    <contour>
+      <point x="235" y="234" type="line"/>
+      <point x="115" y="364" type="line"/>
+      <point x="45" y="364" type="line"/>
+      <point x="165" y="234" type="line"/>
+      <point x="45" y="104" type="line"/>
+      <point x="115" y="104" type="line"/>
+    </contour>
+  </outline>
+</glyph>
