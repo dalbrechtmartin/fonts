@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="questiondown" format="2">
+  <advance width="570"/>
+  <unicode hex="00BF"/>
+  <anchor x="285" y="520" name="top"/>
+  <anchor x="285" y="0" name="bottom"/>
+  <outline>
+    <contour>
+      <point x="525" y="-22" type="line"/>
+      <point x="461" y="58" type="line"/>
+      <point x="426" y="30" type="line"/>
+      <point x="426" y="-112" type="line"/>
+      <point x="490" y="-192" type="line"/>
+      <point x="525" y="-164" type="line"/>
+    </contour>
+    <contour>
+      <point x="480" y="-50" type="line"/>
+      <point x="480" y="45" type="line"/>
+      <point x="171" y="-127" type="line"/>
+      <point x="171" y="-222" type="line"/>
+    </contour>
+    <contour>
+      <point x="225" y="23" type="line"/>
+      <point x="108" y="135" type="line"/>
+      <point x="45" y="96" type="line"/>
+      <point x="45" y="-80" type="line"/>
+      <point x="162" y="-192" type="line"/>
+      <point x="225" y="-153" type="line"/>
+    </contour>
+    <contour>
+      <point x="216" y="100" type="line"/>
+      <point x="357" y="282" type="line"/>
+      <point x="213" y="282" type="line"/>
+      <point x="72" y="100" type="line"/>
+    </contour>
+    <contour>
+      <point x="357" y="268" type="line"/>
+      <point x="263" y="366" type="line"/>
+      <point x="213" y="332" type="line"/>
+      <point x="213" y="352" type="line"/>
+      <point x="307" y="254" type="line"/>
+      <point x="357" y="288" type="line"/>
+    </contour>
+    <contour>
+      <point x="285" y="531" type="line"/>
+      <point x="192" y="421" type="line"/>
+      <point x="285" y="311" type="line"/>
+      <point x="378" y="421" type="line"/>
+    </contour>
+  </outline>
+</glyph>

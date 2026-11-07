@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<glyph name="gravecomb" format="2">
+  <unicode hex="0300"/>
+  <anchor x="0" y="603" name="_top"/>
+  <anchor x="0" y="783" name="top"/>
+  <outline>
+    <contour>
+      <point x="51" y="603" type="line"/>
+      <point x="-28" y="753" type="line"/>
+      <point x="-76" y="753" type="line"/>
+      <point x="3" y="603" type="line"/>
+    </contour>
+  </outline>
+</glyph>

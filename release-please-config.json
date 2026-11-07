@@ -48,6 +48,17 @@
           "jsonpath": "$.version"
         }
       ]
+    },
+    "fonts/thornveil": {
+      "component": "thornveil",
+      "package-name": "thornveil",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "police.json",
+          "jsonpath": "$.version"
+        }
+      ]
     }
   }
 }

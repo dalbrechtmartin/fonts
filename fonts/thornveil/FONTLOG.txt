@@ -1,0 +1,27 @@
+FONTLOG pour Thornveil
+====================
+
+Ce fichier décrit la police et l'historique de ses versions, comme le recommande l'OFL.
+
+## Description
+Thornveil est une gothique moderne, épineuse et sombre, pensée pour composer des logos. Police variable
+en graisse (300 à 900), couverture GF_Latin_Core. Fûts taillés en losange, une épine de rose par lettre,
+queues de diable en pique (g, j, y, J).
+Jeux stylistiques : ss01 « Capitales et chiffres coulants » et ss04 « Minuscules coulantes » (les lettres fondent
+en ronces sous la ligne de base), ss02 « Épines renforcées ». Glyphes décoratifs : ✦ ✧ ☽ ☾ ♥ et
+chauve-souris (U+1F987, U+E000).
+
+## Historique
+2026-11-03 (Danaé ALBRECHT--MARTIN) Thornveil 0.1.0
+- Première version publique : GF_Latin_Core complet, axe de graisse 300 à 900, crénage, fonctions kern, mark,
+  case, zero, locl (roumain, moldave), ss01 (capitales et chiffres coulants), ss02, ss04 ;
+  glyphes décoratifs.
+- Contrôlée : verifier.py sans erreur, Font Bakery sans échec, spécimen sans violation axe-core.
+
+2026-10-30 (Danaé ALBRECHT--MARTIN) Avant publication
+- Création du projet (sous le nom provisoire Épinoire)
+
+## Contributions
+N: Danaé ALBRECHT--MARTIN
+W: https://danaedev.fr
+D: Dessin original
