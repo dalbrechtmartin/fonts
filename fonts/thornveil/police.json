@@ -1,7 +1,7 @@
 {
   "id": "thornveil",
   "nom": "Thornveil",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "statut": "stable",
   "resume": "Gothique moderne, épineuse et sombre, pour les logos : ses lettres peuvent fondre en ronces.",
   "description": "Thornveil est une gothique moderne pensée pour composer des logos : fûts taillés en losange, une épine de rose sur chaque lettre, queues de diable en pique sur g, j, y et J. Ses jeux stylistiques font fondre les capitales, les chiffres et les minuscules en ronces épineuses sous la ligne de base. Police variable de 300 à 900, avec étoiles, lunes, cœur et chauve-souris en ornements. Lisible malgré le genre : b d p q jamais en miroir, n et u, I l 1, 0 et O différenciés.",
@@ -94,5 +94,14 @@
     "tailleParDefaut": 96,
     "taillesNettes": []
   },
-  "usage": "Titres et logos à partir de 24 px : les épines s'effacent sous 16 px environ. Avec les ronces coulantes (ss01, ss04), prévoir un interlignage d'au moins 1,6 sur plusieurs lignes."
+  "usage": "Titres et logos à partir de 24 px : les épines s'effacent sous 16 px environ. Avec les ronces coulantes (ss01, ss04), prévoir un interlignage d'au moins 1,6 sur plusieurs lignes.",
+  "notes": {
+    "0.1.0": {
+      "Nouveautés": [
+        "Première version publique : une gothique moderne et épineuse pour les logos, variable de 300 à 900, 8 langues à alphabet latin.",
+        "Ronces coulantes : capitales et chiffres (ss01), minuscules (ss04), qui se cumulent avec les épines renforcées (ss02).",
+        "Ornements ✦ ✧ ☽ ☾ ♥ et chauve-souris ; zéro pointé (zero) et ponctuation centrée sur les capitales (case)."
+      ]
+    }
+  }
 }
