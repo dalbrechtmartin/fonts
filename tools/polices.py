@@ -171,6 +171,8 @@ def verifier(police):
         erreurs.append(f"police.json : id « {id_police} » ≠ dossier « {police['_dossier'].name} »")
     if not re.fullmatch(r"\d+\.\d+\.\d+", police.get("version", "")):
         erreurs.append(f"police.json : version « {police.get('version')} » n'est pas au format x.y.z")
+    elif police.get("statut") == "stable" and police["version"].startswith("0."):
+        erreurs.append(f"police.json : statut « stable » en version {police['version']} (0.x : « bêta »)")
     for document in ("OFL.txt", "CHANGELOG.md", "README.md"):
         if not (police["_dossier"] / document).exists():
             erreurs.append(f"{document} manquant")

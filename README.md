@@ -158,7 +158,8 @@ les signes qui changent, calculés avec HarfBuzz), ajouter les fichiers compilé
 
 Sans version publiée, release-please sort la première en `1.0.0`. Pour une autre, la fixer avant la PR `develop` →
 `main` : `"initial-version": "0.1.0"` sur le paquet dans `release-please-config.json` (comme Thornveil), ou pied
-`Release-As: 0.1.0` dans le commit (comme Tendrille).
+`Release-As: 0.1.0` dans le commit (comme Tendrille). Le `statut` de `police.json` reste `"bêta"` en 0.x (`verifier`
+refuse `"stable"` avant la 1.0.0) : le passer à `"stable"` dans la PR de version 1.0.0.
 
 ### Publier une police sur npm pour la première fois
 
