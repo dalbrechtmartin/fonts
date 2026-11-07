@@ -94,5 +94,14 @@
     "tailleParDefaut": 96,
     "taillesNettes": []
   },
-  "usage": "Titres et logos à partir de 24 px : les épines s'effacent sous 16 px environ. Avec les ronces coulantes (ss01, ss04), prévoir un interlignage d'au moins 1,6 sur plusieurs lignes."
+  "usage": "Titres et logos à partir de 24 px : les épines s'effacent sous 16 px environ. Avec les ronces coulantes (ss01, ss04), prévoir un interlignage d'au moins 1,6 sur plusieurs lignes.",
+  "notes": {
+    "0.1.0": {
+      "Nouveautés": [
+        "Première version publique : une gothique moderne et épineuse pour les logos, variable de 300 à 900, 8 langues à alphabet latin.",
+        "Ronces coulantes : capitales et chiffres (ss01), minuscules (ss04), qui se cumulent avec les épines renforcées (ss02).",
+        "Ornements ✦ ✧ ☽ ☾ ♥ et chauve-souris ; zéro pointé (zero) et ponctuation centrée sur les capitales (case)."
+      ]
+    }
+  }
 }
